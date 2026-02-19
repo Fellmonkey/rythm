@@ -89,3 +89,27 @@ final todayProgressProvider = Provider<(int completed, int total)>((ref) {
 final dayStartHourProvider = Provider<int>((ref) {
   return ref.watch(profileProvider).value?.dayStartHour ?? 0;
 });
+
+/// Нотификатор для режима «Фокус».
+class FocusModeNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void toggle() => state = !state;
+}
+
+/// Режим «Фокус» — скрывает выполненные, показывает только по энергии.
+final focusModeProvider = NotifierProvider<FocusModeNotifier, bool>(
+  FocusModeNotifier.new,
+);
+
+/// Привычки в режиме «Фокус»: убраны выполненные и skipped,
+/// сортировка по приоритету.
+final focusHabitsProvider = Provider<AsyncValue<List<HabitWithStatus>>>((ref) {
+  final all = ref.watch(todayHabitsWithStatusProvider);
+  return all.whenData((list) {
+    final filtered = list.where((h) => !h.isCompleted && !h.isSkipped).toList();
+    filtered.sort((a, b) => b.habit.priority.compareTo(a.habit.priority));
+    return filtered;
+  });
+});

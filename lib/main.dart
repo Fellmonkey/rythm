@@ -6,6 +6,7 @@ import 'core/providers/app_providers.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
+import 'features/habits/data/repositories/habit_template_repository_impl.dart';
 import 'features/home/presentation/screens/onboarding_screen.dart';
 
 /// Флаг первого запуска — проверяем shared_preferences.
@@ -52,6 +53,10 @@ class RythmApp extends ConsumerWidget {
       return _buildApp(
         child: OnboardingScreen(
           onComplete: () async {
+            // Создать пресеты шаблонов
+            final db = ref.read(databaseProvider);
+            await HabitTemplateRepositoryImpl(db).seedPresets();
+
             final prefs = await SharedPreferences.getInstance();
             await prefs.setBool('onboarding_complete', true);
             ref.invalidate(onboardingCompleteProvider);

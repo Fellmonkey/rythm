@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/backups/presentation/screens/backup_screen.dart';
 import '../../features/habits/presentation/screens/habit_form_screen.dart';
+import '../../features/habits/presentation/screens/habit_templates_screen.dart';
 import '../../features/habits/presentation/screens/habits_list_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/insights/presentation/screens/insights_screen.dart';
@@ -41,6 +42,10 @@ final appRouter = GoRouter(
                     final id = int.parse(state.pathParameters['id']!);
                     return HabitFormScreen(habitId: id);
                   },
+                ),
+                GoRoute(
+                  path: 'templates',
+                  builder: (context, state) => const HabitTemplatesScreen(),
                 ),
               ],
             ),

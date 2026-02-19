@@ -13,14 +13,44 @@ import '../../../energy_tracker/presentation/widgets/energy_selector.dart';
 import '../../../habit_logs/di/habit_log_providers.dart';
 import '../../../habits/presentation/widgets/habit_card.dart';
 import '../providers/home_providers.dart';
+import 'end_of_day_screen.dart';
 
-/// Экран «Сегодня» — главный экран приложения.
-class HomeScreen extends ConsumerWidget {
+/// Обёртка: показывает End of Day Review или обычный HomeScreen.
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  bool _endOfDayDismissed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final endOfDay = ref.watch(shouldShowEndOfDayProvider);
+    final showReview = endOfDay.value == true && !_endOfDayDismissed;
+
+    if (showReview) {
+      return EndOfDayScreen(
+        onDismiss: () => setState(() => _endOfDayDismissed = true),
+      );
+    }
+
+    return const _HomeContent();
+  }
+}
+
+/// Основной контент экрана «Сегодня».
+class _HomeContent extends ConsumerWidget {
+  const _HomeContent();
+
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final todayData = ref.watch(todayHabitsWithStatusProvider);
+    final focusMode = ref.watch(focusModeProvider);
+    final todayData = focusMode
+        ? ref.watch(focusHabitsProvider)
+        : ref.watch(todayHabitsWithStatusProvider);
     final (completed, total) = ref.watch(todayProgressProvider);
 
     return Scaffold(
@@ -28,9 +58,9 @@ class HomeScreen extends ConsumerWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Сегодня',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text(
+              focusMode ? 'Фокус' : 'Сегодня',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Text(
               DateHelper.formatDate(DateTime.now()),
@@ -42,6 +72,15 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
         actions: [
+          // Focus Mode toggle
+          IconButton(
+            icon: Icon(
+              focusMode ? Icons.filter_alt : Icons.filter_alt_outlined,
+              color: focusMode ? AppColors.accent : AppColors.textHint,
+            ),
+            tooltip: focusMode ? 'Выключить фокус' : 'Режим фокус',
+            onPressed: () => ref.read(focusModeProvider.notifier).toggle(),
+          ),
           if (total > 0)
             Padding(
               padding: const EdgeInsets.only(right: 16),

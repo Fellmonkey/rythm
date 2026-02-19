@@ -21,6 +21,13 @@ class HabitsListScreen extends ConsumerWidget {
           'Привычки',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.auto_awesome_outlined),
+            tooltip: 'Шаблоны',
+            onPressed: () => context.go('/habits/templates'),
+          ),
+        ],
       ),
       body: habitsAsync.when(
         data: (habits) {

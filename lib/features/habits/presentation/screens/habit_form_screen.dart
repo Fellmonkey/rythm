@@ -8,6 +8,7 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../database/app_database.dart';
 import '../../../spheres/di/sphere_providers.dart';
+import '../../../tags/di/tag_providers.dart';
 import '../../di/habit_providers.dart';
 
 /// Экран создания / редактирования привычки.
@@ -33,6 +34,7 @@ class _HabitFormScreenState extends ConsumerState<HabitFormScreen> {
   int _priority = AppConstants.priorityLow;
   int _energyRequired = AppConstants.energyMedium;
   int _goalPerWeek = 7;
+  Set<int> _selectedTagIds = {};
 
   bool _isEditing = false;
   bool _loading = true;
@@ -57,12 +59,17 @@ class _HabitFormScreenState extends ConsumerState<HabitFormScreen> {
     _targetCtrl.text = habit.targetValue.toString();
     _minCtrl.text = habit.minValue.toString();
     _unitCtrl.text = habit.unit ?? '';
+    // Загрузить теги привычки
+    final tags = await ref
+        .read(tagRepositoryProvider)
+        .getTagsForHabit(widget.habitId!);
     setState(() {
       _type = habit.type;
       _sphereId = habit.sphereId;
       _priority = habit.priority;
       _energyRequired = habit.energyRequired;
       _goalPerWeek = habit.goalPerWeek;
+      _selectedTagIds = tags.map((t) => t.id).toSet();
       _loading = false;
     });
   }
@@ -213,6 +220,12 @@ class _HabitFormScreenState extends ConsumerState<HabitFormScreen> {
             ),
             const SizedBox(height: 20),
 
+            // Теги
+            Text('Теги', style: Theme.of(context).textTheme.titleSmall),
+            const SizedBox(height: 8),
+            _buildTagSelector(ref),
+            const SizedBox(height: 20),
+
             // Энергия
             Text(
               'Требуемая энергия',
@@ -294,15 +307,67 @@ class _HabitFormScreenState extends ConsumerState<HabitFormScreen> {
     );
 
     final repo = ref.read(habitRepositoryProvider);
+    int habitId;
 
     if (_isEditing) {
-      await repo.update(widget.habitId!, companion);
+      habitId = widget.habitId!;
+      await repo.update(habitId, companion);
     } else {
-      await repo.create(companion);
+      habitId = await repo.create(companion);
     }
+
+    // Сохранить теги
+    await ref
+        .read(tagRepositoryProvider)
+        .setHabitTags(habitId, _selectedTagIds.toList());
 
     HapticFeedback.lightImpact();
     if (mounted) context.pop();
+  }
+
+  Widget _buildTagSelector(WidgetRef ref) {
+    final tagsAsync = ref.watch(tagsProvider);
+    return tagsAsync.when(
+      data: (tags) {
+        if (tags.isEmpty) {
+          return const Text(
+            'Нет тегов. Создайте их в Настройки → Теги',
+            style: TextStyle(color: AppColors.textHint, fontSize: 12),
+          );
+        }
+        return Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          children: tags.map((tag) {
+            final selected = _selectedTagIds.contains(tag.id);
+            return FilterChip(
+              label: Text(tag.name),
+              selected: selected,
+              onSelected: (v) {
+                setState(() {
+                  if (v) {
+                    _selectedTagIds.add(tag.id);
+                  } else {
+                    _selectedTagIds.remove(tag.id);
+                  }
+                });
+              },
+              avatar: tag.color != null
+                  ? CircleAvatar(
+                      backgroundColor: _colorFromHex(tag.color!),
+                      radius: 6,
+                    )
+                  : null,
+            );
+          }).toList(),
+        );
+      },
+      loading: () => const SizedBox(
+        height: 32,
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (_, _) => const Text('Ошибка загрузки тегов'),
+    );
   }
 
   void _confirmDelete() {

@@ -9,7 +9,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:path/path.dart' as p;
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/utils/path_provider_stub.dart';
+import '../../../../core/utils/path_provider_web.dart';
 import '../../di/backup_providers.dart';
 import '../../di/export_providers.dart';
 
