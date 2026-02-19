@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
@@ -7,9 +9,11 @@ import 'package:share_plus/share_plus.dart';
 import 'package:path/path.dart' as p;
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/path_provider_stub.dart';
 import '../../di/backup_providers.dart';
+import '../../di/export_providers.dart';
 
-/// Экран управления бэкапами: экспорт/импорт JSON.
+/// Экран управления бэкапами: экспорт/импорт JSON, CSV, Markdown.
 class BackupScreen extends ConsumerStatefulWidget {
   const BackupScreen({super.key});
 
@@ -63,17 +67,37 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
           ),
           const SizedBox(height: 16),
 
-          // Экспорт JSON
-          _ActionCard(
-            icon: Icons.upload_file,
-            title: 'Экспорт JSON',
-            subtitle: 'Полный бэкап всех данных',
-            loading: _exporting,
-            onTap: _export,
-          ),
+          // --- Экспорт ---
+          _SectionLabel('Экспорт'),
           const SizedBox(height: 8),
+          _ActionCard(
+            icon: Icons.data_object,
+            title: 'Экспорт JSON',
+            subtitle: 'Полный бэкап — можно восстановить',
+            loading: _exporting,
+            onTap: () => _exportJson(),
+          ),
+          const SizedBox(height: 4),
+          _ActionCard(
+            icon: Icons.table_chart_outlined,
+            title: 'Экспорт CSV',
+            subtitle: 'Для Excel, Google Sheets, Notion',
+            loading: false,
+            onTap: () => _exportCsv(),
+          ),
+          const SizedBox(height: 4),
+          _ActionCard(
+            icon: Icons.description_outlined,
+            title: 'Экспорт Markdown',
+            subtitle: 'Для Obsidian, Logseq, Roam',
+            loading: false,
+            onTap: () => _exportMarkdown(),
+          ),
+          const SizedBox(height: 20),
 
-          // Импорт JSON
+          // --- Импорт ---
+          _SectionLabel('Импорт'),
+          const SizedBox(height: 8),
           _ActionCard(
             icon: Icons.download,
             title: 'Импорт JSON',
@@ -81,60 +105,110 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
             loading: _importing,
             onTap: _import,
           ),
-
-          const SizedBox(height: 24),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              'Экспорт CSV и Markdown будет доступен в следующем обновлении.',
-              style: TextStyle(color: AppColors.textHint, fontSize: 12),
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Future<void> _export() async {
+  // --- Export helpers ---
+
+  Future<void> _shareFile(
+    String content,
+    String filename,
+    String subject,
+  ) async {
+    if (kIsWeb) {
+      final mimeType = filename.endsWith('.json')
+          ? 'application/json'
+          : filename.endsWith('.csv')
+          ? 'text/csv'
+          : 'text/markdown';
+      await downloadFileWeb(content, filename, mimeType);
+    } else {
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File(p.join(dir.path, filename));
+      await file.writeAsString(content);
+      await SharePlus.instance.share(
+        ShareParams(files: [XFile(file.path)], subject: subject),
+      );
+    }
+  }
+
+  String get _timestamp =>
+      DateTime.now().toIso8601String().replaceAll(':', '-').split('.').first;
+
+  Future<void> _exportJson() async {
     setState(() => _exporting = true);
     try {
-      final repo = ref.read(backupRepositoryProvider);
-      final json = await repo.exportToJson();
-
-      final dir = await getApplicationDocumentsDirectory();
-      final timestamp = DateTime.now()
-          .toIso8601String()
-          .replaceAll(':', '-')
-          .split('.')
-          .first;
-      final file = File(p.join(dir.path, 'rythm_backup_$timestamp.json'));
-      await file.writeAsString(json);
-
-      await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(file.path)],
-          subject: 'Ритм — бэкап $timestamp',
-        ),
+      final json = await ref.read(backupRepositoryProvider).exportToJson();
+      await _shareFile(
+        json,
+        'rythm_backup_$_timestamp.json',
+        'Ритм — бэкап $_timestamp',
       );
-
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('Бэкап экспортирован')));
+        ).showSnackBar(const SnackBar(content: Text('JSON экспортирован')));
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Ошибка экспорта: $e')));
+        ).showSnackBar(SnackBar(content: Text('Ошибка: $e')));
       }
     } finally {
       setState(() => _exporting = false);
     }
   }
 
+  Future<void> _exportCsv() async {
+    try {
+      final csv = await ref.read(exportRepositoryProvider).exportToCsv();
+      await _shareFile(
+        csv,
+        'rythm_export_$_timestamp.csv',
+        'Ритм — CSV $_timestamp',
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('CSV экспортирован')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Ошибка: $e')));
+      }
+    }
+  }
+
+  Future<void> _exportMarkdown() async {
+    try {
+      final md = await ref.read(exportRepositoryProvider).exportToMarkdown();
+      await _shareFile(
+        md,
+        'rythm_export_$_timestamp.md',
+        'Ритм — Markdown $_timestamp',
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Markdown экспортирован')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Ошибка: $e')));
+      }
+    }
+  }
+
+  // --- Import ---
+
   Future<void> _import() async {
-    // Предупреждение
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -156,18 +230,32 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
         ],
       ),
     );
-
     if (confirmed != true) return;
 
     setState(() => _importing = true);
     try {
-      // В реальном приложении здесь file_picker
-      // Для MVP показываем инструкцию
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+
+      if (result == null || result.files.isEmpty) {
+        setState(() => _importing = false);
+        return;
+      }
+
+      final filePath = result.files.single.path;
+      if (filePath == null) {
+        setState(() => _importing = false);
+        return;
+      }
+
+      final content = await File(filePath).readAsString();
+      await ref.read(backupRepositoryProvider).importFromJson(content);
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Поместите файл бэкапа в папку Documents приложения'),
-          ),
+          const SnackBar(content: Text('Данные успешно восстановлены')),
         );
       }
     } catch (e) {
@@ -179,6 +267,24 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
     } finally {
       setState(() => _importing = false);
     }
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel(this.title);
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: const TextStyle(
+        color: AppColors.textHint,
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.5,
+      ),
+    );
   }
 }
 

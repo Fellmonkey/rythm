@@ -5,8 +5,10 @@ import '../../features/backups/presentation/screens/backup_screen.dart';
 import '../../features/habits/presentation/screens/habit_form_screen.dart';
 import '../../features/habits/presentation/screens/habits_list_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/insights/presentation/screens/insights_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/spheres/presentation/screens/spheres_screen.dart';
+import '../../features/tags/presentation/screens/tags_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -44,6 +46,15 @@ final appRouter = GoRouter(
             ),
           ],
         ),
+        // Вкладка «Аналитика»
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/insights',
+              builder: (context, state) => const InsightsScreen(),
+            ),
+          ],
+        ),
         // Вкладка «Настройки»
         StatefulShellBranch(
           routes: [
@@ -54,6 +65,10 @@ final appRouter = GoRouter(
                 GoRoute(
                   path: 'spheres',
                   builder: (context, state) => const SpheresScreen(),
+                ),
+                GoRoute(
+                  path: 'tags',
+                  builder: (context, state) => const TagsScreen(),
                 ),
                 GoRoute(
                   path: 'backup',
@@ -95,6 +110,11 @@ class _MainShell extends StatelessWidget {
             icon: Icon(Icons.checklist_outlined),
             selectedIcon: Icon(Icons.checklist),
             label: 'Привычки',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.insights_outlined),
+            selectedIcon: Icon(Icons.insights),
+            label: 'Аналитика',
           ),
           NavigationDestination(
             icon: Icon(Icons.settings_outlined),

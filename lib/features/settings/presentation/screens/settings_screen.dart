@@ -96,6 +96,18 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                     onTap: () => context.go('/settings/spheres'),
                   ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.label_outline,
+                      color: AppColors.accent,
+                    ),
+                    title: const Text('Теги'),
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      color: AppColors.textHint,
+                    ),
+                    onTap: () => context.go('/settings/tags'),
+                  ),
                 ],
               ),
             ),
