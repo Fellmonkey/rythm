@@ -10,15 +10,33 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # State Management
+  flutter_riverpod: ^3.2.1
+
+  # Database
+  drift: ^2.22.1
+  drift_flutter: ^0.2.7
+  sqlite3_flutter_libs: ^0.5.41
+
+  # Routing
+  go_router: ^17.1.0
+
+  # Utils
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  intl: ^0.20.2
+  share_plus: ^12.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-
+  drift_dev: ^2.22.1
+  build_runner: ^2.4.13
 
 flutter:
   uses-material-design: true
-  
+
   assets:
     - assets/images/
     - assets/icons/
