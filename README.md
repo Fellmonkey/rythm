@@ -1,4 +1,4 @@
-# rythm
+# habit_scape
 
 A new Flutter project.
 

@@ -1,6 +1,6 @@
 {
-    "name": "rythm",
-    "short_name": "rythm",
+    "name": "habit_scape",
+    "short_name": "habit_scape",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
