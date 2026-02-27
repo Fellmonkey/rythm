@@ -56,6 +56,16 @@ class HabitLogsDao extends DatabaseAccessor<AppDatabase>
         .watch();
   }
 
+  /// Get ALL logs for backup export.
+  Future<List<HabitLog>> getAllLogs() {
+    return (select(habitLogs)..orderBy([(l) => OrderingTerm.asc(l.id)])).get();
+  }
+
+  /// Delete all logs (for import).
+  Future<int> deleteAllLogs() {
+    return delete(habitLogs).go();
+  }
+
   /// Upsert a log entry: insert or update status for (habitId, date).
   Future<void> upsertLog(HabitLogsCompanion entry) async {
     final existing = await (select(habitLogs)

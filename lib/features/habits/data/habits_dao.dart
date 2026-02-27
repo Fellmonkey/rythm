@@ -35,6 +35,16 @@ class HabitsDao extends DatabaseAccessor<AppDatabase> with _$HabitsDaoMixin {
     return (select(habits)..where((h) => h.id.equals(id))).watchSingle();
   }
 
+  /// Get ALL habits (including archived) for backup export.
+  Future<List<Habit>> getAllHabits() {
+    return (select(habits)..orderBy([(h) => OrderingTerm.asc(h.id)])).get();
+  }
+
+  /// Delete all habits (for import).
+  Future<int> deleteAllHabits() {
+    return delete(habits).go();
+  }
+
   /// Insert a new habit and return its id.
   Future<int> insertHabit(HabitsCompanion entry) {
     return into(habits).insert(entry);

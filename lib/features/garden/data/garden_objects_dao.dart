@@ -54,6 +54,11 @@ class GardenObjectsDao extends DatabaseAccessor<AppDatabase>
         .getSingleOrNull();
   }
 
+  /// Delete all garden objects (for import).
+  Future<int> deleteAllObjects() {
+    return delete(gardenObjects).go();
+  }
+
   /// Insert a garden object.
   Future<int> insertObject(GardenObjectsCompanion entry) {
     return into(gardenObjects).insert(entry);
