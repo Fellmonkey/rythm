@@ -1,9 +1,10 @@
-import 'dart:convert';
 import 'dart:math';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/database/enums.dart';
 import '../../../core/utils/date_helpers.dart';
+
+import 'scheduling.dart';
 
 /// Pure computation engine for habit metrics.
 /// No side-effects, no DB access — operates on pre-fetched data.
@@ -33,16 +34,16 @@ class HabitEngine {
         return activeDays;
 
       case FrequencyType.weekdays:
-        final weekdays = _parseWeekdays(habit.frequencyValue);
+        final weekdays = parseWeekdays(habit.frequencyValue);
         return countWeekdaysInRange(effectiveStart, monthEnd, weekdays);
 
       case FrequencyType.xPerWeek:
-        final x = _parseXValue(habit.frequencyValue);
+        final x = parseXValue(habit.frequencyValue);
         final weeks = activeDays / 7.0;
         return (weeks * x).ceil();
 
       case FrequencyType.everyXDays:
-        final x = _parseXValue(habit.frequencyValue);
+        final x = parseXValue(habit.frequencyValue);
         return (activeDays / x).ceil();
 
       case FrequencyType.negative:
@@ -160,31 +161,6 @@ class HabitEngine {
     // "Effort threshold": need ≥ 5 absolute completions for a tree
     if (absoluteCount >= 5) return GardenObjectType.tree;
     return GardenObjectType.bush;
-  }
-
-  // Helpers
-
-  static List<int> _parseWeekdays(String json) {
-    try {
-      final decoded = jsonDecode(json);
-      if (decoded is Map && decoded.containsKey('days')) {
-        return (decoded['days'] as List).cast<int>();
-      }
-      if (decoded is List) return decoded.cast<int>();
-    } catch (_) {}
-    // Default: Mon-Fri
-    return [1, 2, 3, 4, 5];
-  }
-
-  static int _parseXValue(String json) {
-    try {
-      final decoded = jsonDecode(json);
-      if (decoded is Map && decoded.containsKey('x')) {
-        return decoded['x'] as int;
-      }
-      if (decoded is int) return decoded;
-    } catch (_) {}
-    return 1;
   }
 }
 

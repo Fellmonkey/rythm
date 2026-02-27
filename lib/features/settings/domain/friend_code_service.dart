@@ -109,7 +109,7 @@ class FriendCodeService {
             .map((e) => e.completionPct)
             .reduce((a, b) => a + b) /
         garden.entries.length;
-    return avgPct >= 0.8;
+    return avgPct >= 80.0;
   }
 }
 

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +9,7 @@ import '../../../core/utils/date_helpers.dart';
 import '../data/habit_logs_dao.dart';
 import '../data/habits_dao.dart';
 import '../domain/habit_engine.dart';
+import '../domain/scheduling.dart';
 import '../domain/schrodinger_checker.dart';
 
 // ── DAO providers ────────────────────────────────────────────
@@ -66,7 +65,7 @@ final dayProgressProvider = Provider<double>((ref) {
   var done = 0;
 
   for (final habit in habits) {
-    if (_isExpectedToday(habit, now)) {
+    if (isExpectedToday(habit, now)) {
       expected++;
       final log = logs.where((l) => l.habitId == habit.id).firstOrNull;
       if (log != null && log.status == LogStatus.done.name) {
@@ -77,28 +76,6 @@ final dayProgressProvider = Provider<double>((ref) {
 
   return expected > 0 ? done / expected : 0.0;
 });
-
-/// Check if a habit is expected to be performed today.
-bool _isExpectedToday(Habit habit, DateTime today) {
-  final freqType = FrequencyType.fromString(habit.frequencyType);
-  switch (freqType) {
-    case FrequencyType.daily:
-      return true;
-    case FrequencyType.weekdays:
-      final weekdays = _parseWeekdays(habit.frequencyValue);
-      return weekdays.contains(today.weekday);
-    case FrequencyType.xPerWeek:
-      // Simplification: always show for x_per_week
-      return true;
-    case FrequencyType.everyXDays:
-      final x = _parseXValue(habit.frequencyValue);
-      final created = dateFromUnix(habit.createdAt);
-      final diff = today.toMidnight.difference(created.toMidnight).inDays;
-      return diff % x == 0;
-    case FrequencyType.negative:
-      return true;
-  }
-}
 
 // ── Habit Engine provider (metrics for a month) ──────────────
 
@@ -215,37 +192,5 @@ class HabitActions extends Notifier<void> {
     }
     await _habitsDao.toggleFocus(habitId, isFocus: isFocus);
     return true;
-  }
-}
-
-// ── Private helpers ──────────────────────────────────────────
-
-List<int> _parseWeekdays(String json) {
-  try {
-    final decoded = _decodeJson(json);
-    if (decoded is Map && decoded.containsKey('days')) {
-      return (decoded['days'] as List).cast<int>();
-    }
-    if (decoded is List) return decoded.cast<int>();
-  } catch (_) {}
-  return [1, 2, 3, 4, 5];
-}
-
-int _parseXValue(String json) {
-  try {
-    final decoded = _decodeJson(json);
-    if (decoded is Map && decoded.containsKey('x')) {
-      return decoded['x'] as int;
-    }
-    if (decoded is int) return decoded;
-  } catch (_) {}
-  return 1;
-}
-
-dynamic _decodeJson(String value) {
-  try {
-    return jsonDecode(value);
-  } catch (_) {
-    return null;
   }
 }
