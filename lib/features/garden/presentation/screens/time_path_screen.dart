@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/database/enums.dart';
+import '../../../../core/keys.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../domain/generator/plant_params.dart';
 import '../../domain/generator/plant_widget.dart';
@@ -40,6 +41,7 @@ class TimePathScreen extends ConsumerWidget {
                       padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
                       child: Text(
                         'Тропа Времени',
+                        key: K.timePathTitle,
                         style: theme.textTheme.headlineLarge,
                       ),
                     ),
@@ -79,6 +81,7 @@ class TimePathScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             Text(
               'Тропа пока пуста',
+              key: K.timePathEmpty,
               style: theme.textTheme.headlineMedium,
             ),
             const SizedBox(height: 8),

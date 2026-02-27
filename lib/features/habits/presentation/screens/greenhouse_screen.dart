@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/database/enums.dart' as enums;
+import '../../../../core/keys.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../providers/habit_providers.dart';
@@ -40,6 +41,7 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        key: K.fabCreateHabit,
         onPressed: () => _showCreateHabitSheet(context),
         child: const Icon(Icons.add_rounded),
       ),
@@ -64,7 +66,7 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen> {
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
             child: Row(
               children: [
-                _ProgressRing(progress: dayProgress),
+                _ProgressRing(key: K.progressRing, progress: dayProgress),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
@@ -82,6 +84,7 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen> {
                 ),
                 // Hide completed toggle
                 IconButton(
+                  key: K.hideCompletedToggle,
                   onPressed: () => setState(() => _hideCompleted = !_hideCompleted),
                   icon: Icon(
                     _hideCompleted
@@ -99,9 +102,10 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen> {
         ),
 
         if (habits.isEmpty)
-          const SliverFillRemaining(
+          SliverFillRemaining(
             child: Center(
-              child: Text('Нажмите + чтобы создать первую привычку'),
+              child: Text('Нажмите + чтобы создать первую привычку',
+                  key: K.emptyHabitsMessage),
             ),
           )
         else
@@ -148,6 +152,7 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen> {
               ),
               // "Mark all" button
               TextButton.icon(
+                key: K.markAllGroup(group.label),
                 onPressed: () => _markAllInGroup(items),
                 icon: Icon(Icons.done_all_rounded, size: 16, color: group.color),
                 label: Text(
@@ -260,7 +265,7 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen> {
 // ── Progress Ring ────────────────────────────────────────────
 
 class _ProgressRing extends StatelessWidget {
-  const _ProgressRing({required this.progress});
+  const _ProgressRing({super.key, required this.progress});
 
   final double progress;
 
@@ -372,6 +377,7 @@ class _CreateHabitSheetState extends ConsumerState<_CreateHabitSheet> {
 
             // ── Name ──
             TextField(
+              key: K.habitNameField,
               controller: _nameController,
               autofocus: true,
               decoration: InputDecoration(
@@ -471,6 +477,7 @@ class _CreateHabitSheetState extends ConsumerState<_CreateHabitSheet> {
 
             // ── Create Button ──
             FilledButton(
+              key: K.habitCreateButton,
               onPressed: _create,
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),

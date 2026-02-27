@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/database/enums.dart';
+import '../../../../core/keys.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../providers/habit_providers.dart';
@@ -83,6 +84,7 @@ class _HabitCardState extends ConsumerState<HabitCard>
         child: GestureDetector(
           onLongPress: _markDone,
           child: Card(
+            key: K.habitCard(widget.habit.id),
             color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
             child: InkWell(
               onTap: () => _openDetail(context),
@@ -93,6 +95,7 @@ class _HabitCardState extends ConsumerState<HabitCard>
                   children: [
                     // ── Checkbox ──
                     _CheckCircle(
+                      key: K.habitCheck(widget.habit.id),
                       isDone: _isDone,
                       isSkip: status == LogStatus.skip,
                       isFail: status == LogStatus.fail,
@@ -169,17 +172,20 @@ class _HabitCardState extends ConsumerState<HabitCard>
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
+              key: K.swipeSkip,
               leading: const Icon(Icons.pause_circle_outline,
                   color: AppColors.coolGreyBlue),
               title: const Text('Уважительный пропуск'),
               onTap: () => Navigator.pop(ctx, 'skip'),
             ),
             ListTile(
+              key: K.swipeFail,
               leading: const Icon(Icons.close, color: AppColors.dustyRose),
               title: const Text('Срыв'),
               onTap: () => Navigator.pop(ctx, 'fail'),
             ),
             ListTile(
+              key: K.swipeDelete,
               leading: const Icon(Icons.delete_outline, color: AppColors.fadedPlum),
               title: const Text('Удалить'),
               onTap: () => Navigator.pop(ctx, 'delete'),
@@ -260,6 +266,7 @@ class _HabitCardState extends ConsumerState<HabitCard>
 /// Circular check indicator with color-coded states.
 class _CheckCircle extends StatelessWidget {
   const _CheckCircle({
+    super.key,
     required this.isDone,
     required this.isSkip,
     required this.isFail,

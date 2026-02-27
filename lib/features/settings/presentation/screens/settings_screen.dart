@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../core/keys.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/glass_card.dart';
@@ -29,6 +30,7 @@ class SettingsScreen extends ConsumerWidget {
           _SectionHeader(title: 'Резервное копирование', theme: theme),
           const SizedBox(height: 8),
           _SettingsTile(
+            key: K.settingsExport,
             icon: Icons.upload_file,
             title: 'Экспорт данных',
             subtitle: 'Сохранить все привычки и сад в файл',
@@ -36,6 +38,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           _SettingsTile(
+            key: K.settingsImport,
             icon: Icons.download,
             title: 'Импорт данных',
             subtitle: 'Восстановить из файла (заменит текущие данные)',
@@ -48,6 +51,7 @@ class SettingsScreen extends ConsumerWidget {
           _SectionHeader(title: 'Семена-Коды', theme: theme),
           const SizedBox(height: 8),
           _SettingsTile(
+            key: K.settingsFriendShare,
             icon: Icons.share,
             title: 'Поделиться садом',
             subtitle: 'Сгенерировать код для друзей',
@@ -55,6 +59,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           _SettingsTile(
+            key: K.settingsFriendImport,
             icon: Icons.input,
             title: 'Ввести код друга',
             subtitle: 'Посмотреть чужой сад и получить новые семена',
@@ -67,6 +72,7 @@ class SettingsScreen extends ConsumerWidget {
           _SectionHeader(title: 'Поделиться достижениями', theme: theme),
           const SizedBox(height: 8),
           _SettingsTile(
+            key: K.settingsCard,
             icon: Icons.image,
             title: 'Карточка месяца',
             subtitle: 'Создать красивую картинку с растениями',
@@ -222,7 +228,8 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
 
-    controller.dispose();
+    // Defer disposal until the dialog dismiss animation completes.
+    Future.delayed(const Duration(milliseconds: 300), controller.dispose);
 
     if (code == null || code.trim().isEmpty || !context.mounted) return;
 
@@ -336,6 +343,7 @@ class _SectionHeader extends StatelessWidget {
 
 class _SettingsTile extends StatelessWidget {
   const _SettingsTile({
+    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,

@@ -1,0 +1,105 @@
+import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rythm/core/database/app_database.dart';
+import 'package:rythm/core/database/database_provider.dart';
+import 'package:rythm/core/router/shell_scaffold.dart';
+import 'package:rythm/core/theme/app_theme.dart';
+import 'package:rythm/features/garden/presentation/screens/time_path_screen.dart';
+import 'package:rythm/features/habits/presentation/screens/greenhouse_screen.dart';
+import 'package:rythm/features/habits/presentation/screens/habit_detail_screen.dart';
+import 'package:rythm/features/settings/presentation/screens/settings_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:rythm/features/habits/providers/habit_providers.dart';
+
+/// Creates an in-memory [AppDatabase] for integration tests (FK enabled).
+AppDatabase createIntegrationTestDatabase() {
+  return AppDatabase.test(NativeDatabase.memory(setup: (db) {
+    db.execute('PRAGMA foreign_keys = ON');
+  }));
+}
+
+/// Creates a fresh GoRouter instance to avoid GlobalKey collisions between
+/// tests.  The route structure mirrors [appRouter] in `app_router.dart`.
+GoRouter _createTestRouter() => GoRouter(
+      initialLocation: '/',
+      routes: [
+        ShellRoute(
+          builder: (context, state, child) => ShellScaffold(child: child),
+          routes: [
+            GoRoute(
+              path: '/',
+              pageBuilder: (context, state) => const NoTransitionPage(
+                child: GreenhouseScreen(),
+              ),
+            ),
+            GoRoute(
+              path: '/garden',
+              pageBuilder: (context, state) => const NoTransitionPage(
+                child: TimePathScreen(),
+              ),
+            ),
+            GoRoute(
+              path: '/settings',
+              pageBuilder: (context, state) => const NoTransitionPage(
+                child: SettingsScreen(),
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: '/habit/:id',
+          builder: (context, state) {
+            final id = int.parse(state.pathParameters['id']!);
+            return HabitDetailScreen(habitId: id);
+          },
+        ),
+      ],
+    );
+
+/// Pumps the full app with an in-memory database and fake
+/// SharedPreferences.  Returns the [AppDatabase] so tests can seed data
+/// directly through DAOs.
+///
+/// Usage:
+/// ```dart
+/// late AppDatabase db;
+/// testWidgets('...', (tester) async {
+///   db = await pumpApp(tester);
+///   // interact with UI …
+///   await db.close();
+/// });
+/// ```
+Future<AppDatabase> pumpApp(
+  WidgetTester tester, {
+  Map<String, Object>? sharedPrefsValues,
+}) async {
+  SharedPreferences.setMockInitialValues(sharedPrefsValues ?? {});
+  final prefs = await SharedPreferences.getInstance();
+  final db = createIntegrationTestDatabase();
+
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        sharedPrefsProvider.overrideWith((_) async => prefs),
+      ],
+      child: MaterialApp.router(
+        title: 'Ритм — integration test',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        themeMode: ThemeMode.light,
+        routerConfig: _createTestRouter(),
+      ),
+    ),
+  );
+
+  // Let all providers initialise and first frame settle.
+  await tester.pumpAndSettle();
+
+  return db;
+}

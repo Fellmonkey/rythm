@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../keys.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 
@@ -15,6 +16,8 @@ class ShellScaffold extends StatelessWidget {
     (icon: Icons.park_outlined, activeIcon: Icons.park, label: 'Тропа', path: '/garden'),
     (icon: Icons.settings_outlined, activeIcon: Icons.settings, label: 'Ещё', path: '/settings'),
   ];
+
+  static const _navKeys = [K.navGreenhouse, K.navGarden, K.navSettings];
 
   int _currentIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
@@ -53,11 +56,12 @@ class ShellScaffold extends StatelessWidget {
           ),
           labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
           destinations: [
-            for (final tab in _tabs)
+            for (var i = 0; i < _tabs.length; i++)
               NavigationDestination(
-                icon: Icon(tab.icon),
-                selectedIcon: Icon(tab.activeIcon),
-                label: tab.label,
+                key: _navKeys[i],
+                icon: Icon(_tabs[i].icon),
+                selectedIcon: Icon(_tabs[i].activeIcon),
+                label: _tabs[i].label,
               ),
           ],
         ),
