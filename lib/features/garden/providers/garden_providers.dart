@@ -2,7 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_provider.dart';
+import '../../habits/providers/habit_providers.dart';
 import '../data/garden_objects_dao.dart';
+import '../domain/crystallization_service.dart';
 
 // ── DAO provider ─────────────────────────────────────────────
 
@@ -29,4 +31,19 @@ final gardenByMonthProvider =
     grouped.putIfAbsent((obj.year, obj.month), () => []).add(obj);
   }
   return grouped;
+});
+
+// ── Crystallization ──────────────────────────────────────────
+
+/// Runs crystallization on app startup if a new month has begun.
+/// Returns the count of newly crystallized plants.
+final crystallizationProvider = FutureProvider<int>((ref) async {
+  final prefs = await ref.watch(sharedPrefsProvider.future);
+  final service = CrystallizationService(
+    habitsDao: ref.watch(habitsDaoProvider),
+    habitLogsDao: ref.watch(habitLogsDaoProvider),
+    gardenObjectsDao: ref.watch(gardenObjectsDaoProvider),
+    prefs: prefs,
+  );
+  return service.runIfNeeded();
 });
