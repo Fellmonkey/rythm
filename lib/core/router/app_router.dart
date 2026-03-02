@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/garden/presentation/screens/time_path_screen.dart';
+import '../../features/habits/presentation/screens/archived_habits_screen.dart';
 import '../../features/habits/presentation/screens/greenhouse_screen.dart';
 import '../../features/habits/presentation/screens/habit_detail_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
@@ -43,6 +44,10 @@ final appRouter = GoRouter(
         final id = int.parse(state.pathParameters['id']!);
         return HabitDetailScreen(habitId: id);
       },
+    ),
+    GoRoute(
+      path: '/archive',
+      builder: (context, state) => const ArchivedHabitsScreen(),
     ),
   ],
 );

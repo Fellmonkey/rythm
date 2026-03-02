@@ -61,6 +61,20 @@ class HabitsDao extends DatabaseAccessor<AppDatabase> with _$HabitsDaoMixin {
         .write(const HabitsCompanion(isArchived: Value(true)));
   }
 
+  /// Restore an archived habit back to active.
+  Future<int> unarchiveHabit(int id) {
+    return (update(habits)..where((h) => h.id.equals(id)))
+        .write(const HabitsCompanion(isArchived: Value(false)));
+  }
+
+  /// Watch all archived habits ordered by most-recently created first.
+  Stream<List<Habit>> watchArchivedHabits() {
+    return (select(habits)
+          ..where((h) => h.isArchived.equals(true))
+          ..orderBy([(h) => OrderingTerm.desc(h.createdAt)]))
+        .watch();
+  }
+
   /// Delete a habit permanently.
   Future<int> deleteHabit(int id) {
     return (delete(habits)..where((h) => h.id.equals(id))).go();

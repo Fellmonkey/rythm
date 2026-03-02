@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/keys.dart';
@@ -77,6 +78,18 @@ class SettingsScreen extends ConsumerWidget {
             title: 'Карточка месяца',
             subtitle: 'Создать красивую картинку с растениями',
             onTap: () => _generateCard(context, ref),
+          ),
+
+          const SizedBox(height: 24),
+
+          // ── Archive section ─────────────────────────────────────
+          _SectionHeader(title: 'Архив', theme: theme),
+          const SizedBox(height: 8),
+          _SettingsTile(
+            icon: Icons.inventory_2_outlined,
+            title: 'Архивные привычки',
+            subtitle: 'Просмотр и восстановление архивированных привычек',
+            onTap: () => context.push('/archive'),
           ),
 
           const SizedBox(height: 24),

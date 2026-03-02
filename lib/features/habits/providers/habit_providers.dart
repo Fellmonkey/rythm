@@ -35,6 +35,11 @@ final activeHabitsProvider = StreamProvider<List<Habit>>((ref) {
   return ref.watch(habitsDaoProvider).watchActiveHabits();
 });
 
+/// Stream of all archived habits.
+final archivedHabitsProvider = StreamProvider<List<Habit>>((ref) {
+  return ref.watch(habitsDaoProvider).watchArchivedHabits();
+});
+
 /// Watch a single habit by id.
 final habitProvider = StreamProvider.family<Habit, int>((ref, id) {
   return ref.watch(habitsDaoProvider).watchHabit(id);
@@ -177,6 +182,11 @@ class HabitActions extends Notifier<void> {
   /// Archive a habit.
   Future<void> archiveHabit(int habitId) async {
     await _habitsDao.archiveHabit(habitId);
+  }
+
+  /// Restore an archived habit back to active.
+  Future<void> unarchiveHabit(int habitId) async {
+    await _habitsDao.unarchiveHabit(habitId);
   }
 
   /// Delete a habit permanently.
