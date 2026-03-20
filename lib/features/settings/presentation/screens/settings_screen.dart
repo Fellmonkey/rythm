@@ -173,8 +173,9 @@ class SettingsScreen extends ConsumerWidget {
 
       final bytes = result.files.first.bytes;
       if (bytes == null) {
-        if (context.mounted)
+        if (context.mounted) {
           _showSnackBar(context, 'Не удалось прочитать файл');
+        }
         return;
       }
 

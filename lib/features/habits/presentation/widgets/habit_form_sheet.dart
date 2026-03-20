@@ -331,8 +331,9 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
             selected: selected,
             onSelected: (_) => setState(() {
               if (selected) {
-                if (_selectedWeekdays.length > 1)
+                if (_selectedWeekdays.length > 1) {
                   _selectedWeekdays.remove(r.$1);
+                }
               } else {
                 _selectedWeekdays.add(r.$1);
               }
