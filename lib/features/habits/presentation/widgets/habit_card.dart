@@ -17,11 +17,7 @@ import '../../providers/habit_providers.dart';
 /// - Long press → mark done (alt).
 /// - Swipe left → Skip / Fail / Delete menu.
 class HabitCard extends ConsumerStatefulWidget {
-  const HabitCard({
-    required this.habit,
-    required this.log,
-    super.key,
-  });
+  const HabitCard({required this.habit, required this.log, super.key});
 
   final Habit habit;
   final HabitLog? log;
@@ -50,7 +46,7 @@ class _HabitCardState extends ConsumerState<HabitCard>
     final name = widget.habit.name;
     final type = FrequencyType.fromString(widget.habit.frequencyType);
     if (type != FrequencyType.cycle) return name;
-    
+
     // We assume the card is showing for "today" (Greenhouse view).
     // If you need exact date, it should be passed from parent, but here we use now.
     final label = getCycleLabelForDate(widget.habit, DateTime.now());
@@ -67,14 +63,14 @@ class _HabitCardState extends ConsumerState<HabitCard>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _scaleAnim = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.08), weight: 30),
-      TweenSequenceItem(tween: Tween(begin: 1.08, end: 0.95), weight: 30),
-      TweenSequenceItem(tween: Tween(begin: 0.95, end: 1.0), weight: 40),
-    ]).animate(CurvedAnimation(
-      parent: _bounceController,
-      curve: Curves.easeOut,
-    ));
+    _scaleAnim =
+        TweenSequence<double>([
+          TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.08), weight: 30),
+          TweenSequenceItem(tween: Tween(begin: 1.08, end: 0.95), weight: 30),
+          TweenSequenceItem(tween: Tween(begin: 0.95, end: 1.0), weight: 40),
+        ]).animate(
+          CurvedAnimation(parent: _bounceController, curve: Curves.easeOut),
+        );
   }
 
   @override
@@ -114,7 +110,10 @@ class _HabitCardState extends ConsumerState<HabitCard>
               onTap: () => _openDetail(context),
               borderRadius: AppRadius.borderM,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
                 child: Row(
                   children: [
                     // ── Checkbox ──
@@ -134,10 +133,13 @@ class _HabitCardState extends ConsumerState<HabitCard>
                           Text(
                             _buildTitle(),
                             style: theme.textTheme.titleMedium?.copyWith(
-                              decoration:
-                                  _isDone ? TextDecoration.lineThrough : null,
+                              decoration: _isDone
+                                  ? TextDecoration.lineThrough
+                                  : null,
                               color: _isDone
-                                  ? theme.colorScheme.onSurface.withValues(alpha: 0.45)
+                                  ? theme.colorScheme.onSurface.withValues(
+                                      alpha: 0.45,
+                                    )
                                   : null,
                             ),
                           ),
@@ -169,8 +171,9 @@ class _HabitCardState extends ConsumerState<HabitCard>
                                 frequencyLabel(widget.habit),
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   fontSize: 11,
-                                  color: theme.colorScheme.onSurface
-                                      .withValues(alpha: 0.45),
+                                  color: theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.45,
+                                  ),
                                 ),
                               ),
                             ),
@@ -210,8 +213,10 @@ class _HabitCardState extends ConsumerState<HabitCard>
           children: [
             ListTile(
               key: K.swipeSkip,
-              leading: const Icon(Icons.pause_circle_outline,
-                  color: AppColors.coolGreyBlue),
+              leading: const Icon(
+                Icons.pause_circle_outline,
+                color: AppColors.coolGreyBlue,
+              ),
               title: const Text('Уважительный пропуск'),
               onTap: () => Navigator.pop(ctx, 'skip'),
             ),
@@ -223,7 +228,10 @@ class _HabitCardState extends ConsumerState<HabitCard>
             ),
             ListTile(
               key: K.swipeDelete,
-              leading: const Icon(Icons.delete_outline, color: AppColors.fadedPlum),
+              leading: const Icon(
+                Icons.delete_outline,
+                color: AppColors.fadedPlum,
+              ),
               title: const Text('Удалить'),
               onTap: () => Navigator.pop(ctx, 'delete'),
             ),
@@ -285,7 +293,9 @@ class _CheckCircle extends StatelessWidget {
       fillColor = AppColors.dustyRose.withValues(alpha: 0.3);
       icon = Icons.close_rounded;
     } else {
-      borderColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.25);
+      borderColor = Theme.of(
+        context,
+      ).colorScheme.onSurface.withValues(alpha: 0.25);
       fillColor = null;
       icon = null;
     }
@@ -304,9 +314,7 @@ class _CheckCircle extends StatelessWidget {
               ? Border.all(color: borderColor, width: 2)
               : null,
         ),
-        child: icon != null
-            ? Icon(icon, size: 18, color: Colors.white)
-            : null,
+        child: icon != null ? Icon(icon, size: 18, color: Colors.white) : null,
       ),
     );
   }

@@ -46,11 +46,7 @@ int countWeekdaysInMonth(int year, int month, List<int> weekdays) {
 }
 
 /// Count weekdays from a start day (e.g. habit created mid-month).
-int countWeekdaysInRange(
-  DateTime start,
-  DateTime end,
-  List<int> weekdays,
-) {
+int countWeekdaysInRange(DateTime start, DateTime end, List<int> weekdays) {
   var count = 0;
   var day = start.toMidnight;
   final endDay = end.toMidnight;

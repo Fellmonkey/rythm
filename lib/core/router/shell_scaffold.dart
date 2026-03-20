@@ -12,9 +12,24 @@ class ShellScaffold extends StatelessWidget {
   final Widget child;
 
   static const _tabs = [
-    (icon: Icons.local_florist_outlined, activeIcon: Icons.local_florist, label: 'Теплица', path: '/'),
-    (icon: Icons.park_outlined, activeIcon: Icons.park, label: 'Тропа', path: '/garden'),
-    (icon: Icons.settings_outlined, activeIcon: Icons.settings, label: 'Ещё', path: '/settings'),
+    (
+      icon: Icons.local_florist_outlined,
+      activeIcon: Icons.local_florist,
+      label: 'Теплица',
+      path: '/',
+    ),
+    (
+      icon: Icons.park_outlined,
+      activeIcon: Icons.park,
+      label: 'Тропа',
+      path: '/garden',
+    ),
+    (
+      icon: Icons.settings_outlined,
+      activeIcon: Icons.settings,
+      label: 'Ещё',
+      path: '/settings',
+    ),
   ];
 
   static const _navKeys = [K.navGreenhouse, K.navGarden, K.navSettings];

@@ -5,14 +5,10 @@ class Habits extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text().withLength(min: 1, max: 200)();
   TextColumn get category => text().withDefault(const Constant('general'))();
-  TextColumn get seedArchetype =>
-      text().withDefault(const Constant('oak'))();
-  TextColumn get frequencyType =>
-      text().withDefault(const Constant('daily'))();
-  TextColumn get frequencyValue =>
-      text().withDefault(const Constant('{}'))();
-  TextColumn get timeOfDay =>
-      text().withDefault(const Constant('anytime'))();
+  TextColumn get seedArchetype => text().withDefault(const Constant('oak'))();
+  TextColumn get frequencyType => text().withDefault(const Constant('daily'))();
+  TextColumn get frequencyValue => text().withDefault(const Constant('{}'))();
+  TextColumn get timeOfDay => text().withDefault(const Constant('anytime'))();
   BoolColumn get isFocus => boolean().withDefault(const Constant(false))();
   BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
   IntColumn get createdAt => integer()();
@@ -24,8 +20,7 @@ class HabitLogs extends Table {
   IntColumn get habitId =>
       integer().references(Habits, #id, onDelete: KeyAction.cascade)();
   IntColumn get date => integer()();
-  TextColumn get status =>
-      text().withDefault(const Constant('pending'))();
+  TextColumn get status => text().withDefault(const Constant('pending'))();
   IntColumn get loggedHour => integer().nullable()();
 }
 
@@ -43,8 +38,7 @@ class GardenObjects extends Table {
   RealColumn get morningRatio => real().withDefault(const Constant(0.0))();
   RealColumn get afternoonRatio => real().withDefault(const Constant(0.0))();
   RealColumn get eveningRatio => real().withDefault(const Constant(0.0))();
-  TextColumn get objectType =>
-      text().withDefault(const Constant('moss'))();
+  TextColumn get objectType => text().withDefault(const Constant('moss'))();
   IntColumn get generationSeed => integer()();
   TextColumn get pngPath => text().nullable()();
   BoolColumn get isShortPerfect =>

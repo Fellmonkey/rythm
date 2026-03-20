@@ -30,15 +30,11 @@ class CardGeneratorService {
 
     // Background gradient.
     final bgPaint = Paint()
-      ..shader = ui.Gradient.linear(
-        Offset.zero,
-        const Offset(0, _cardHeight),
-        [AppColors.lightBackground, AppColors.sageGreen.withValues(alpha: 0.15)],
-      );
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, _cardWidth, _cardHeight),
-      bgPaint,
-    );
+      ..shader = ui.Gradient.linear(Offset.zero, const Offset(0, _cardHeight), [
+        AppColors.lightBackground,
+        AppColors.sageGreen.withValues(alpha: 0.15),
+      ]);
+    canvas.drawRect(Rect.fromLTWH(0, 0, _cardWidth, _cardHeight), bgPaint);
 
     // Header.
     _drawHeader(canvas, year, month);
@@ -70,8 +66,19 @@ class CardGeneratorService {
 
   static void _drawHeader(Canvas canvas, int year, int month) {
     const months = [
-      '', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-      'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+      '',
+      'Январь',
+      'Февраль',
+      'Март',
+      'Апрель',
+      'Май',
+      'Июнь',
+      'Июль',
+      'Август',
+      'Сентябрь',
+      'Октябрь',
+      'Ноябрь',
+      'Декабрь',
     ];
     final title = '${months[month]} $year';
 
@@ -81,26 +88,27 @@ class CardGeneratorService {
       fontWeight: FontWeight.bold,
     );
     final titleBuilder = ui.ParagraphBuilder(titleStyle)
-      ..pushStyle(ui.TextStyle(
-        color: AppColors.lightText,
-        fontSize: 56,
-        fontWeight: FontWeight.bold,
-      ))
+      ..pushStyle(
+        ui.TextStyle(
+          color: AppColors.lightText,
+          fontSize: 56,
+          fontWeight: FontWeight.bold,
+        ),
+      )
       ..addText(title);
     final titleParagraph = titleBuilder.build()
       ..layout(const ui.ParagraphConstraints(width: _cardWidth));
     canvas.drawParagraph(titleParagraph, const Offset(0, 80));
 
     // Subtitle.
-    final subtitleBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
-      textAlign: TextAlign.center,
-      fontSize: 28,
-    ))
-      ..pushStyle(ui.TextStyle(
-        color: AppColors.lightTextSecondary,
-        fontSize: 28,
-      ))
-      ..addText('Мой сад привычек');
+    final subtitleBuilder =
+        ui.ParagraphBuilder(
+            ui.ParagraphStyle(textAlign: TextAlign.center, fontSize: 28),
+          )
+          ..pushStyle(
+            ui.TextStyle(color: AppColors.lightTextSecondary, fontSize: 28),
+          )
+          ..addText('Мой сад привычек');
     final subtitleParagraph = subtitleBuilder.build()
       ..layout(const ui.ParagraphConstraints(width: _cardWidth));
     canvas.drawParagraph(subtitleParagraph, const Offset(0, 150));
@@ -109,7 +117,8 @@ class CardGeneratorService {
   static void _drawStats(Canvas canvas, List<GardenObject> objects) {
     if (objects.isEmpty) return;
 
-    final avgPct = objects.map((o) => o.completionPct).reduce((a, b) => a + b) /
+    final avgPct =
+        objects.map((o) => o.completionPct).reduce((a, b) => a + b) /
         objects.length;
     final trees = objects.where((o) => o.objectType == 'tree').length;
     final bushes = objects.where((o) => o.objectType == 'bush').length;
@@ -117,16 +126,18 @@ class CardGeneratorService {
     final statsText =
         '${(avgPct * 100).round()}% среднее  |  $trees деревьев  |  $bushes кустов  |  ${objects.length} всего';
 
-    final statsBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
-      textAlign: TextAlign.center,
-      fontSize: 24,
-    ))
-      ..pushStyle(ui.TextStyle(
-        color: AppColors.sageGreen,
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-      ))
-      ..addText(statsText);
+    final statsBuilder =
+        ui.ParagraphBuilder(
+            ui.ParagraphStyle(textAlign: TextAlign.center, fontSize: 24),
+          )
+          ..pushStyle(
+            ui.TextStyle(
+              color: AppColors.sageGreen,
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+            ),
+          )
+          ..addText(statsText);
     final statsParagraph = statsBuilder.build()
       ..layout(const ui.ParagraphConstraints(width: _cardWidth));
     canvas.drawParagraph(statsParagraph, const Offset(0, 220));
@@ -157,7 +168,8 @@ class CardGeneratorService {
 
       final params = GenerationParams(
         archetype: SeedArchetype.fromString(
-            habitNames.containsKey(obj.habitId) ? 'oak' : obj.objectType),
+          habitNames.containsKey(obj.habitId) ? 'oak' : obj.objectType,
+        ),
         completionPct: obj.completionPct,
         absoluteCompletions: obj.absoluteCompletions,
         maxStreak: obj.maxStreak,
@@ -178,17 +190,17 @@ class CardGeneratorService {
 
       // Draw habit name below plant.
       final name = habitNames[obj.habitId] ?? '';
-      final nameBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
-        textAlign: TextAlign.center,
-        fontSize: 18,
-        maxLines: 1,
-        ellipsis: '...',
-      ))
-        ..pushStyle(ui.TextStyle(
-          color: AppColors.lightText,
-          fontSize: 18,
-        ))
-        ..addText(name);
+      final nameBuilder =
+          ui.ParagraphBuilder(
+              ui.ParagraphStyle(
+                textAlign: TextAlign.center,
+                fontSize: 18,
+                maxLines: 1,
+                ellipsis: '...',
+              ),
+            )
+            ..pushStyle(ui.TextStyle(color: AppColors.lightText, fontSize: 18))
+            ..addText(name);
       final nameParagraph = nameBuilder.build()
         ..layout(ui.ParagraphConstraints(width: cellWidth));
       canvas.drawParagraph(
@@ -199,15 +211,17 @@ class CardGeneratorService {
   }
 
   static void _drawFooter(Canvas canvas) {
-    final footerBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
-      textAlign: TextAlign.center,
-      fontSize: 22,
-    ))
-      ..pushStyle(ui.TextStyle(
-        color: AppColors.lightTextSecondary.withValues(alpha: 0.6),
-        fontSize: 22,
-      ))
-      ..addText('Rythm');
+    final footerBuilder =
+        ui.ParagraphBuilder(
+            ui.ParagraphStyle(textAlign: TextAlign.center, fontSize: 22),
+          )
+          ..pushStyle(
+            ui.TextStyle(
+              color: AppColors.lightTextSecondary.withValues(alpha: 0.6),
+              fontSize: 22,
+            ),
+          )
+          ..addText('Rythm');
     final footerParagraph = footerBuilder.build()
       ..layout(const ui.ParagraphConstraints(width: _cardWidth));
     canvas.drawParagraph(footerParagraph, const Offset(0, _cardHeight - 80));
@@ -218,8 +232,8 @@ class CardGeneratorService {
       GardenObjectType.tree => TreePainter(params: params),
       GardenObjectType.bush => BushPainter(params: params),
       GardenObjectType.grass => GrassPainter(params: params),
-      GardenObjectType.moss || GardenObjectType.sleepingBulb =>
-        MossPainter(params: params),
+      GardenObjectType.moss ||
+      GardenObjectType.sleepingBulb => MossPainter(params: params),
     };
   }
 }

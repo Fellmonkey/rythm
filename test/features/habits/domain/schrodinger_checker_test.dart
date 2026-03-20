@@ -43,48 +43,51 @@ void main() {
 
     test('lastOpened < 3 days ago returns empty result', () async {
       final yesterday = DateTime.now().toMidnight.subtract(
-            const Duration(days: 1),
-          );
-      when(() => mockPrefs.getInt('last_opened_at'))
-          .thenReturn(yesterday.unixSeconds);
+        const Duration(days: 1),
+      );
+      when(
+        () => mockPrefs.getInt('last_opened_at'),
+      ).thenReturn(yesterday.unixSeconds);
 
       final result = await checker.checkPendingNegativeHabits();
 
       expect(result, isEmpty);
     });
 
-    test('lastOpened >= 3 days + negative habit without logs returns pending',
-        () async {
-      final fiveDaysAgo = DateTime.now().toMidnight.subtract(
-            const Duration(days: 5),
-          );
-      when(() => mockPrefs.getInt('last_opened_at'))
-          .thenReturn(fiveDaysAgo.unixSeconds);
+    test(
+      'lastOpened >= 3 days + negative habit without logs returns pending',
+      () async {
+        final fiveDaysAgo = DateTime.now().toMidnight.subtract(
+          const Duration(days: 5),
+        );
+        when(
+          () => mockPrefs.getInt('last_opened_at'),
+        ).thenReturn(fiveDaysAgo.unixSeconds);
 
-      // Insert a negative habit
-      await db.habitsDao.insertHabit(makeHabitCompanion(
-        name: 'No Smoking',
-        frequencyType: 'negative',
-      ));
+        // Insert a negative habit
+        await db.habitsDao.insertHabit(
+          makeHabitCompanion(name: 'No Smoking', frequencyType: 'negative'),
+        );
 
-      final result = await checker.checkPendingNegativeHabits();
+        final result = await checker.checkPendingNegativeHabits();
 
-      expect(result, hasLength(1));
-      expect(result.first.habit.name, 'No Smoking');
-      expect(result.first.pendingDates, hasLength(5));
-    });
+        expect(result, hasLength(1));
+        expect(result.first.habit.name, 'No Smoking');
+        expect(result.first.pendingDates, hasLength(5));
+      },
+    );
 
     test('gap with partial logs returns only days without logs', () async {
       final fiveDaysAgo = DateTime.now().toMidnight.subtract(
-            const Duration(days: 5),
-          );
-      when(() => mockPrefs.getInt('last_opened_at'))
-          .thenReturn(fiveDaysAgo.unixSeconds);
+        const Duration(days: 5),
+      );
+      when(
+        () => mockPrefs.getInt('last_opened_at'),
+      ).thenReturn(fiveDaysAgo.unixSeconds);
 
-      final habitId = await db.habitsDao.insertHabit(makeHabitCompanion(
-        name: 'No Smoking',
-        frequencyType: 'negative',
-      ));
+      final habitId = await db.habitsDao.insertHabit(
+        makeHabitCompanion(name: 'No Smoking', frequencyType: 'negative'),
+      );
 
       // Add done logs for 2 of the 5 days
       final day1 = fiveDaysAgo.add(const Duration(days: 1));
@@ -101,16 +104,16 @@ void main() {
 
     test('non-negative habits are ignored', () async {
       final fiveDaysAgo = DateTime.now().toMidnight.subtract(
-            const Duration(days: 5),
-          );
-      when(() => mockPrefs.getInt('last_opened_at'))
-          .thenReturn(fiveDaysAgo.unixSeconds);
+        const Duration(days: 5),
+      );
+      when(
+        () => mockPrefs.getInt('last_opened_at'),
+      ).thenReturn(fiveDaysAgo.unixSeconds);
 
       // Insert a daily (non-negative) habit
-      await db.habitsDao.insertHabit(makeHabitCompanion(
-        name: 'Morning Run',
-        frequencyType: 'daily',
-      ));
+      await db.habitsDao.insertHabit(
+        makeHabitCompanion(name: 'Morning Run', frequencyType: 'daily'),
+      );
 
       final result = await checker.checkPendingNegativeHabits();
 
@@ -118,10 +121,9 @@ void main() {
     });
 
     test('confirmHeld creates done logs', () async {
-      final habitId = await db.habitsDao.insertHabit(makeHabitCompanion(
-        name: 'No Smoking',
-        frequencyType: 'negative',
-      ));
+      final habitId = await db.habitsDao.insertHabit(
+        makeHabitCompanion(name: 'No Smoking', frequencyType: 'negative'),
+      );
 
       final dates = [
         DateTime.utc(2026, 1, 1),
@@ -140,15 +142,11 @@ void main() {
     });
 
     test('confirmFailed creates fail logs', () async {
-      final habitId = await db.habitsDao.insertHabit(makeHabitCompanion(
-        name: 'No Smoking',
-        frequencyType: 'negative',
-      ));
+      final habitId = await db.habitsDao.insertHabit(
+        makeHabitCompanion(name: 'No Smoking', frequencyType: 'negative'),
+      );
 
-      final dates = [
-        DateTime.utc(2026, 1, 1),
-        DateTime.utc(2026, 1, 2),
-      ];
+      final dates = [DateTime.utc(2026, 1, 1), DateTime.utc(2026, 1, 2)];
 
       await checker.confirmFailed(habitId, dates);
 

@@ -122,13 +122,15 @@ List<HabitLog> makeDoneLogs({
   }
 
   for (var i = 0; i < count; i++) {
-    logs.add(HabitLog(
-      id: id++,
-      habitId: habitId,
-      date: day.unixSeconds,
-      status: 'done',
-      loggedHour: hourForIndex(i),
-    ));
+    logs.add(
+      HabitLog(
+        id: id++,
+        habitId: habitId,
+        date: day.unixSeconds,
+        status: 'done',
+        loggedHour: hourForIndex(i),
+      ),
+    );
     day = day.add(const Duration(days: 1));
   }
   return logs;

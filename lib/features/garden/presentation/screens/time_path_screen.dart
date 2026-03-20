@@ -114,8 +114,19 @@ class _MonthSegment extends ConsumerWidget {
   final bool isDark;
 
   static const _months = [
-    '', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+    '',
+    'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+    'Декабрь',
   ];
 
   @override
@@ -128,14 +139,18 @@ class _MonthSegment extends ConsumerWidget {
     // Bushes/moss/sleeping bulbs (Layer 0) scatter as background forest —
     // smaller and dimmed, but still tappable to see monthly stats.
     var focus = objects
-        .where((o) =>
-            GardenObjectType.fromString(o.objectType) ==
-            GardenObjectType.tree)
+        .where(
+          (o) =>
+              GardenObjectType.fromString(o.objectType) ==
+              GardenObjectType.tree,
+        )
         .toList();
     final background = objects
-        .where((o) =>
-            GardenObjectType.fromString(o.objectType) !=
-            GardenObjectType.tree)
+        .where(
+          (o) =>
+              GardenObjectType.fromString(o.objectType) !=
+              GardenObjectType.tree,
+        )
         .toList();
 
     // If many habits (>30 total), limit displayed focus plants to 8
@@ -203,22 +218,20 @@ class _MonthSegment extends ConsumerWidget {
                         final spacing = segmentHeight / (focus.length + 1);
                         final posY = spacing * (i + 1) - 70;
                         final t = posY / segmentHeight;
-                        final pathX = centerX +
-                            sin(t * 3.14159 * 2) * amplitude;
+                        final pathX =
+                            centerX + sin(t * 3.14159 * 2) * amplitude;
                         // Alternate left/right of the trail with small offset
                         final offset = i.isEven ? -75.0 : 5.0;
-                        final posX =
-                            (pathX + offset).clamp(5.0, segW - 145.0);
+                        final posX = (pathX + offset).clamp(5.0, segW - 145.0);
 
-                        final habitName =
-                            habitNames[focus[i].habitId] ?? '';
+                        final habitName = habitNames[focus[i].habitId] ?? '';
 
                         return Positioned(
                           left: posX,
                           top: posY,
                           child: GestureDetector(
-                            onTap: () => _showMemoryCard(
-                                context, focus[i], habitName),
+                            onTap: () =>
+                                _showMemoryCard(context, focus[i], habitName),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -232,11 +245,12 @@ class _MonthSegment extends ConsumerWidget {
                                       textAlign: TextAlign.center,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: theme.textTheme.bodySmall?.copyWith(
-                                        fontSize: 10,
-                                        color: theme.colorScheme.onSurface
-                                            .withValues(alpha: 0.6),
-                                      ),
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                            fontSize: 10,
+                                            color: theme.colorScheme.onSurface
+                                                .withValues(alpha: 0.6),
+                                          ),
                                     ),
                                   ),
                               ],
@@ -256,7 +270,11 @@ class _MonthSegment extends ConsumerWidget {
 
   /// Decorative grass filler widgets scattered along the path edges.
   List<Widget> _buildPathGrass(
-      double segW, double segH, double centerX, double amplitude) {
+    double segW,
+    double segH,
+    double centerX,
+    double amplitude,
+  ) {
     final rng = Random(year * 100 + month);
     final widgets = <Widget>[];
     final numGrass = 3 + rng.nextInt(4);
@@ -265,39 +283,46 @@ class _MonthSegment extends ConsumerWidget {
       final t = (rng.nextDouble() * 0.8 + 0.1);
       final pathX = centerX + sin(t * 3.14159 * 2) * amplitude;
       final side = rng.nextBool() ? -1.0 : 1.0;
-      final gx = (pathX + side * (35 + rng.nextDouble() * 30))
-          .clamp(5.0, segW - 40.0);
+      final gx = (pathX + side * (35 + rng.nextDouble() * 30)).clamp(
+        5.0,
+        segW - 40.0,
+      );
       final gy = t * segH;
       final seed = rng.nextInt(100000);
 
-      widgets.add(Positioned(
-        left: gx,
-        top: gy,
-        child: Opacity(
-          opacity: 0.4,
-          child: PlantWidget(
-            params: GenerationParams(
-              archetype: SeedArchetype.oak,
-              completionPct: 30,
-              absoluteCompletions: 5,
-              maxStreak: 3,
-              morningRatio: 0.33,
-              afternoonRatio: 0.33,
-              eveningRatio: 0.34,
-              seed: seed,
-              isShortPerfect: false,
-              objectType: GardenObjectType.grass,
+      widgets.add(
+        Positioned(
+          left: gx,
+          top: gy,
+          child: Opacity(
+            opacity: 0.4,
+            child: PlantWidget(
+              params: GenerationParams(
+                archetype: SeedArchetype.oak,
+                completionPct: 30,
+                absoluteCompletions: 5,
+                maxStreak: 3,
+                morningRatio: 0.33,
+                afternoonRatio: 0.33,
+                eveningRatio: 0.34,
+                seed: seed,
+                isShortPerfect: false,
+                objectType: GardenObjectType.grass,
+              ),
+              size: 50,
             ),
-            size: 50,
           ),
         ),
-      ));
+      );
     }
     return widgets;
   }
 
   void _showMemoryCard(
-      BuildContext context, GardenObject obj, String habitName) {
+    BuildContext context,
+    GardenObject obj,
+    String habitName,
+  ) {
     final theme = Theme.of(context);
     showModalBottomSheet(
       context: context,
@@ -438,8 +463,7 @@ class _BackgroundItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontSize: 9,
-                      color:
-                          theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                 ),
@@ -498,10 +522,12 @@ class _PlantThumbnail extends StatelessWidget {
   /// Uses the generation seed to deterministically assign an archetype.
   SeedArchetype _resolveArchetype(GardenObjectType type) {
     return switch (type) {
-      GardenObjectType.tree => SeedArchetype.values[
-          object.generationSeed % SeedArchetype.values.length],
-      GardenObjectType.bush => SeedArchetype.values[
-          object.generationSeed % SeedArchetype.values.length],
+      GardenObjectType.tree =>
+        SeedArchetype.values[object.generationSeed %
+            SeedArchetype.values.length],
+      GardenObjectType.bush =>
+        SeedArchetype.values[object.generationSeed %
+            SeedArchetype.values.length],
       GardenObjectType.moss => SeedArchetype.oak,
       GardenObjectType.grass => SeedArchetype.oak,
       GardenObjectType.sleepingBulb => SeedArchetype.oak,
@@ -522,8 +548,19 @@ class _MemoryCard extends StatelessWidget {
   final String habitName;
 
   static const _months = [
-    '', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+    '',
+    'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+    'Декабрь',
   ];
 
   @override
@@ -533,10 +570,9 @@ class _MemoryCard extends StatelessWidget {
     final archetype = _resolveArchetype(objectType, object.generationSeed);
 
     // Derived stats
-    final daysInMonth =
-        DateUtils.getDaysInMonth(object.year, object.month);
-    final avgPerWeek =
-        (object.absoluteCompletions / (daysInMonth / 7.0)).toStringAsFixed(1);
+    final daysInMonth = DateUtils.getDaysInMonth(object.year, object.month);
+    final avgPerWeek = (object.absoluteCompletions / (daysInMonth / 7.0))
+        .toStringAsFixed(1);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
@@ -586,8 +622,9 @@ class _MemoryCard extends StatelessWidget {
                       Text(
                         '${_months[object.month]} ${object.year}',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface
-                              .withValues(alpha: 0.55),
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.55,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -597,9 +634,11 @@ class _MemoryCard extends StatelessWidget {
                         children: [
                           _ArchetypeChip(archetype: archetype, theme: theme),
                           _TypeChip(
-                              objectType: GardenObjectType.fromString(
-                                  object.objectType),
-                              theme: theme),
+                            objectType: GardenObjectType.fromString(
+                              object.objectType,
+                            ),
+                            theme: theme,
+                          ),
                         ],
                       ),
                     ],
@@ -620,10 +659,12 @@ class _MemoryCard extends StatelessWidget {
                     child: CircularProgressIndicator(
                       value: object.completionPct / 100,
                       strokeWidth: 8,
-                      backgroundColor:
-                          theme.colorScheme.onSurface.withValues(alpha: 0.1),
+                      backgroundColor: theme.colorScheme.onSurface.withValues(
+                        alpha: 0.1,
+                      ),
                       valueColor: AlwaysStoppedAnimation(
-                          theme.colorScheme.primary),
+                        theme.colorScheme.primary,
+                      ),
                     ),
                   ),
                   Text(
@@ -652,42 +693,43 @@ class _MemoryCard extends StatelessWidget {
                   theme: theme,
                 ),
                 const SizedBox(width: 10),
-                _StatChip(
-                  label: 'Ср. в нед',
-                  value: avgPerWeek,
-                  theme: theme,
-                ),
+                _StatChip(label: 'Ср. в нед', value: avgPerWeek, theme: theme),
               ],
             ),
             const SizedBox(height: 16),
 
             // Short perfect badge
-            if (object.isShortPerfect) ...
-              [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: const Color(0x20FFD700),
-                    borderRadius: AppRadius.borderM,
-                    border: Border.all(color: const Color(0x40FFD700)),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.auto_awesome,
-                          color: Color(0xFFFFD700), size: 18),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Аура идеального старта',
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(color: const Color(0xFFFFD700)),
-                      ),
-                    ],
-                  ),
+            if (object.isShortPerfect) ...[
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
                 ),
-                const SizedBox(height: 16),
-              ],
+                decoration: BoxDecoration(
+                  color: const Color(0x20FFD700),
+                  borderRadius: AppRadius.borderM,
+                  border: Border.all(color: const Color(0x40FFD700)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.auto_awesome,
+                      color: Color(0xFFFFD700),
+                      size: 18,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Аура идеального старта',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: const Color(0xFFFFD700),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
 
             // Time-of-day distribution
             Text('Время выполнения', style: theme.textTheme.labelLarge),
@@ -706,8 +748,7 @@ class _MemoryCard extends StatelessWidget {
 
   SeedArchetype _resolveArchetype(GardenObjectType type, int seed) =>
       switch (type) {
-        GardenObjectType.tree ||
-        GardenObjectType.bush =>
+        GardenObjectType.tree || GardenObjectType.bush =>
           SeedArchetype.values[seed % SeedArchetype.values.length],
         _ => SeedArchetype.oak,
       };
@@ -789,7 +830,10 @@ class _TypeChip extends StatelessWidget {
       GardenObjectType.bush => ('Куст', const Color(0xFF8FAF7A)),
       GardenObjectType.moss => ('Мох', const Color(0xFF8FAF7A)),
       GardenObjectType.grass => ('Трава', const Color(0xFF8FAF7A)),
-      GardenObjectType.sleepingBulb => ('Спящая луковица', const Color(0xFFB8A9D4)),
+      GardenObjectType.sleepingBulb => (
+        'Спящая луковица',
+        const Color(0xFFB8A9D4),
+      ),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -849,10 +893,7 @@ class _TimeDistribution extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            '${(ratio * 100).round()}%',
-            style: theme.textTheme.bodySmall,
-          ),
+          Text('${(ratio * 100).round()}%', style: theme.textTheme.bodySmall),
           Text(label, style: theme.textTheme.labelSmall),
         ],
       ),

@@ -24,8 +24,8 @@ bool isExpectedToday(Habit habit, DateTime today) {
       return diff % x == 0;
     case FrequencyType.cycle:
       final cycle = parseCycle(habit.frequencyValue);
-      final refDate = cycle.startDate != null 
-          ? dateFromUnix(cycle.startDate!) 
+      final refDate = cycle.startDate != null
+          ? dateFromUnix(cycle.startDate!)
           : dateFromUnix(habit.createdAt);
       final diff = today.toMidnight.difference(refDate.toMidnight).inDays;
       if (diff < 0) return false;
@@ -64,10 +64,13 @@ int parseXValue(String json) {
 
 /// Parse cycle configuration.
 /// Returns a record with length, active days, and optional labels for days.
-({int length, List<int> days, Map<int, String> labels, int? startDate}) parseCycle(String json) {
+({int length, List<int> days, Map<int, String> labels, int? startDate})
+parseCycle(String json) {
   try {
     final decoded = jsonDecode(json);
-    if (decoded is Map && decoded.containsKey('length') && decoded.containsKey('days')) {
+    if (decoded is Map &&
+        decoded.containsKey('length') &&
+        decoded.containsKey('days')) {
       final length = decoded['length'] as int;
       final days = (decoded['days'] as List).cast<int>();
       final labels = <int, String>{};
@@ -90,13 +93,13 @@ String? getCycleLabelForDate(Habit habit, DateTime date) {
   if (freqType != FrequencyType.cycle) return null;
 
   final cycle = parseCycle(habit.frequencyValue);
-  final refDate = cycle.startDate != null 
-      ? dateFromUnix(cycle.startDate!) 
+  final refDate = cycle.startDate != null
+      ? dateFromUnix(cycle.startDate!)
       : dateFromUnix(habit.createdAt);
   final diff = date.toMidnight.difference(refDate.toMidnight).inDays;
   if (diff < 0) return null;
   final currentDayOfCycle = (diff % cycle.length) + 1;
-  
+
   return cycle.labels[currentDayOfCycle];
 }
 
@@ -110,14 +113,11 @@ String frequencyLabel(Habit habit) {
   final type = FrequencyType.fromString(habit.frequencyType);
   return switch (type) {
     FrequencyType.daily => 'Каждый день',
-    FrequencyType.weekdays =>
-      parseWeekdays(habit.frequencyValue)
-          .map((d) => _kShortDays[d])
-          .join(', '),
-    FrequencyType.xPerWeek =>
-      '${parseXValue(habit.frequencyValue)}× в нед',
-    FrequencyType.everyXDays =>
-      _everyXLabel(parseXValue(habit.frequencyValue)),
+    FrequencyType.weekdays => parseWeekdays(
+      habit.frequencyValue,
+    ).map((d) => _kShortDays[d]).join(', '),
+    FrequencyType.xPerWeek => '${parseXValue(habit.frequencyValue)}× в нед',
+    FrequencyType.everyXDays => _everyXLabel(parseXValue(habit.frequencyValue)),
     FrequencyType.cycle => _cycleLabel(habit.frequencyValue),
     FrequencyType.negative => 'Негативная',
   };

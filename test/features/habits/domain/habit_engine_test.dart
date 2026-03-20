@@ -29,27 +29,18 @@ void main() {
     // ── daily ──────────────────────────────────────────────────
 
     test('daily, full month Jan 2026 (created Jan 1) returns 31', () {
-      final habit = makeHabit(
-        frequencyType: 'daily',
-        createdAt: jan1,
-      );
+      final habit = makeHabit(frequencyType: 'daily', createdAt: jan1);
       expect(HabitEngine.calculateRequiredBase(habit, 2026, 1), 31);
     });
 
     test('daily, mid-month created Jan 15 returns 17', () {
-      final habit = makeHabit(
-        frequencyType: 'daily',
-        createdAt: jan15,
-      );
+      final habit = makeHabit(frequencyType: 'daily', createdAt: jan15);
       // Jan 15 to Jan 31 inclusive = 17 days
       expect(HabitEngine.calculateRequiredBase(habit, 2026, 1), 17);
     });
 
     test('daily, created after the month (Feb 1, testing Jan) returns 0', () {
-      final habit = makeHabit(
-        frequencyType: 'daily',
-        createdAt: feb1,
-      );
+      final habit = makeHabit(frequencyType: 'daily', createdAt: feb1);
       expect(HabitEngine.calculateRequiredBase(habit, 2026, 1), 0);
     });
 
@@ -143,18 +134,12 @@ void main() {
     // ── negative ───────────────────────────────────────────────
 
     test('negative, full month returns 31', () {
-      final habit = makeHabit(
-        frequencyType: 'negative',
-        createdAt: jan1,
-      );
+      final habit = makeHabit(frequencyType: 'negative', createdAt: jan1);
       expect(HabitEngine.calculateRequiredBase(habit, 2026, 1), 31);
     });
 
     test('negative, mid-month returns same as daily mid-month (17)', () {
-      final habit = makeHabit(
-        frequencyType: 'negative',
-        createdAt: jan15,
-      );
+      final habit = makeHabit(frequencyType: 'negative', createdAt: jan15);
       expect(HabitEngine.calculateRequiredBase(habit, 2026, 1), 17);
     });
 
@@ -239,45 +224,34 @@ void main() {
       expect(m.absoluteCompletions, 15);
     });
 
-    test('10 done + 5 skips / 31 required gives adjustedBase=26, pct~38.46, moss',
-        () {
-      final habit = makeHabit(createdAt: jan1);
-      final logs = <HabitLog>[
-        // 10 done logs (days 1-10)
-        for (var i = 1; i <= 10; i++)
-          makeLog(
-            id: i,
-            date: janDay(i),
-            status: 'done',
-            loggedHour: 8,
-          ),
-        // 5 skip logs (days 11-15)
-        for (var i = 11; i <= 15; i++)
-          makeLog(
-            id: i,
-            date: janDay(i),
-            status: 'skip',
-          ),
-      ];
+    test(
+      '10 done + 5 skips / 31 required gives adjustedBase=26, pct~38.46, moss',
+      () {
+        final habit = makeHabit(createdAt: jan1);
+        final logs = <HabitLog>[
+          // 10 done logs (days 1-10)
+          for (var i = 1; i <= 10; i++)
+            makeLog(id: i, date: janDay(i), status: 'done', loggedHour: 8),
+          // 5 skip logs (days 11-15)
+          for (var i = 11; i <= 15; i++)
+            makeLog(id: i, date: janDay(i), status: 'skip'),
+        ];
 
-      final m = HabitEngine.calculateMetrics(habit, logs, 2026, 1);
+        final m = HabitEngine.calculateMetrics(habit, logs, 2026, 1);
 
-      expect(m.adjustedBase, 26); // max(1, 31 - 5)
-      // 10 / 26 * 100 = 38.4615...
-      expect(m.completionPct, closeTo(38.46, 0.1));
-      expect(m.objectType, GardenObjectType.moss); // pct < 40, abs > 0
-      expect(m.skipCount, 5);
-    });
+        expect(m.adjustedBase, 26); // max(1, 31 - 5)
+        // 10 / 26 * 100 = 38.4615...
+        expect(m.completionPct, closeTo(38.46, 0.1));
+        expect(m.objectType, GardenObjectType.moss); // pct < 40, abs > 0
+        expect(m.skipCount, 5);
+      },
+    );
 
     test('31 skips / 31 required gives adjustedBase=1, pct=0', () {
       final habit = makeHabit(createdAt: jan1);
       final logs = List.generate(
         31,
-        (i) => makeLog(
-          id: i + 1,
-          date: janDay(i + 1),
-          status: 'skip',
-        ),
+        (i) => makeLog(id: i + 1, date: janDay(i + 1), status: 'skip'),
       );
 
       final m = HabitEngine.calculateMetrics(habit, logs, 2026, 1);
@@ -322,22 +296,24 @@ void main() {
       expect(m.failCount, 1);
     });
 
-    test('skip does not break streak: done-done-skip-done-done gives maxStreak=4',
-        () {
-      final habit = makeHabit(createdAt: jan1);
-      final logs = [
-        makeLog(id: 1, date: janDay(1), status: 'done', loggedHour: 8),
-        makeLog(id: 2, date: janDay(2), status: 'done', loggedHour: 8),
-        makeLog(id: 3, date: janDay(3), status: 'skip'),
-        makeLog(id: 4, date: janDay(4), status: 'done', loggedHour: 8),
-        makeLog(id: 5, date: janDay(5), status: 'done', loggedHour: 8),
-      ];
+    test(
+      'skip does not break streak: done-done-skip-done-done gives maxStreak=4',
+      () {
+        final habit = makeHabit(createdAt: jan1);
+        final logs = [
+          makeLog(id: 1, date: janDay(1), status: 'done', loggedHour: 8),
+          makeLog(id: 2, date: janDay(2), status: 'done', loggedHour: 8),
+          makeLog(id: 3, date: janDay(3), status: 'skip'),
+          makeLog(id: 4, date: janDay(4), status: 'done', loggedHour: 8),
+          makeLog(id: 5, date: janDay(5), status: 'done', loggedHour: 8),
+        ];
 
-      final m = HabitEngine.calculateMetrics(habit, logs, 2026, 1);
+        final m = HabitEngine.calculateMetrics(habit, logs, 2026, 1);
 
-      // done(1) → done(2) → skip(stays 2) → done(3) → done(4)
-      expect(m.maxStreak, 4);
-    });
+        // done(1) → done(2) → skip(stays 2) → done(3) → done(4)
+        expect(m.maxStreak, 4);
+      },
+    );
 
     test('0 done gives maxStreak=0', () {
       final habit = makeHabit(createdAt: jan1);
@@ -541,66 +517,39 @@ void main() {
 
   group('getObjectType', () {
     test('(0, 0) returns sleepingBulb', () {
-      expect(
-        HabitEngine.getObjectType(0, 0),
-        GardenObjectType.sleepingBulb,
-      );
+      expect(HabitEngine.getObjectType(0, 0), GardenObjectType.sleepingBulb);
     });
 
     test('(20, 3) returns moss', () {
-      expect(
-        HabitEngine.getObjectType(20, 3),
-        GardenObjectType.moss,
-      );
+      expect(HabitEngine.getObjectType(20, 3), GardenObjectType.moss);
     });
 
     test('(39.9, 5) returns moss', () {
-      expect(
-        HabitEngine.getObjectType(39.9, 5),
-        GardenObjectType.moss,
-      );
+      expect(HabitEngine.getObjectType(39.9, 5), GardenObjectType.moss);
     });
 
     test('(40, 5) returns bush', () {
-      expect(
-        HabitEngine.getObjectType(40, 5),
-        GardenObjectType.bush,
-      );
+      expect(HabitEngine.getObjectType(40, 5), GardenObjectType.bush);
     });
 
     test('(79.9, 15) returns bush', () {
-      expect(
-        HabitEngine.getObjectType(79.9, 15),
-        GardenObjectType.bush,
-      );
+      expect(HabitEngine.getObjectType(79.9, 15), GardenObjectType.bush);
     });
 
     test('(80, 4) returns bush (effort threshold: need >= 5)', () {
-      expect(
-        HabitEngine.getObjectType(80, 4),
-        GardenObjectType.bush,
-      );
+      expect(HabitEngine.getObjectType(80, 4), GardenObjectType.bush);
     });
 
     test('(80, 5) returns tree', () {
-      expect(
-        HabitEngine.getObjectType(80, 5),
-        GardenObjectType.tree,
-      );
+      expect(HabitEngine.getObjectType(80, 5), GardenObjectType.tree);
     });
 
     test('(100, 30) returns tree', () {
-      expect(
-        HabitEngine.getObjectType(100, 30),
-        GardenObjectType.tree,
-      );
+      expect(HabitEngine.getObjectType(100, 30), GardenObjectType.tree);
     });
 
     test('(85, 3) returns bush (effort threshold: need >= 5)', () {
-      expect(
-        HabitEngine.getObjectType(85, 3),
-        GardenObjectType.bush,
-      );
+      expect(HabitEngine.getObjectType(85, 3), GardenObjectType.bush);
     });
   });
 }

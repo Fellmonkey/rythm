@@ -72,18 +72,24 @@ class ColorResolver {
     required double eveningRatio,
   }) {
     return [
-      leafColorAt(0.0,
-          morningRatio: morningRatio,
-          afternoonRatio: afternoonRatio,
-          eveningRatio: eveningRatio),
-      leafColorAt(0.5,
-          morningRatio: morningRatio,
-          afternoonRatio: afternoonRatio,
-          eveningRatio: eveningRatio),
-      leafColorAt(1.0,
-          morningRatio: morningRatio,
-          afternoonRatio: afternoonRatio,
-          eveningRatio: eveningRatio),
+      leafColorAt(
+        0.0,
+        morningRatio: morningRatio,
+        afternoonRatio: afternoonRatio,
+        eveningRatio: eveningRatio,
+      ),
+      leafColorAt(
+        0.5,
+        morningRatio: morningRatio,
+        afternoonRatio: afternoonRatio,
+        eveningRatio: eveningRatio,
+      ),
+      leafColorAt(
+        1.0,
+        morningRatio: morningRatio,
+        afternoonRatio: afternoonRatio,
+        eveningRatio: eveningRatio,
+      ),
     ];
   }
 }

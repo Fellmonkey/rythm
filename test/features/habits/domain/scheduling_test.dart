@@ -11,8 +11,14 @@ void main() {
     group('daily', () {
       test('any day returns true', () {
         final habit = makeHabit(frequencyType: 'daily');
-        expect(isExpectedToday(habit, DateTime.utc(2026, 1, 5)), isTrue); // Monday
-        expect(isExpectedToday(habit, DateTime.utc(2026, 1, 3)), isTrue); // Saturday
+        expect(
+          isExpectedToday(habit, DateTime.utc(2026, 1, 5)),
+          isTrue,
+        ); // Monday
+        expect(
+          isExpectedToday(habit, DateTime.utc(2026, 1, 3)),
+          isTrue,
+        ); // Saturday
         expect(isExpectedToday(habit, DateTime.utc(2026, 6, 15)), isTrue);
       });
     });

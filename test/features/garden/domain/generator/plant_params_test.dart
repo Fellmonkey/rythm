@@ -5,10 +5,7 @@ import 'package:rythm/features/garden/domain/generator/plant_params.dart';
 import '../../../../fixtures/generation_params_fixtures.dart';
 
 /// Helper to build a [GenerationParams] with only the fields under test.
-GenerationParams _params({
-  int absoluteCompletions = 0,
-  int maxStreak = 0,
-}) {
+GenerationParams _params({int absoluteCompletions = 0, int maxStreak = 0}) {
   return GenerationParams(
     archetype: SeedArchetype.oak,
     completionPct: 50.0,
@@ -32,31 +29,19 @@ void main() {
 
     test('absoluteCompletions=12 → clamped to 0.4', () {
       // 12 / 30 = 0.4 exactly
-      expect(
-        _params(absoluteCompletions: 12).scaleFactor,
-        closeTo(0.4, 1e-9),
-      );
+      expect(_params(absoluteCompletions: 12).scaleFactor, closeTo(0.4, 1e-9));
     });
 
     test('absoluteCompletions=15 → 0.5', () {
-      expect(
-        _params(absoluteCompletions: 15).scaleFactor,
-        closeTo(0.5, 1e-9),
-      );
+      expect(_params(absoluteCompletions: 15).scaleFactor, closeTo(0.5, 1e-9));
     });
 
     test('absoluteCompletions=30 → 1.0', () {
-      expect(
-        _params(absoluteCompletions: 30).scaleFactor,
-        closeTo(1.0, 1e-9),
-      );
+      expect(_params(absoluteCompletions: 30).scaleFactor, closeTo(1.0, 1e-9));
     });
 
     test('absoluteCompletions=60 → clamped to 1.0', () {
-      expect(
-        _params(absoluteCompletions: 60).scaleFactor,
-        closeTo(1.0, 1e-9),
-      );
+      expect(_params(absoluteCompletions: 60).scaleFactor, closeTo(1.0, 1e-9));
     });
   });
 
@@ -113,8 +98,7 @@ void main() {
       expect(shortPerfectFixtures, hasLength(6));
 
       // Each archetype should appear exactly once.
-      final archetypes =
-          shortPerfectFixtures.map((p) => p.archetype).toSet();
+      final archetypes = shortPerfectFixtures.map((p) => p.archetype).toSet();
       expect(archetypes, equals(SeedArchetype.values.toSet()));
     });
   });

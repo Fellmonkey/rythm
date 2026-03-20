@@ -42,7 +42,11 @@ class SchrodingerChecker {
     // Get all active negative habits
     final habits = await habitsDao.getActiveHabits();
     final negativeHabits = habits
-        .where((h) => FrequencyType.fromString(h.frequencyType) == FrequencyType.negative)
+        .where(
+          (h) =>
+              FrequencyType.fromString(h.frequencyType) ==
+              FrequencyType.negative,
+        )
         .toList();
 
     for (final habit in negativeHabits) {
@@ -63,10 +67,9 @@ class SchrodingerChecker {
       }
 
       if (pendingDates.isNotEmpty) {
-        result.add(PendingNegativeHabit(
-          habit: habit,
-          pendingDates: pendingDates,
-        ));
+        result.add(
+          PendingNegativeHabit(habit: habit, pendingDates: pendingDates),
+        );
       }
     }
 
@@ -99,10 +102,7 @@ class SchrodingerChecker {
 
 /// A negative habit with dates that need user confirmation.
 class PendingNegativeHabit {
-  const PendingNegativeHabit({
-    required this.habit,
-    required this.pendingDates,
-  });
+  const PendingNegativeHabit({required this.habit, required this.pendingDates});
 
   final Habit habit;
   final List<DateTime> pendingDates;

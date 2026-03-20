@@ -27,47 +27,53 @@ void main() {
   });
 
   group('BackupService', () {
-    test('empty DB export produces valid JSON with version and empty arrays',
-        () async {
-      final json = await service.exportToJson();
-      final data = jsonDecode(json) as Map<String, dynamic>;
+    test(
+      'empty DB export produces valid JSON with version and empty arrays',
+      () async {
+        final json = await service.exportToJson();
+        final data = jsonDecode(json) as Map<String, dynamic>;
 
-      expect(data['version'], 1);
-      expect(data['exportedAt'], isNotNull);
-      expect(data['habits'], isEmpty);
-      expect(data['habitLogs'], isEmpty);
-      expect(data['gardenObjects'], isEmpty);
-    });
+        expect(data['version'], 1);
+        expect(data['exportedAt'], isNotNull);
+        expect(data['habits'], isEmpty);
+        expect(data['habitLogs'], isEmpty);
+        expect(data['gardenObjects'], isEmpty);
+      },
+    );
 
     test('full round-trip: export then import into fresh DB', () async {
       // Setup: insert habit, log, and garden object
-      final habitId = await db.habitsDao.insertHabit(makeHabitCompanion(
-        name: 'Morning Run',
-        category: 'fitness',
-        seedArchetype: 'sakura',
-        frequencyType: 'daily',
-        frequencyValue: '{}',
-        timeOfDay: 'morning',
-        isFocus: true,
-      ));
+      final habitId = await db.habitsDao.insertHabit(
+        makeHabitCompanion(
+          name: 'Morning Run',
+          category: 'fitness',
+          seedArchetype: 'sakura',
+          frequencyType: 'daily',
+          frequencyValue: '{}',
+          timeOfDay: 'morning',
+          isFocus: true,
+        ),
+      );
 
       final logDate = DateTime.utc(2026, 1, 5).unixSeconds;
       await db.habitLogsDao.markDone(habitId, logDate, 8);
 
-      await db.gardenObjectsDao.insertObject(makeGardenObjectCompanion(
-        habitId: habitId,
-        year: 2026,
-        month: 1,
-        completionPct: 85.0,
-        absoluteCompletions: 26,
-        maxStreak: 15,
-        morningRatio: 0.7,
-        afternoonRatio: 0.2,
-        eveningRatio: 0.1,
-        objectType: 'tree',
-        generationSeed: 42,
-        isShortPerfect: false,
-      ));
+      await db.gardenObjectsDao.insertObject(
+        makeGardenObjectCompanion(
+          habitId: habitId,
+          year: 2026,
+          month: 1,
+          completionPct: 85.0,
+          absoluteCompletions: 26,
+          maxStreak: 15,
+          morningRatio: 0.7,
+          afternoonRatio: 0.2,
+          eveningRatio: 0.1,
+          objectType: 'tree',
+          generationSeed: 42,
+          isShortPerfect: false,
+        ),
+      );
 
       // Export
       final exportedJson = await service.exportToJson();
@@ -142,7 +148,7 @@ void main() {
             'isFocus': false,
             'isArchived': false,
             'createdAt': DateTime.utc(2026, 1, 1).unixSeconds,
-          }
+          },
         ],
         'habitLogs': [],
         'gardenObjects': [],
@@ -155,43 +161,47 @@ void main() {
       expect(habits.first.name, 'New Habit');
     });
 
-    test('null fields (loggedHour, pngPath) preserved through round-trip',
-        () async {
-      final habitId =
-          await db.habitsDao.insertHabit(makeHabitCompanion(name: 'Test'));
+    test(
+      'null fields (loggedHour, pngPath) preserved through round-trip',
+      () async {
+        final habitId = await db.habitsDao.insertHabit(
+          makeHabitCompanion(name: 'Test'),
+        );
 
-      // Log without loggedHour
-      await db.habitLogsDao.upsertLog(HabitLogsCompanion(
-        habitId: Value(habitId),
-        date: Value(DateTime.utc(2026, 1, 1).unixSeconds),
-        status: const Value('done'),
-        loggedHour: const Value(null),
-      ));
+        // Log without loggedHour
+        await db.habitLogsDao.upsertLog(
+          HabitLogsCompanion(
+            habitId: Value(habitId),
+            date: Value(DateTime.utc(2026, 1, 1).unixSeconds),
+            status: const Value('done'),
+            loggedHour: const Value(null),
+          ),
+        );
 
-      // Garden object without pngPath
-      await db.gardenObjectsDao.insertObject(makeGardenObjectCompanion(
-        habitId: habitId,
-        pngPath: null,
-      ));
+        // Garden object without pngPath
+        await db.gardenObjectsDao.insertObject(
+          makeGardenObjectCompanion(habitId: habitId, pngPath: null),
+        );
 
-      final json = await service.exportToJson();
+        final json = await service.exportToJson();
 
-      final db2 = createTestDatabase();
-      final service2 = BackupService(
-        habitsDao: db2.habitsDao,
-        habitLogsDao: db2.habitLogsDao,
-        gardenObjectsDao: db2.gardenObjectsDao,
-      );
+        final db2 = createTestDatabase();
+        final service2 = BackupService(
+          habitsDao: db2.habitsDao,
+          habitLogsDao: db2.habitLogsDao,
+          gardenObjectsDao: db2.gardenObjectsDao,
+        );
 
-      await service2.importFromJson(json);
+        await service2.importFromJson(json);
 
-      final logs = await db2.habitLogsDao.getAllLogs();
-      expect(logs.first.loggedHour, isNull);
+        final logs = await db2.habitLogsDao.getAllLogs();
+        expect(logs.first.loggedHour, isNull);
 
-      final objects = await db2.gardenObjectsDao.getAllObjects();
-      expect(objects.first.pngPath, isNull);
+        final objects = await db2.gardenObjectsDao.getAllObjects();
+        expect(objects.first.pngPath, isNull);
 
-      await db2.close();
-    });
+        await db2.close();
+      },
+    );
   });
 }

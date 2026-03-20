@@ -17,48 +17,49 @@ import 'package:rythm/features/habits/providers/habit_providers.dart';
 
 /// Creates an in-memory [AppDatabase] for integration tests (FK enabled).
 AppDatabase createIntegrationTestDatabase() {
-  return AppDatabase.test(NativeDatabase.memory(setup: (db) {
-    db.execute('PRAGMA foreign_keys = ON');
-  }));
+  return AppDatabase.test(
+    NativeDatabase.memory(
+      setup: (db) {
+        db.execute('PRAGMA foreign_keys = ON');
+      },
+    ),
+  );
 }
 
 /// Creates a fresh GoRouter instance to avoid GlobalKey collisions between
 /// tests.  The route structure mirrors [appRouter] in `app_router.dart`.
 GoRouter _createTestRouter() => GoRouter(
-      initialLocation: '/',
+  initialLocation: '/',
+  routes: [
+    ShellRoute(
+      builder: (context, state, child) => ShellScaffold(child: child),
       routes: [
-        ShellRoute(
-          builder: (context, state, child) => ShellScaffold(child: child),
-          routes: [
-            GoRoute(
-              path: '/',
-              pageBuilder: (context, state) => const NoTransitionPage(
-                child: GreenhouseScreen(),
-              ),
-            ),
-            GoRoute(
-              path: '/garden',
-              pageBuilder: (context, state) => const NoTransitionPage(
-                child: TimePathScreen(),
-              ),
-            ),
-            GoRoute(
-              path: '/settings',
-              pageBuilder: (context, state) => const NoTransitionPage(
-                child: SettingsScreen(),
-              ),
-            ),
-          ],
+        GoRoute(
+          path: '/',
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: GreenhouseScreen()),
         ),
         GoRoute(
-          path: '/habit/:id',
-          builder: (context, state) {
-            final id = int.parse(state.pathParameters['id']!);
-            return HabitDetailScreen(habitId: id);
-          },
+          path: '/garden',
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: TimePathScreen()),
+        ),
+        GoRoute(
+          path: '/settings',
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: SettingsScreen()),
         ),
       ],
-    );
+    ),
+    GoRoute(
+      path: '/habit/:id',
+      builder: (context, state) {
+        final id = int.parse(state.pathParameters['id']!);
+        return HabitDetailScreen(habitId: id);
+      },
+    ),
+  ],
+);
 
 /// Pumps the full app with an in-memory database and fake
 /// SharedPreferences.  Returns the [AppDatabase] so tests can seed data

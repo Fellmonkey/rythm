@@ -58,20 +58,22 @@ void main() {
         makeHabitCompanion(name: 'Morning Run', seedArchetype: 'sakura'),
       );
 
-      await db.gardenObjectsDao.insertObject(makeGardenObjectCompanion(
-        habitId: habitId,
-        year: 2026,
-        month: 1,
-        completionPct: 85.0,
-        absoluteCompletions: 26,
-        maxStreak: 15,
-        morningRatio: 0.7,
-        afternoonRatio: 0.2,
-        eveningRatio: 0.1,
-        objectType: 'tree',
-        generationSeed: 42,
-        isShortPerfect: false,
-      ));
+      await db.gardenObjectsDao.insertObject(
+        makeGardenObjectCompanion(
+          habitId: habitId,
+          year: 2026,
+          month: 1,
+          completionPct: 85.0,
+          absoluteCompletions: 26,
+          maxStreak: 15,
+          morningRatio: 0.7,
+          afternoonRatio: 0.2,
+          eveningRatio: 0.1,
+          objectType: 'tree',
+          generationSeed: 42,
+          isShortPerfect: false,
+        ),
+      );
 
       final service = FriendCodeService(
         habitsDao: db.habitsDao,
@@ -106,18 +108,16 @@ void main() {
 
   group('qualifiesForCrossPollination', () {
     test('avg completion = 80.0 qualifies', () {
-      final garden = GuestGarden(entries: [
-        _entry(pct: 80.0),
-        _entry(pct: 80.0),
-      ]);
+      final garden = GuestGarden(
+        entries: [_entry(pct: 80.0), _entry(pct: 80.0)],
+      );
       expect(FriendCodeService.qualifiesForCrossPollination(garden), isTrue);
     });
 
     test('avg completion = 79.9 does not qualify', () {
-      final garden = GuestGarden(entries: [
-        _entry(pct: 79.9),
-        _entry(pct: 79.9),
-      ]);
+      final garden = GuestGarden(
+        entries: [_entry(pct: 79.9), _entry(pct: 79.9)],
+      );
       expect(FriendCodeService.qualifiesForCrossPollination(garden), isFalse);
     });
 
@@ -127,21 +127,22 @@ void main() {
     });
 
     test('mixed entries averaging exactly 80.0 qualifies', () {
-      final garden = GuestGarden(entries: [
-        _entry(pct: 70.0),
-        _entry(pct: 90.0),
-      ]);
+      final garden = GuestGarden(
+        entries: [_entry(pct: 70.0), _entry(pct: 90.0)],
+      );
       expect(FriendCodeService.qualifiesForCrossPollination(garden), isTrue);
     });
   });
 
   group('GuestGarden.byMonth', () {
     test('groups entries correctly by (year, month)', () {
-      final garden = GuestGarden(entries: [
-        _entry(year: 2026, month: 1, habitName: 'A'),
-        _entry(year: 2026, month: 1, habitName: 'B'),
-        _entry(year: 2026, month: 2, habitName: 'C'),
-      ]);
+      final garden = GuestGarden(
+        entries: [
+          _entry(year: 2026, month: 1, habitName: 'A'),
+          _entry(year: 2026, month: 1, habitName: 'B'),
+          _entry(year: 2026, month: 2, habitName: 'C'),
+        ],
+      );
 
       final grouped = garden.byMonth;
       expect(grouped, hasLength(2));
@@ -202,7 +203,7 @@ String _buildCodeManually({
         'type': 'bush',
         'seed': 42,
         'sp': false,
-      }
+      },
     ],
   };
 

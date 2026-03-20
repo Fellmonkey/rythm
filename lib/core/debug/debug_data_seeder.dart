@@ -28,42 +28,180 @@ class DebugScenario {
 /// All available scenarios for the debug menu.
 const debugScenarios = [
   // ── Small ──
-  DebugScenario(name: '5 привычек · 1 мес', description: 'Минимальный набор', habitCount: 5, months: 1, icon: '🌱'),
-  DebugScenario(name: '5 привычек · 3 мес', description: 'Квартал с малым числом', habitCount: 5, months: 3, icon: '🌿'),
-  DebugScenario(name: '5 привычек · 6 мес', description: 'Полгода', habitCount: 5, months: 6, icon: '🌳'),
-  DebugScenario(name: '5 привычек · 12 мес', description: 'Полный год', habitCount: 5, months: 12, icon: '🌲'),
+  DebugScenario(
+    name: '5 привычек · 1 мес',
+    description: 'Минимальный набор',
+    habitCount: 5,
+    months: 1,
+    icon: '🌱',
+  ),
+  DebugScenario(
+    name: '5 привычек · 3 мес',
+    description: 'Квартал с малым числом',
+    habitCount: 5,
+    months: 3,
+    icon: '🌿',
+  ),
+  DebugScenario(
+    name: '5 привычек · 6 мес',
+    description: 'Полгода',
+    habitCount: 5,
+    months: 6,
+    icon: '🌳',
+  ),
+  DebugScenario(
+    name: '5 привычек · 12 мес',
+    description: 'Полный год',
+    habitCount: 5,
+    months: 12,
+    icon: '🌲',
+  ),
   // ── Medium ──
-  DebugScenario(name: '30 привычек · 1 мес', description: 'Много привычек, мало истории', habitCount: 30, months: 1, icon: '📋'),
-  DebugScenario(name: '30 привычек · 3 мес', description: 'Активный пользователь', habitCount: 30, months: 3, icon: '📊'),
-  DebugScenario(name: '30 привычек · 6 мес', description: 'Полгода активности', habitCount: 30, months: 6, icon: '📈'),
-  DebugScenario(name: '30 привычек · 12 мес', description: 'Тяжёлый юзер, год', habitCount: 30, months: 12, icon: '🏋️'),
+  DebugScenario(
+    name: '30 привычек · 1 мес',
+    description: 'Много привычек, мало истории',
+    habitCount: 30,
+    months: 1,
+    icon: '📋',
+  ),
+  DebugScenario(
+    name: '30 привычек · 3 мес',
+    description: 'Активный пользователь',
+    habitCount: 30,
+    months: 3,
+    icon: '📊',
+  ),
+  DebugScenario(
+    name: '30 привычек · 6 мес',
+    description: 'Полгода активности',
+    habitCount: 30,
+    months: 6,
+    icon: '📈',
+  ),
+  DebugScenario(
+    name: '30 привычек · 12 мес',
+    description: 'Тяжёлый юзер, год',
+    habitCount: 30,
+    months: 12,
+    icon: '🏋️',
+  ),
   // ── Large ──
-  DebugScenario(name: '90 привычек · 1 мес', description: 'Стресс-тест UI', habitCount: 90, months: 1, icon: '🔥'),
-  DebugScenario(name: '90 привычек · 3 мес', description: 'Массивный набор', habitCount: 90, months: 3, icon: '💥'),
-  DebugScenario(name: '90 привычек · 12 мес', description: 'Максимальная нагрузка', habitCount: 90, months: 12, icon: '🚀'),
+  DebugScenario(
+    name: '90 привычек · 1 мес',
+    description: 'Стресс-тест UI',
+    habitCount: 90,
+    months: 1,
+    icon: '🔥',
+  ),
+  DebugScenario(
+    name: '90 привычек · 3 мес',
+    description: 'Массивный набор',
+    habitCount: 90,
+    months: 3,
+    icon: '💥',
+  ),
+  DebugScenario(
+    name: '90 привычек · 12 мес',
+    description: 'Максимальная нагрузка',
+    habitCount: 90,
+    months: 12,
+    icon: '🚀',
+  ),
 ];
 
 // ── Habit name pool ────────────────────────────────────────
 
 const _habitNames = [
-  'Утренняя пробежка', 'Чтение книг', 'Медитация', 'Тренировка', 'Журнал благодарности',
-  'Водный баланс', 'Растяжка', 'Практика языка', 'Уборка 15 мин', 'Без сахара',
-  'Холодный душ', 'Прогулка', 'Йога', 'Дыхательная гимнастика', 'Учеба 30 мин',
-  'Здоровый завтрак', 'Рисование', 'Музыка', 'Писательство', 'Фокус 2ч без телефона',
-  'Вечерний ритуал', 'Витамины', 'Планирование дня', 'Осанка', 'Бег 5 км',
-  'Отжимания', 'Подтягивания', 'Скакалка', 'Лестница', 'Зубная нить',
-  'Код 1 час', 'Рецепт дня', 'Фото дня', 'Новые знакомства', 'Инвестиции',
-  'Бюджет', 'Ранний подъём', 'Экран < 2ч вечером', 'Массаж лица', 'Уход за кожей',
-  'Без кофеина', 'Без алкоголя', 'Без курения', 'Практика речи', 'Шахматы',
-  'Отжимания 100', 'Планка 3 мин', 'Без фастфуда', 'Сон до 23', 'Благотворительность',
-  'Обнять близкого', 'Позвонить родителям', 'Пресс', 'Турник', 'Плавание',
-  'Велосипед', 'Танцы', 'Скалолазание', 'Сёрфинг', 'Навык дня',
-  'Дневник снов', 'Аффирмации', 'Визуализация', 'Комплимент', 'Новая еда',
-  'Уроки гитары', 'Подкаст', 'TED Talk', 'Документалка', 'Растения полив',
-  'Стирка', 'Посуда сразу', 'Заправить кровать', 'Порядок стол', 'Расхламление',
-  'Ноль отходов', 'Сортировка мусора', 'Экономия воды', 'Eco-bag', 'Вегетарианство',
-  'Порция овощей', 'Без перекусов', 'Калории в норме', 'Белок 100 г', 'Клетчатка',
-  'Магний', 'Омега-3', 'Тишина 15 мин', 'Самоанализ', 'Благодарность',
+  'Утренняя пробежка',
+  'Чтение книг',
+  'Медитация',
+  'Тренировка',
+  'Журнал благодарности',
+  'Водный баланс',
+  'Растяжка',
+  'Практика языка',
+  'Уборка 15 мин',
+  'Без сахара',
+  'Холодный душ',
+  'Прогулка',
+  'Йога',
+  'Дыхательная гимнастика',
+  'Учеба 30 мин',
+  'Здоровый завтрак',
+  'Рисование',
+  'Музыка',
+  'Писательство',
+  'Фокус 2ч без телефона',
+  'Вечерний ритуал',
+  'Витамины',
+  'Планирование дня',
+  'Осанка',
+  'Бег 5 км',
+  'Отжимания',
+  'Подтягивания',
+  'Скакалка',
+  'Лестница',
+  'Зубная нить',
+  'Код 1 час',
+  'Рецепт дня',
+  'Фото дня',
+  'Новые знакомства',
+  'Инвестиции',
+  'Бюджет',
+  'Ранний подъём',
+  'Экран < 2ч вечером',
+  'Массаж лица',
+  'Уход за кожей',
+  'Без кофеина',
+  'Без алкоголя',
+  'Без курения',
+  'Практика речи',
+  'Шахматы',
+  'Отжимания 100',
+  'Планка 3 мин',
+  'Без фастфуда',
+  'Сон до 23',
+  'Благотворительность',
+  'Обнять близкого',
+  'Позвонить родителям',
+  'Пресс',
+  'Турник',
+  'Плавание',
+  'Велосипед',
+  'Танцы',
+  'Скалолазание',
+  'Сёрфинг',
+  'Навык дня',
+  'Дневник снов',
+  'Аффирмации',
+  'Визуализация',
+  'Комплимент',
+  'Новая еда',
+  'Уроки гитары',
+  'Подкаст',
+  'TED Talk',
+  'Документалка',
+  'Растения полив',
+  'Стирка',
+  'Посуда сразу',
+  'Заправить кровать',
+  'Порядок стол',
+  'Расхламление',
+  'Ноль отходов',
+  'Сортировка мусора',
+  'Экономия воды',
+  'Eco-bag',
+  'Вегетарианство',
+  'Порция овощей',
+  'Без перекусов',
+  'Калории в норме',
+  'Белок 100 г',
+  'Клетчатка',
+  'Магний',
+  'Омега-3',
+  'Тишина 15 мин',
+  'Самоанализ',
+  'Благодарность',
 ];
 
 const _timeSlots = [
@@ -113,7 +251,11 @@ class DebugDataSeeder {
     final now = DateTime.now().toMidnight;
 
     // 2. Determine the time window
-    final endMonth = DateTime.utc(now.year, now.month, 1); // current month start
+    final endMonth = DateTime.utc(
+      now.year,
+      now.month,
+      1,
+    ); // current month start
     final startMonth = DateTime.utc(now.year, now.month - scenario.months, 1);
 
     // 3. Create habits
@@ -122,7 +264,9 @@ class DebugDataSeeder {
 
     for (var i = 0; i < scenario.habitCount; i++) {
       final name = _habitNames[i % _habitNames.length];
-      final suffix = i >= _habitNames.length ? ' (${i ~/ _habitNames.length + 1})' : '';
+      final suffix = i >= _habitNames.length
+          ? ' (${i ~/ _habitNames.length + 1})'
+          : '';
       final arch = SeedArchetype.values[i % SeedArchetype.values.length];
       final freq = _freqTemplates[i % _freqTemplates.length];
       final tod = _timeSlots[i % _timeSlots.length];
@@ -150,25 +294,29 @@ class DebugDataSeeder {
       // Clamp: can't be in the future
       if (createdDate.isAfter(now)) createdDate = now;
 
-      final id = await db.habitsDao.insertHabit(HabitsCompanion.insert(
-        name: '$name$suffix',
-        createdAt: createdDate.unixSeconds,
-        seedArchetype: Value(arch.name),
-        frequencyType: Value(freq.type.name),
-        frequencyValue: Value(freq.value),
-        timeOfDay: Value(tod.name),
-      ));
+      final id = await db.habitsDao.insertHabit(
+        HabitsCompanion.insert(
+          name: '$name$suffix',
+          createdAt: createdDate.unixSeconds,
+          seedArchetype: Value(arch.name),
+          frequencyType: Value(freq.type.name),
+          frequencyValue: Value(freq.value),
+          timeOfDay: Value(tod.name),
+        ),
+      );
 
       habitIds.add(id);
-      habitMeta.add(_HabitMeta(
-        id: id,
-        archetype: arch,
-        freq: freq,
-        tod: tod,
-        createdAt: createdDate,
-        // Base "skill" that slowly improves — random starting quality
-        quality: 0.2 + rng.nextDouble() * 0.3, // 0.2–0.5 base
-      ));
+      habitMeta.add(
+        _HabitMeta(
+          id: id,
+          archetype: arch,
+          freq: freq,
+          tod: tod,
+          createdAt: createdDate,
+          // Base "skill" that slowly improves — random starting quality
+          quality: 0.2 + rng.nextDouble() * 0.3, // 0.2–0.5 base
+        ),
+      );
     }
 
     // 4. Generate logs + garden objects month by month
@@ -176,11 +324,9 @@ class DebugDataSeeder {
     while (m.isBefore(endMonth)) {
       for (final meta in habitMeta) {
         // Skip months before creation
-        if (m.isBefore(DateTime.utc(
-          meta.createdAt.year,
-          meta.createdAt.month,
-          1,
-        ))) {
+        if (m.isBefore(
+          DateTime.utc(meta.createdAt.year, meta.createdAt.month, 1),
+        )) {
           continue;
         }
 
@@ -221,8 +367,8 @@ class DebugDataSeeder {
     if (totalDays <= 0) return;
 
     // Quality drifts upward over months (simulates user getting better)
-    final monthIndex = (year - meta.createdAt.year) * 12 +
-        (month - meta.createdAt.month);
+    final monthIndex =
+        (year - meta.createdAt.year) * 12 + (month - meta.createdAt.month);
     final quality = (meta.quality + monthIndex * 0.06 + rng.nextDouble() * 0.1)
         .clamp(0.05, 0.98);
 
@@ -275,12 +421,14 @@ class DebugDataSeeder {
         currentStreak = 0;
       }
 
-      await db.habitLogsDao.upsertLog(HabitLogsCompanion.insert(
-        habitId: meta.id,
-        date: date.unixSeconds,
-        status: Value(status),
-        loggedHour: Value(loggedHour),
-      ));
+      await db.habitLogsDao.upsertLog(
+        HabitLogsCompanion.insert(
+          habitId: meta.id,
+          date: date.unixSeconds,
+          status: Value(status),
+          loggedHour: Value(loggedHour),
+        ),
+      );
     }
 
     // Insert garden object for completed months
@@ -298,34 +446,35 @@ class DebugDataSeeder {
     final activeDays = daysBetweenInclusive(effectiveStart, monthEnd);
     final isShortPerfect = activeDays < 7 && pct >= 100.0;
 
-    await db.gardenObjectsDao.insertObject(GardenObjectsCompanion(
-      habitId: Value(meta.id),
-      year: Value(year),
-      month: Value(month),
-      completionPct: Value(pct),
-      absoluteCompletions: Value(doneCount),
-      maxStreak: Value(maxStreak),
-      morningRatio: Value(mRatio),
-      afternoonRatio: Value(aRatio),
-      eveningRatio: Value(eRatio),
-      objectType: Value(objectType.name),
-      generationSeed: Value(rng.nextInt(1 << 31)),
-      isShortPerfect: Value(isShortPerfect),
-    ));
+    await db.gardenObjectsDao.insertObject(
+      GardenObjectsCompanion(
+        habitId: Value(meta.id),
+        year: Value(year),
+        month: Value(month),
+        completionPct: Value(pct),
+        absoluteCompletions: Value(doneCount),
+        maxStreak: Value(maxStreak),
+        morningRatio: Value(mRatio),
+        afternoonRatio: Value(aRatio),
+        eveningRatio: Value(eRatio),
+        objectType: Value(objectType.name),
+        generationSeed: Value(rng.nextInt(1 << 31)),
+        isShortPerfect: Value(isShortPerfect),
+      ),
+    );
   }
 
   /// Generate pending logs for today so the Greenhouse screen shows habits.
-  Future<void> _generateTodayLogs(
-    List<_HabitMeta> metas,
-    DateTime now,
-  ) async {
+  Future<void> _generateTodayLogs(List<_HabitMeta> metas, DateTime now) async {
     for (final meta in metas) {
       if (meta.createdAt.isAfter(now)) continue;
-      await db.habitLogsDao.upsertLog(HabitLogsCompanion.insert(
-        habitId: meta.id,
-        date: now.unixSeconds,
-        status: const Value('pending'),
-      ));
+      await db.habitLogsDao.upsertLog(
+        HabitLogsCompanion.insert(
+          habitId: meta.id,
+          date: now.unixSeconds,
+          status: const Value('pending'),
+        ),
+      );
     }
   }
 
@@ -362,17 +511,21 @@ class DebugDataSeeder {
   }
 
   static int _hourForTimeOfDay(TimeOfDay tod, Random rng) => switch (tod) {
-        TimeOfDay.morning => 6 + rng.nextInt(5),    // 6–10
-        TimeOfDay.afternoon => 12 + rng.nextInt(5),  // 12–16
-        TimeOfDay.evening => 18 + rng.nextInt(4),    // 18–21
-        TimeOfDay.anytime => 7 + rng.nextInt(14),    // 7–20
-      };
+    TimeOfDay.morning => 6 + rng.nextInt(5), // 6–10
+    TimeOfDay.afternoon => 12 + rng.nextInt(5), // 12–16
+    TimeOfDay.evening => 18 + rng.nextInt(4), // 18–21
+    TimeOfDay.anytime => 7 + rng.nextInt(14), // 7–20
+  };
 
   static List<int> _parseWeekdays(String json) {
     try {
       final match = RegExp(r'\[([0-9,\s]+)\]').firstMatch(json);
       if (match != null) {
-        return match.group(1)!.split(',').map((s) => int.parse(s.trim())).toList();
+        return match
+            .group(1)!
+            .split(',')
+            .map((s) => int.parse(s.trim()))
+            .toList();
       }
     } catch (_) {}
     return [1, 2, 3, 4, 5];

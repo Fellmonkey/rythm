@@ -20,8 +20,9 @@ final allGardenObjectsProvider = StreamProvider<List<GardenObject>>((ref) {
 });
 
 /// Garden objects grouped by (year, month).
-final gardenByMonthProvider =
-    Provider<Map<(int, int), List<GardenObject>>>((ref) {
+final gardenByMonthProvider = Provider<Map<(int, int), List<GardenObject>>>((
+  ref,
+) {
   final objectsAsync = ref.watch(allGardenObjectsProvider);
   final objects = objectsAsync.value;
   if (objects == null) return {};

@@ -43,7 +43,11 @@ class _DebugMenuOverlayState extends State<DebugMenuOverlay> {
               heroTag: '__debug_fab__',
               backgroundColor: AppColors.glowViolet.withValues(alpha: 0.85),
               onPressed: _openDebugMenu,
-              child: const Icon(Icons.bug_report, color: Colors.white, size: 20),
+              child: const Icon(
+                Icons.bug_report,
+                color: Colors.white,
+                size: 20,
+              ),
             ),
           ),
         ),
@@ -96,28 +100,32 @@ class _DebugSheet extends StatelessWidget {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: (isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary)
-                          .withValues(alpha: 0.4),
+                      color:
+                          (isDark
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.lightTextSecondary)
+                              .withValues(alpha: 0.4),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
                 ),
                 // Title
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 4,
+                  ),
                   child: Row(
                     children: [
-                      Icon(Icons.bug_report,
-                          color: AppColors.glowViolet, size: 22),
+                      Icon(
+                        Icons.bug_report,
+                        color: AppColors.glowViolet,
+                        size: 22,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'Debug Menu',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
+                        style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(fontWeight: FontWeight.w700),
                       ),
                     ],
@@ -252,9 +260,9 @@ class _ScenariosTabState extends ConsumerState<_ScenariosTab> {
             ),
             child: Text(
               _lastResult!,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
             ),
           ),
 
@@ -312,10 +320,9 @@ class _ScenarioTile extends StatelessWidget {
         leading: Text(scenario.icon, style: const TextStyle(fontSize: 28)),
         title: Text(
           scenario.name,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
           scenario.description,
@@ -350,8 +357,7 @@ class _PlantProfilesTab extends StatelessWidget {
       children: [
         for (final entry in categories.entries) ...[
           _CategoryHeader(title: entry.key),
-          for (final profile in entry.value)
-            _ProfileTile(profile: profile),
+          for (final profile in entry.value) _ProfileTile(profile: profile),
           const SizedBox(height: 12),
         ],
       ],
@@ -372,12 +378,12 @@ class _CategoryHeader extends StatelessWidget {
       child: Text(
         title.toUpperCase(),
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              letterSpacing: 1.2,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.lightTextSecondary,
-            ),
+          fontWeight: FontWeight.w600,
+          letterSpacing: 1.2,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? AppColors.darkTextSecondary
+              : AppColors.lightTextSecondary,
+        ),
       ),
     );
   }
@@ -410,9 +416,9 @@ class _ProfileTile extends StatelessWidget {
         ),
         title: Text(
           profile.name,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
           '${profile.description}  •  ${params.archetype.displayName}  •  '
@@ -443,7 +449,8 @@ class DebugPlantPreviewScreen extends StatefulWidget {
   final DebugProfile profile;
 
   @override
-  State<DebugPlantPreviewScreen> createState() => _DebugPlantPreviewScreenState();
+  State<DebugPlantPreviewScreen> createState() =>
+      _DebugPlantPreviewScreenState();
 }
 
 class _DebugPlantPreviewScreenState extends State<DebugPlantPreviewScreen> {
@@ -484,7 +491,9 @@ class _DebugPlantPreviewScreenState extends State<DebugPlantPreviewScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? AppColors.darkText : AppColors.lightText;
-    final secondaryColor = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final secondaryColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Scaffold(
       appBar: AppBar(
@@ -520,9 +529,7 @@ class _DebugPlantPreviewScreenState extends State<DebugPlantPreviewScreen> {
                       : AppColors.lightTextSecondary.withValues(alpha: 0.15),
                 ),
               ),
-              child: Center(
-                child: PlantWidget(params: _params, size: 280),
-              ),
+              child: Center(child: PlantWidget(params: _params, size: 280)),
             ),
           ),
           // Params panel
@@ -533,7 +540,9 @@ class _DebugPlantPreviewScreenState extends State<DebugPlantPreviewScreen> {
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
               decoration: BoxDecoration(
                 color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24),
+                ),
               ),
               child: ListView(
                 children: [
@@ -551,7 +560,8 @@ class _DebugPlantPreviewScreenState extends State<DebugPlantPreviewScreen> {
                           decoration: const InputDecoration(
                             isDense: true,
                             contentPadding: EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 6,
+                              horizontal: 8,
+                              vertical: 6,
                             ),
                           ),
                           onSubmitted: (v) {
@@ -564,22 +574,63 @@ class _DebugPlantPreviewScreenState extends State<DebugPlantPreviewScreen> {
                   ),
                   const SizedBox(height: 12),
                   // Info grid
-                  _InfoRow(label: 'Архетип', value: _params.archetype.displayName, color: secondaryColor, valueColor: textColor),
-                  _InfoRow(label: 'Тип объекта', value: _params.objectType.name, color: secondaryColor, valueColor: textColor),
-                  _InfoRow(label: 'Прогресс', value: '${_params.completionPct}%', color: secondaryColor, valueColor: textColor),
-                  _InfoRow(label: 'Кол-во отметок', value: '${_params.absoluteCompletions}', color: secondaryColor, valueColor: textColor),
-                  _InfoRow(label: 'Макс. стрик', value: '${_params.maxStreak}', color: secondaryColor, valueColor: textColor),
-                  _InfoRow(label: 'Short-perfect', value: _params.isShortPerfect ? 'Да' : 'Нет', color: secondaryColor, valueColor: textColor),
+                  _InfoRow(
+                    label: 'Архетип',
+                    value: _params.archetype.displayName,
+                    color: secondaryColor,
+                    valueColor: textColor,
+                  ),
+                  _InfoRow(
+                    label: 'Тип объекта',
+                    value: _params.objectType.name,
+                    color: secondaryColor,
+                    valueColor: textColor,
+                  ),
+                  _InfoRow(
+                    label: 'Прогресс',
+                    value: '${_params.completionPct}%',
+                    color: secondaryColor,
+                    valueColor: textColor,
+                  ),
+                  _InfoRow(
+                    label: 'Кол-во отметок',
+                    value: '${_params.absoluteCompletions}',
+                    color: secondaryColor,
+                    valueColor: textColor,
+                  ),
+                  _InfoRow(
+                    label: 'Макс. стрик',
+                    value: '${_params.maxStreak}',
+                    color: secondaryColor,
+                    valueColor: textColor,
+                  ),
+                  _InfoRow(
+                    label: 'Short-perfect',
+                    value: _params.isShortPerfect ? 'Да' : 'Нет',
+                    color: secondaryColor,
+                    valueColor: textColor,
+                  ),
                   _InfoRow(
                     label: 'Утро / День / Вечер',
-                    value: '${(_params.morningRatio * 100).toInt()}% / '
+                    value:
+                        '${(_params.morningRatio * 100).toInt()}% / '
                         '${(_params.afternoonRatio * 100).toInt()}% / '
                         '${(_params.eveningRatio * 100).toInt()}%',
                     color: secondaryColor,
                     valueColor: textColor,
                   ),
-                  _InfoRow(label: 'Scale factor', value: _params.scaleFactor.toStringAsFixed(2), color: secondaryColor, valueColor: textColor),
-                  _InfoRow(label: 'Lushness', value: _params.lushness.toStringAsFixed(2), color: secondaryColor, valueColor: textColor),
+                  _InfoRow(
+                    label: 'Scale factor',
+                    value: _params.scaleFactor.toStringAsFixed(2),
+                    color: secondaryColor,
+                    valueColor: textColor,
+                  ),
+                  _InfoRow(
+                    label: 'Lushness',
+                    value: _params.lushness.toStringAsFixed(2),
+                    color: secondaryColor,
+                    valueColor: textColor,
+                  ),
                 ],
               ),
             ),
@@ -613,7 +664,14 @@ class _InfoRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: TextStyle(color: color, fontSize: 13)),
-          Text(value, style: TextStyle(color: valueColor, fontSize: 13, fontWeight: FontWeight.w600)),
+          Text(
+            value,
+            style: TextStyle(
+              color: valueColor,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );

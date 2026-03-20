@@ -18,9 +18,7 @@ class ArchivedHabitsScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Архив привычек'),
-      ),
+      appBar: AppBar(title: const Text('Архив привычек')),
       body: habitsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Ошибка: $e')),
@@ -38,17 +36,15 @@ class ArchivedHabitsScreen extends ConsumerWidget {
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      'Архив пуст',
-                      style: theme.textTheme.headlineMedium,
-                    ),
+                    Text('Архив пуст', style: theme.textTheme.headlineMedium),
                     const SizedBox(height: 8),
                     Text(
                       'Привычки, которые вы архивируете, '
                       'появятся здесь. Их можно восстановить в любой момент.',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color:
-                            theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.6,
+                        ),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -93,10 +89,7 @@ class _ArchivedHabitTile extends ConsumerWidget {
             vertical: 4,
           ),
           leading: _ArchetypeIcon(archetype: archetype),
-          title: Text(
-            habit.name,
-            style: theme.textTheme.titleSmall,
-          ),
+          title: Text(habit.name, style: theme.textTheme.titleSmall),
           subtitle: Text(
             _subtitleText(habit),
             style: theme.textTheme.bodySmall?.copyWith(
@@ -109,10 +102,7 @@ class _ArchivedHabitTile extends ConsumerWidget {
               // Restore button
               IconButton(
                 tooltip: 'Восстановить',
-                icon: Icon(
-                  Icons.restore_rounded,
-                  color: AppColors.sageGreen,
-                ),
+                icon: Icon(Icons.restore_rounded, color: AppColors.sageGreen),
                 onPressed: () => _restore(context, ref),
               ),
               // Permanent delete button
@@ -132,23 +122,19 @@ class _ArchivedHabitTile extends ConsumerWidget {
   }
 
   String _subtitleText(Habit habit) {
-    final category =
-        habit.category.isNotEmpty && habit.category != 'general'
-            ? habit.category
-            : null;
-    final parts = <String>[
-      ?category,
-      'Архивировано',
-    ];
+    final category = habit.category.isNotEmpty && habit.category != 'general'
+        ? habit.category
+        : null;
+    final parts = <String>[?category, 'Архивировано'];
     return parts.join(' · ');
   }
 
   Future<void> _restore(BuildContext context, WidgetRef ref) async {
     await ref.read(habitActionsProvider.notifier).unarchiveHabit(habit.id);
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('«${habit.name}» восстановлена')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('«${habit.name}» восстановлена')));
     }
   }
 
@@ -197,9 +183,7 @@ class _ArchetypeIcon extends StatelessWidget {
         color: archetype.color.withValues(alpha: 0.15),
         borderRadius: AppRadius.borderS,
       ),
-      child: Center(
-        child: Icon(archetype.icon, color: archetype.color),
-      ),
+      child: Center(child: Icon(archetype.icon, color: archetype.color)),
     );
   }
 }

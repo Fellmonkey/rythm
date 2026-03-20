@@ -86,28 +86,36 @@ final dayProgressProvider = Provider<double>((ref) {
 
 /// Computed metrics for a specific habit in a specific month.
 final habitMetricsProvider =
-    FutureProvider.family<HabitMetrics, ({int habitId, int year, int month})>(
-  (ref, params) async {
-    final dao = ref.watch(habitLogsDaoProvider);
-    final habitsDao = ref.watch(habitsDaoProvider);
+    FutureProvider.family<HabitMetrics, ({int habitId, int year, int month})>((
+      ref,
+      params,
+    ) async {
+      final dao = ref.watch(habitLogsDaoProvider);
+      final habitsDao = ref.watch(habitsDaoProvider);
 
-    final habit = await habitsDao.getHabit(params.habitId);
+      final habit = await habitsDao.getHabit(params.habitId);
 
-    final monthStart = DateTime.utc(params.year, params.month, 1);
-    final monthEnd = DateTime.utc(params.year, params.month + 1, 1);
-    final logs = await dao.getLogsForHabitInRange(
-      params.habitId,
-      monthStart.unixSeconds,
-      monthEnd.unixSeconds,
-    );
+      final monthStart = DateTime.utc(params.year, params.month, 1);
+      final monthEnd = DateTime.utc(params.year, params.month + 1, 1);
+      final logs = await dao.getLogsForHabitInRange(
+        params.habitId,
+        monthStart.unixSeconds,
+        monthEnd.unixSeconds,
+      );
 
-    return HabitEngine.calculateMetrics(habit, logs, params.year, params.month);
-  },
-);
+      return HabitEngine.calculateMetrics(
+        habit,
+        logs,
+        params.year,
+        params.month,
+      );
+    });
 
 // ── Schrödinger Checker ──────────────────────────────────────
 
-final schrodingerCheckerProvider = FutureProvider<SchrodingerChecker>((ref) async {
+final schrodingerCheckerProvider = FutureProvider<SchrodingerChecker>((
+  ref,
+) async {
   final prefs = await ref.watch(sharedPrefsProvider.future);
   return SchrodingerChecker(
     habitsDao: ref.watch(habitsDaoProvider),
@@ -119,15 +127,16 @@ final schrodingerCheckerProvider = FutureProvider<SchrodingerChecker>((ref) asyn
 /// Pending negative habits that need user confirmation.
 final pendingNegativeHabitsProvider =
     FutureProvider<List<PendingNegativeHabit>>((ref) async {
-  final checker = await ref.watch(schrodingerCheckerProvider.future);
-  return checker.checkPendingNegativeHabits();
-});
+      final checker = await ref.watch(schrodingerCheckerProvider.future);
+      return checker.checkPendingNegativeHabits();
+    });
 
 // ── Habit actions (mutations) ────────────────────────────────
 
 /// Notifier for creating/updating/deleting habits and logging completions.
-final habitActionsProvider =
-    NotifierProvider<HabitActions, void>(HabitActions.new);
+final habitActionsProvider = NotifierProvider<HabitActions, void>(
+  HabitActions.new,
+);
 
 class HabitActions extends Notifier<void> {
   @override
@@ -147,26 +156,24 @@ class HabitActions extends Notifier<void> {
     bool isFocus = false,
   }) async {
     final now = DateTime.now().toMidnight;
-    return _habitsDao.insertHabit(HabitsCompanion(
-      name: Value(name),
-      category: Value(category),
-      seedArchetype: Value(seedArchetype.name),
-      frequencyType: Value(frequencyType.name),
-      frequencyValue: Value(frequencyValue),
-      timeOfDay: Value(timeOfDay.name),
-      isFocus: Value(isFocus),
-      createdAt: Value(now.unixSeconds),
-    ));
+    return _habitsDao.insertHabit(
+      HabitsCompanion(
+        name: Value(name),
+        category: Value(category),
+        seedArchetype: Value(seedArchetype.name),
+        frequencyType: Value(frequencyType.name),
+        frequencyValue: Value(frequencyValue),
+        timeOfDay: Value(timeOfDay.name),
+        isFocus: Value(isFocus),
+        createdAt: Value(now.unixSeconds),
+      ),
+    );
   }
 
   /// Mark a habit as done for today.
   Future<void> markDone(int habitId) async {
     final now = DateTime.now();
-    await _logsDao.markDone(
-      habitId,
-      now.toMidnight.unixSeconds,
-      now.hour,
-    );
+    await _logsDao.markDone(habitId, now.toMidnight.unixSeconds, now.hour);
   }
 
   /// Mark a habit as skipped for today.
@@ -214,16 +221,19 @@ class HabitActions extends Notifier<void> {
     required TimeOfDay timeOfDay,
   }) async {
     final existing = await _habitsDao.getHabit(habitId);
-    await _habitsDao.updateHabit(HabitsCompanion(
-      id: Value(habitId),
-      name: Value(name),
-      category: Value(existing.category),
-      seedArchetype: Value(seedArchetype.name),
-      frequencyType: Value(frequencyType.name),
-      frequencyValue: Value(frequencyValue),
-      timeOfDay: Value(timeOfDay.name),
-      isFocus: Value(existing.isFocus),
-      isArchived: Value(existing.isArchived),
-      createdAt: Value(existing.createdAt),
-    ));
-  }}
+    await _habitsDao.updateHabit(
+      HabitsCompanion(
+        id: Value(habitId),
+        name: Value(name),
+        category: Value(existing.category),
+        seedArchetype: Value(seedArchetype.name),
+        frequencyType: Value(frequencyType.name),
+        frequencyValue: Value(frequencyValue),
+        timeOfDay: Value(timeOfDay.name),
+        isFocus: Value(existing.isFocus),
+        isArchived: Value(existing.isArchived),
+        createdAt: Value(existing.createdAt),
+      ),
+    );
+  }
+}

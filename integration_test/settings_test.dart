@@ -17,8 +17,9 @@ void main() {
       await db.close();
     });
 
-    testWidgets('all settings tiles are tappable and accessible',
-        (tester) async {
+    testWidgets('all settings tiles are tappable and accessible', (
+      tester,
+    ) async {
       db = await pumpApp(tester);
 
       // Navigate to Settings.
@@ -115,39 +116,43 @@ void main() {
     });
 
     testWidgets(
-        'card generation shows snackbar when no crystallized months exist',
-        (tester) async {
-      db = await pumpApp(tester);
+      'card generation shows snackbar when no crystallized months exist',
+      (tester) async {
+        db = await pumpApp(tester);
 
-      await tester.tap(find.text('Ещё'));
-      await tester.pumpAndSettle();
+        await tester.tap(find.text('Ещё'));
+        await tester.pumpAndSettle();
 
-      // Scroll down to reveal the card tile.
-      await tester.drag(find.byType(ListView), const Offset(0, -300));
-      await tester.pumpAndSettle();
+        // Scroll down to reveal the card tile.
+        await tester.drag(find.byType(ListView), const Offset(0, -300));
+        await tester.pumpAndSettle();
 
-      // Tap "Карточка месяца" with empty DB.
-      await tester.tap(find.byKey(K.settingsCard));
-      await tester.pumpAndSettle();
+        // Tap "Карточка месяца" with empty DB.
+        await tester.tap(find.byKey(K.settingsCard));
+        await tester.pumpAndSettle();
 
-      // Should show "no data" snackbar.
-      expect(
-        find.text('Пока нет завершённых месяцев для генерации карточки.'),
-        findsOneWidget,
-      );
-    });
+        // Should show "no data" snackbar.
+        expect(
+          find.text('Пока нет завершённых месяцев для генерации карточки.'),
+          findsOneWidget,
+        );
+      },
+    );
 
-    testWidgets('backup export → import round-trip via DAO layer',
-        (tester) async {
+    testWidgets('backup export → import round-trip via DAO layer', (
+      tester,
+    ) async {
       db = await pumpApp(tester);
 
       // Seed data: a habit + log.
-      await db.habitsDao.insertHabit(HabitsCompanion(
-        name: const Value('Round-Trip Habit'),
-        createdAt: Value(
-          DateTime.utc(2026, 1, 1).millisecondsSinceEpoch ~/ 1000,
+      await db.habitsDao.insertHabit(
+        HabitsCompanion(
+          name: const Value('Round-Trip Habit'),
+          createdAt: Value(
+            DateTime.utc(2026, 1, 1).millisecondsSinceEpoch ~/ 1000,
+          ),
         ),
-      ));
+      );
 
       // Export via BackupService (programmatic check, not UI — because
       // SharePlus is platform-dependent and can't be tested in integration).

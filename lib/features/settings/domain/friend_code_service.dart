@@ -8,10 +8,7 @@ import '../../habits/data/habits_dao.dart';
 /// Format: garden objects + habit names serialized to JSON, then base64-encoded.
 /// Recipient can view the sender's garden in read-only mode.
 class FriendCodeService {
-  FriendCodeService({
-    required this.habitsDao,
-    required this.gardenObjectsDao,
-  });
+  FriendCodeService({required this.habitsDao, required this.gardenObjectsDao});
 
   final HabitsDao habitsDao;
   final GardenObjectsDao gardenObjectsDao;
@@ -25,10 +22,7 @@ class FriendCodeService {
 
     final habitMap = <int, Map<String, dynamic>>{};
     for (final h in habits) {
-      habitMap[h.id] = {
-        'name': h.name,
-        'archetype': h.seedArchetype,
-      };
+      habitMap[h.id] = {'name': h.name, 'archetype': h.seedArchetype};
     }
 
     final gardenData = objects.map((o) {
@@ -50,10 +44,7 @@ class FriendCodeService {
       };
     }).toList();
 
-    final payload = {
-      'v': 1,
-      'data': gardenData,
-    };
+    final payload = {'v': 1, 'data': gardenData};
 
     final jsonStr = jsonEncode(payload);
     final bytes = utf8.encode(jsonStr);
@@ -105,9 +96,8 @@ class FriendCodeService {
   /// (average completion >= 80%).
   static bool qualifiesForCrossPollination(GuestGarden garden) {
     if (garden.entries.isEmpty) return false;
-    final avgPct = garden.entries
-            .map((e) => e.completionPct)
-            .reduce((a, b) => a + b) /
+    final avgPct =
+        garden.entries.map((e) => e.completionPct).reduce((a, b) => a + b) /
         garden.entries.length;
     return avgPct >= 80.0;
   }

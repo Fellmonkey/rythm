@@ -28,8 +28,10 @@ class GrassPainter extends CustomPainter {
     _drawGround(canvas, centerX, baseY, size, rng, scale);
 
     // Grass blade clusters
-    final numTufts =
-        (3 + (params.absoluteCompletions * 0.2).round()).clamp(2, 7);
+    final numTufts = (3 + (params.absoluteCompletions * 0.2).round()).clamp(
+      2,
+      7,
+    );
     for (var i = 0; i < numTufts; i++) {
       final tx = centerX + (rng.nextDouble() - 0.5) * size.width * 0.5;
       final ty = baseY + (rng.nextDouble() - 0.5) * size.height * 0.06;
@@ -37,8 +39,7 @@ class GrassPainter extends CustomPainter {
     }
 
     // Occasional wildflowers
-    final numFlowers =
-        (params.absoluteCompletions * 0.15).round().clamp(0, 4);
+    final numFlowers = (params.absoluteCompletions * 0.15).round().clamp(0, 4);
     for (var i = 0; i < numFlowers; i++) {
       final fx = centerX + (rng.nextDouble() - 0.5) * size.width * 0.45;
       final fy = baseY + (rng.nextDouble() - 0.5) * size.height * 0.05;
@@ -49,8 +50,14 @@ class GrassPainter extends CustomPainter {
     _drawDecorations(canvas, centerX, baseY, size, rng, scale);
   }
 
-  void _drawGround(Canvas canvas, double cx, double baseY, Size size,
-      Random rng, double scale) {
+  void _drawGround(
+    Canvas canvas,
+    double cx,
+    double baseY,
+    Size size,
+    Random rng,
+    double scale,
+  ) {
     // Soft dirt/earth base
     canvas.drawOval(
       Rect.fromCenter(
@@ -64,8 +71,13 @@ class GrassPainter extends CustomPainter {
     );
   }
 
-  void _drawGrassTuft(Canvas canvas, double cx, double baseY, Random rng,
-      double scale) {
+  void _drawGrassTuft(
+    Canvas canvas,
+    double cx,
+    double baseY,
+    Random rng,
+    double scale,
+  ) {
     final numBlades = 5 + rng.nextInt(6);
     final colors = ColorResolver.leafGradient(
       morningRatio: params.morningRatio,
@@ -84,15 +96,20 @@ class GrassPainter extends CustomPainter {
       final ctrlX = cx + lean * 0.4 + curveAmount;
       final ctrlY = baseY - height * 0.55;
 
-      final color = colors[rng.nextInt(colors.length)]
-          .withValues(alpha: 0.45 + rng.nextDouble() * 0.45);
+      final color = colors[rng.nextInt(colors.length)].withValues(
+        alpha: 0.45 + rng.nextDouble() * 0.45,
+      );
 
       // Draw blade as a tapered path
       final bladePath = Path()
         ..moveTo(cx - bladeWidth * 0.5, baseY)
         ..quadraticBezierTo(ctrlX - bladeWidth * 0.3, ctrlY, tipX, tipY)
         ..quadraticBezierTo(
-            ctrlX + bladeWidth * 0.3, ctrlY, cx + bladeWidth * 0.5, baseY)
+          ctrlX + bladeWidth * 0.3,
+          ctrlY,
+          cx + bladeWidth * 0.5,
+          baseY,
+        )
         ..close();
 
       canvas.drawPath(
@@ -104,8 +121,13 @@ class GrassPainter extends CustomPainter {
     }
   }
 
-  void _drawWildflower(Canvas canvas, double cx, double baseY, Random rng,
-      double scale) {
+  void _drawWildflower(
+    Canvas canvas,
+    double cx,
+    double baseY,
+    Random rng,
+    double scale,
+  ) {
     // Stem
     final stemH = (10 + rng.nextDouble() * 15) * scale;
     final lean = (rng.nextDouble() - 0.5) * 8 * scale;
@@ -115,8 +137,7 @@ class GrassPainter extends CustomPainter {
     canvas.drawPath(
       Path()
         ..moveTo(cx, baseY)
-        ..quadraticBezierTo(
-            cx + lean * 0.5, baseY - stemH * 0.5, tipX, tipY),
+        ..quadraticBezierTo(cx + lean * 0.5, baseY - stemH * 0.5, tipX, tipY),
       Paint()
         ..color = ColorResolver.mossGreen.withValues(alpha: 0.5)
         ..style = PaintingStyle.stroke
@@ -132,10 +153,15 @@ class GrassPainter extends CustomPainter {
 
     for (var p = 0; p < numPetals; p++) {
       final a = (p / numPetals) * 2 * pi + rng.nextDouble() * 0.3;
-      petalPaint.color = flowerColor.withValues(alpha: 0.5 + rng.nextDouble() * 0.35);
+      petalPaint.color = flowerColor.withValues(
+        alpha: 0.5 + rng.nextDouble() * 0.35,
+      );
       canvas.drawOval(
         Rect.fromCenter(
-          center: Offset(tipX + cos(a) * petalR * 0.7, tipY + sin(a) * petalR * 0.7),
+          center: Offset(
+            tipX + cos(a) * petalR * 0.7,
+            tipY + sin(a) * petalR * 0.7,
+          ),
           width: petalR * 1.1,
           height: petalR * 0.7,
         ),
@@ -159,8 +185,14 @@ class GrassPainter extends CustomPainter {
     return flowers[rng.nextInt(flowers.length)];
   }
 
-  void _drawDecorations(Canvas canvas, double cx, double baseY, Size size,
-      Random rng, double scale) {
+  void _drawDecorations(
+    Canvas canvas,
+    double cx,
+    double baseY,
+    Size size,
+    Random rng,
+    double scale,
+  ) {
     // Fallen leaf or two
     final numLeaves = rng.nextInt(3);
     final leafPaint = Paint()..style = PaintingStyle.fill;
@@ -196,8 +228,9 @@ class GrassPainter extends CustomPainter {
       final sx = cx + (rng.nextDouble() - 0.5) * size.width * 0.35;
       final sy = baseY + (rng.nextDouble() - 0.3) * 5 * scale;
       final sr = (1 + rng.nextDouble() * 2) * scale;
-      seedPaint.color =
-          ColorResolver.pebbleGrey.withValues(alpha: 0.2 + rng.nextDouble() * 0.15);
+      seedPaint.color = ColorResolver.pebbleGrey.withValues(
+        alpha: 0.2 + rng.nextDouble() * 0.15,
+      );
       canvas.drawOval(
         Rect.fromCenter(
           center: Offset(sx, sy),

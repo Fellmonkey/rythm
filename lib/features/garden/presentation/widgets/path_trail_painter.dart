@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 /// Draws a winding path (trail) down the center of the Time Path screen.
 /// Each month segment gets a portion of the path with organic Bezier curves.
 class PathTrailPainter extends CustomPainter {
-  PathTrailPainter({
-    required this.segmentCount,
-    required this.isDark,
-  });
+  PathTrailPainter({required this.segmentCount, required this.isDark});
 
   final int segmentCount;
   final bool isDark;
@@ -21,16 +18,12 @@ class PathTrailPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.round
-      ..color = isDark
-          ? const Color(0xFF2A3A4E)
-          : const Color(0xFFD4CEC3);
+      ..color = isDark ? const Color(0xFF2A3A4E) : const Color(0xFFD4CEC3);
 
     // Dot pattern for the path
     final dotPaint = Paint()
       ..style = PaintingStyle.fill
-      ..color = isDark
-          ? const Color(0xFF3A4A5E)
-          : const Color(0xFFC4BEB3);
+      ..color = isDark ? const Color(0xFF3A4A5E) : const Color(0xFFC4BEB3);
 
     final centerX = size.width / 2;
     const amplitude = 60.0;
@@ -75,9 +68,7 @@ class PathTrailPainter extends CustomPainter {
     }
 
     paint
-      ..color = (isDark
-              ? const Color(0xFF2A3A4E)
-              : const Color(0xFFD4CEC3))
+      ..color = (isDark ? const Color(0xFF2A3A4E) : const Color(0xFFD4CEC3))
           .withValues(alpha: 0.3)
       ..strokeWidth = 2;
     canvas.drawPath(path, paint);
@@ -85,6 +76,5 @@ class PathTrailPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(PathTrailPainter oldDelegate) =>
-      segmentCount != oldDelegate.segmentCount ||
-      isDark != oldDelegate.isDark;
+      segmentCount != oldDelegate.segmentCount || isDark != oldDelegate.isDark;
 }

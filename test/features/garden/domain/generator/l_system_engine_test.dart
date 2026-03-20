@@ -8,46 +8,28 @@ void main() {
 
   group('LSystemEngine.expand', () {
     test('depth=0 returns axiom unchanged', () {
-      expect(
-        LSystemEngine.expand('F', {'F': 'FF'}, 0),
-        equals('F'),
-      );
+      expect(LSystemEngine.expand('F', {'F': 'FF'}, 0), equals('F'));
     });
 
     test('depth=1 with rule F→FF expands F to FF', () {
-      expect(
-        LSystemEngine.expand('F', {'F': 'FF'}, 1),
-        equals('FF'),
-      );
+      expect(LSystemEngine.expand('F', {'F': 'FF'}, 1), equals('FF'));
     });
 
     test('depth=2 with rule F→FF expands F to FFFF', () {
-      expect(
-        LSystemEngine.expand('F', {'F': 'FF'}, 2),
-        equals('FFFF'),
-      );
+      expect(LSystemEngine.expand('F', {'F': 'FF'}, 2), equals('FFFF'));
     });
 
     test('non-rule symbols pass through unchanged', () {
-      expect(
-        LSystemEngine.expand('F+G', {'F': 'FF'}, 1),
-        equals('FF+G'),
-      );
+      expect(LSystemEngine.expand('F+G', {'F': 'FF'}, 1), equals('FF+G'));
     });
 
     test('empty rules returns axiom unchanged', () {
-      expect(
-        LSystemEngine.expand('F+G', {}, 1),
-        equals('F+G'),
-      );
+      expect(LSystemEngine.expand('F+G', {}, 1), equals('F+G'));
     });
 
     test('multiple rules applied simultaneously', () {
       final rules = {'F': 'FF', 'G': 'F+G'};
-      expect(
-        LSystemEngine.expand('FG', rules, 1),
-        equals('FFF+G'),
-      );
+      expect(LSystemEngine.expand('FG', rules, 1), equals('FFF+G'));
     });
   });
 
@@ -162,12 +144,12 @@ void main() {
 
     test('determinism: same input without rng always produces same output', () {
       List<LSegment> run() => LSystemEngine.interpret(
-            'F[+F]-F',
-            stepLength: 10,
-            angleIncrement: pi / 6,
-            startX: 5,
-            startY: 5,
-          );
+        'F[+F]-F',
+        stepLength: 10,
+        angleIncrement: pi / 6,
+        startX: 5,
+        startY: 5,
+      );
 
       final a = run();
       final b = run();
@@ -185,11 +167,11 @@ void main() {
 
     test('reproducibility: same Random seed produces identical segments', () {
       List<LSegment> run() => LSystemEngine.interpret(
-            'FF[+F][-F]F',
-            stepLength: 10,
-            angleIncrement: pi / 6,
-            rng: Random(42),
-          );
+        'FF[+F][-F]F',
+        stepLength: 10,
+        angleIncrement: pi / 6,
+        rng: Random(42),
+      );
 
       final a = run();
       final b = run();
@@ -208,30 +190,22 @@ void main() {
 
   group('LSegment', () {
     test('midX is average of x1 and x2', () {
-      const seg = LSegment(
-        x1: 0, y1: 0, x2: 10, y2: 0, thickness: 1, depth: 0,
-      );
+      const seg = LSegment(x1: 0, y1: 0, x2: 10, y2: 0, thickness: 1, depth: 0);
       expect(seg.midX, equals(5.0));
     });
 
     test('midY is average of y1 and y2', () {
-      const seg = LSegment(
-        x1: 0, y1: 4, x2: 0, y2: 10, thickness: 1, depth: 0,
-      );
+      const seg = LSegment(x1: 0, y1: 4, x2: 0, y2: 10, thickness: 1, depth: 0);
       expect(seg.midY, equals(7.0));
     });
 
     test('length computed correctly for horizontal segment', () {
-      const seg = LSegment(
-        x1: 0, y1: 0, x2: 3, y2: 4, thickness: 1, depth: 0,
-      );
+      const seg = LSegment(x1: 0, y1: 0, x2: 3, y2: 4, thickness: 1, depth: 0);
       expect(seg.length, closeTo(5.0, 1e-9));
     });
 
     test('length is zero for point segment', () {
-      const seg = LSegment(
-        x1: 5, y1: 5, x2: 5, y2: 5, thickness: 1, depth: 0,
-      );
+      const seg = LSegment(x1: 5, y1: 5, x2: 5, y2: 5, thickness: 1, depth: 0);
       expect(seg.length, equals(0.0));
     });
   });

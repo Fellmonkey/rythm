@@ -31,7 +31,8 @@ abstract final class DebugProfiles {
     return [
       for (final level in completionLevels)
         DebugProfile(
-          name: '${_objectEmoji(level.objectType)} ${_levelRu(level.name)} — '
+          name:
+              '${_objectEmoji(level.objectType)} ${_levelRu(level.name)} — '
               '${level.pct.toInt()}%',
           description: '${level.objectType.name}, стрик ${level.streak}',
           params: allFixtures.firstWhere(
@@ -82,7 +83,8 @@ abstract final class DebugProfiles {
       for (final dist in timeDistributions)
         DebugProfile(
           name: '${_timeEmoji(dist.name)} ${_timeRu(dist.name)} — 95%',
-          description: 'Дуб, '
+          description:
+              'Дуб, '
               '${(dist.morning * 100).toInt()}/'
               '${(dist.afternoon * 100).toInt()}/'
               '${(dist.evening * 100).toInt()}',
@@ -100,44 +102,44 @@ abstract final class DebugProfiles {
   // ── Display helpers ────────────────────────────────────────
 
   static String _objectEmoji(GardenObjectType type) => switch (type) {
-        GardenObjectType.sleepingBulb => '🌱',
-        GardenObjectType.moss => '🌿',
-        GardenObjectType.bush => '🌳',
-        GardenObjectType.tree => '🌲',
-        GardenObjectType.grass => '🌾',
-      };
+    GardenObjectType.sleepingBulb => '🌱',
+    GardenObjectType.moss => '🌿',
+    GardenObjectType.bush => '🌳',
+    GardenObjectType.tree => '🌲',
+    GardenObjectType.grass => '🌾',
+  };
 
   static String _levelRu(String name) => switch (name) {
-        'zero' => 'Спящая луковица',
-        'low' => 'Мох — низкий',
-        'mid' => 'Куст — средний',
-        'threshold' => 'Дерево — порог',
-        'high' => 'Дерево — высокий',
-        _ => name,
-      };
+    'zero' => 'Спящая луковица',
+    'low' => 'Мох — низкий',
+    'mid' => 'Куст — средний',
+    'threshold' => 'Дерево — порог',
+    'high' => 'Дерево — высокий',
+    _ => name,
+  };
 
   static String _archetypeEmoji(SeedArchetype arch) => switch (arch) {
-        SeedArchetype.oak => '🌳',
-        SeedArchetype.sakura => '🌸',
-        SeedArchetype.pine => '🌲',
-        SeedArchetype.willow => '🍃',
-        SeedArchetype.baobab => '🏛️',
-        SeedArchetype.palm => '🌴',
-      };
+    SeedArchetype.oak => '🌳',
+    SeedArchetype.sakura => '🌸',
+    SeedArchetype.pine => '🌲',
+    SeedArchetype.willow => '🍃',
+    SeedArchetype.baobab => '🏛️',
+    SeedArchetype.palm => '🌴',
+  };
 
   static String _timeEmoji(String name) => switch (name) {
-        'morning' => '🌅',
-        'afternoon' => '☀️',
-        'evening' => '🌙',
-        'mixed' => '🔄',
-        _ => '⏰',
-      };
+    'morning' => '🌅',
+    'afternoon' => '☀️',
+    'evening' => '🌙',
+    'mixed' => '🔄',
+    _ => '⏰',
+  };
 
   static String _timeRu(String name) => switch (name) {
-        'morning' => 'Только утро',
-        'afternoon' => 'Только день',
-        'evening' => 'Только вечер',
-        'mixed' => 'Смешанный',
-        _ => name,
-      };
+    'morning' => 'Только утро',
+    'afternoon' => 'Только день',
+    'evening' => 'Только вечер',
+    'mixed' => 'Смешанный',
+    _ => name,
+  };
 }

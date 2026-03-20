@@ -12,14 +12,16 @@ class HabitLogsDao extends DatabaseAccessor<AppDatabase>
 
   /// Watch logs for a specific date (unix timestamp normalized to midnight).
   Stream<List<HabitLog>> watchLogsForDate(int dateTimestamp) {
-    return (select(habitLogs)..where((l) => l.date.equals(dateTimestamp)))
-        .watch();
+    return (select(
+      habitLogs,
+    )..where((l) => l.date.equals(dateTimestamp))).watch();
   }
 
   /// Get all logs for a specific date.
   Future<List<HabitLog>> getLogsForDate(int dateTimestamp) {
-    return (select(habitLogs)..where((l) => l.date.equals(dateTimestamp)))
-        .get();
+    return (select(
+      habitLogs,
+    )..where((l) => l.date.equals(dateTimestamp))).get();
   }
 
   /// Get all logs for a habit in a given month (start <= date < end).
@@ -68,17 +70,18 @@ class HabitLogsDao extends DatabaseAccessor<AppDatabase>
 
   /// Upsert a log entry: insert or update status for (habitId, date).
   Future<void> upsertLog(HabitLogsCompanion entry) async {
-    final existing = await (select(habitLogs)
-          ..where(
-            (l) =>
-                l.habitId.equals(entry.habitId.value) &
-                l.date.equals(entry.date.value),
-          ))
-        .getSingleOrNull();
+    final existing =
+        await (select(habitLogs)..where(
+              (l) =>
+                  l.habitId.equals(entry.habitId.value) &
+                  l.date.equals(entry.date.value),
+            ))
+            .getSingleOrNull();
 
     if (existing != null) {
-      await (update(habitLogs)..where((l) => l.id.equals(existing.id)))
-          .write(entry);
+      await (update(
+        habitLogs,
+      )..where((l) => l.id.equals(existing.id))).write(entry);
     } else {
       await into(habitLogs).insert(entry);
     }
@@ -86,37 +89,43 @@ class HabitLogsDao extends DatabaseAccessor<AppDatabase>
 
   /// Mark a habit as done for today.
   Future<void> markDone(int habitId, int dateTimestamp, int hour) {
-    return upsertLog(HabitLogsCompanion(
-      habitId: Value(habitId),
-      date: Value(dateTimestamp),
-      status: const Value('done'),
-      loggedHour: Value(hour),
-    ));
+    return upsertLog(
+      HabitLogsCompanion(
+        habitId: Value(habitId),
+        date: Value(dateTimestamp),
+        status: const Value('done'),
+        loggedHour: Value(hour),
+      ),
+    );
   }
 
   /// Mark a habit as skipped.
   Future<void> markSkip(int habitId, int dateTimestamp) {
-    return upsertLog(HabitLogsCompanion(
-      habitId: Value(habitId),
-      date: Value(dateTimestamp),
-      status: const Value('skip'),
-    ));
+    return upsertLog(
+      HabitLogsCompanion(
+        habitId: Value(habitId),
+        date: Value(dateTimestamp),
+        status: const Value('skip'),
+      ),
+    );
   }
 
   /// Mark a habit as failed.
   Future<void> markFail(int habitId, int dateTimestamp) {
-    return upsertLog(HabitLogsCompanion(
-      habitId: Value(habitId),
-      date: Value(dateTimestamp),
-      status: const Value('fail'),
-    ));
+    return upsertLog(
+      HabitLogsCompanion(
+        habitId: Value(habitId),
+        date: Value(dateTimestamp),
+        status: const Value('fail'),
+      ),
+    );
   }
 
   /// Delete old logs (older than a cutoff timestamp).
   Future<int> deleteLogsBefore(int cutoffTimestamp) {
-    return (delete(habitLogs)
-          ..where((l) => l.date.isSmallerThanValue(cutoffTimestamp)))
-        .go();
+    return (delete(
+      habitLogs,
+    )..where((l) => l.date.isSmallerThanValue(cutoffTimestamp))).go();
   }
 
   /// Get ALL logs for a specific habit ordered newest first.

@@ -46,33 +46,39 @@ void main() {
     });
 
     testWidgets(
-        'create 4 habits in different ToD groups and verify grouping + progress',
-        (tester) async {
-      db = await pumpApp(tester);
+      'create 4 habits in different ToD groups and verify grouping + progress',
+      (tester) async {
+        db = await pumpApp(tester);
 
-      // Create habits across different time-of-day groups.
-      await _createHabit(tester, name: 'Зарядка', timeOfDay: 'Утро');
-      await _createHabit(tester, name: 'Читать', timeOfDay: 'Вечер');
-      await _createHabit(tester, name: 'Обед без телефона', timeOfDay: 'День');
-      await _createHabit(tester, name: 'Дневник', timeOfDay: 'Вечер');
+        // Create habits across different time-of-day groups.
+        await _createHabit(tester, name: 'Зарядка', timeOfDay: 'Утро');
+        await _createHabit(tester, name: 'Читать', timeOfDay: 'Вечер');
+        await _createHabit(
+          tester,
+          name: 'Обед без телефона',
+          timeOfDay: 'День',
+        );
+        await _createHabit(tester, name: 'Дневник', timeOfDay: 'Вечер');
 
-      // All four habits are visible.
-      expect(find.text('Зарядка'), findsOneWidget);
-      expect(find.text('Читать'), findsOneWidget);
-      expect(find.text('Обед без телефона'), findsOneWidget);
-      expect(find.text('Дневник'), findsOneWidget);
+        // All four habits are visible.
+        expect(find.text('Зарядка'), findsOneWidget);
+        expect(find.text('Читать'), findsOneWidget);
+        expect(find.text('Обед без телефона'), findsOneWidget);
+        expect(find.text('Дневник'), findsOneWidget);
 
-      // Group headers appear.
-      expect(find.text('Утро'), findsOneWidget);
-      expect(find.text('День'), findsOneWidget);
-      expect(find.text('Вечер'), findsOneWidget);
+        // Group headers appear.
+        expect(find.text('Утро'), findsOneWidget);
+        expect(find.text('День'), findsOneWidget);
+        expect(find.text('Вечер'), findsOneWidget);
 
-      // Progress is 0% — none done yet.
-      expect(find.text('0%'), findsOneWidget);
-    });
+        // Progress is 0% — none done yet.
+        expect(find.text('0%'), findsOneWidget);
+      },
+    );
 
-    testWidgets('marking habits updates progress ring correctly',
-        (tester) async {
+    testWidgets('marking habits updates progress ring correctly', (
+      tester,
+    ) async {
       db = await pumpApp(tester);
 
       await _createHabit(tester, name: 'Привычка A', timeOfDay: 'Утро');
@@ -97,35 +103,36 @@ void main() {
     });
 
     testWidgets(
-        'hide-completed toggle hides done habits and shows them again',
-        (tester) async {
-      db = await pumpApp(tester);
+      'hide-completed toggle hides done habits and shows them again',
+      (tester) async {
+        db = await pumpApp(tester);
 
-      await _createHabit(tester, name: 'Видимая', timeOfDay: 'Утро');
-      await _createHabit(tester, name: 'Скрываемая', timeOfDay: 'Утро');
+        await _createHabit(tester, name: 'Видимая', timeOfDay: 'Утро');
+        await _createHabit(tester, name: 'Скрываемая', timeOfDay: 'Утро');
 
-      // Mark "Скрываемая" as done.
-      await tester.tap(find.byKey(K.habitCheck(2)));
-      await tester.pumpAndSettle();
+        // Mark "Скрываемая" as done.
+        await tester.tap(find.byKey(K.habitCheck(2)));
+        await tester.pumpAndSettle();
 
-      // Both still visible.
-      expect(find.text('Видимая'), findsOneWidget);
-      expect(find.text('Скрываемая'), findsOneWidget);
+        // Both still visible.
+        expect(find.text('Видимая'), findsOneWidget);
+        expect(find.text('Скрываемая'), findsOneWidget);
 
-      // Tap hide-completed toggle.
-      await tester.tap(find.byKey(K.hideCompletedToggle));
-      await tester.pumpAndSettle();
+        // Tap hide-completed toggle.
+        await tester.tap(find.byKey(K.hideCompletedToggle));
+        await tester.pumpAndSettle();
 
-      // Done habit hidden, the other remains.
-      expect(find.text('Видимая'), findsOneWidget);
-      expect(find.text('Скрываемая'), findsNothing);
+        // Done habit hidden, the other remains.
+        expect(find.text('Видимая'), findsOneWidget);
+        expect(find.text('Скрываемая'), findsNothing);
 
-      // Toggle back.
-      await tester.tap(find.byKey(K.hideCompletedToggle));
-      await tester.pumpAndSettle();
+        // Toggle back.
+        await tester.tap(find.byKey(K.hideCompletedToggle));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Скрываемая'), findsOneWidget);
-    });
+        expect(find.text('Скрываемая'), findsOneWidget);
+      },
+    );
 
     testWidgets('"Mark All" in a group marks all habits done', (tester) async {
       db = await pumpApp(tester);

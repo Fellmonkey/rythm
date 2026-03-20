@@ -58,18 +58,21 @@ class TreePainter extends CustomPainter {
   // ────────────────────────────────────────────────────────────
 
   List<Color> get _leafColors => ColorResolver.leafGradient(
-        morningRatio: params.morningRatio,
-        afternoonRatio: params.afternoonRatio,
-        eveningRatio: params.eveningRatio,
-      );
+    morningRatio: params.morningRatio,
+    afternoonRatio: params.afternoonRatio,
+    eveningRatio: params.eveningRatio,
+  );
 
   /// Tapered branch segment rendered as a filled trapezoid — looks far more
   /// natural than a constant-width stroke.
   void _drawTaperedBranch(
     Canvas canvas,
-    double x1, double y1,
-    double x2, double y2,
-    double w1, double w2,
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    double w1,
+    double w2,
     Color color,
   ) {
     final dx = x2 - x1;
@@ -96,8 +99,15 @@ class TreePainter extends CustomPainter {
   }
 
   /// Horizontal bark-texture lines across a segment.
-  void _drawBarkLines(Canvas canvas, double x1, double y1, double x2,
-      double y2, double width, Random rng) {
+  void _drawBarkLines(
+    Canvas canvas,
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    double width,
+    Random rng,
+  ) {
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.6
@@ -126,8 +136,15 @@ class TreePainter extends CustomPainter {
   }
 
   /// Overlapping soft ovals forming a leaf cluster.
-  void _drawLeafCluster(Canvas canvas, double cx, double cy, double radius,
-      Color color, Random rng, int count) {
+  void _drawLeafCluster(
+    Canvas canvas,
+    double cx,
+    double cy,
+    double radius,
+    Color color,
+    Random rng,
+    int count,
+  ) {
     final paint = Paint()..style = PaintingStyle.fill;
     for (var i = 0; i < count; i++) {
       final ox = (rng.nextDouble() - 0.5) * radius * 1.4;
@@ -149,19 +166,25 @@ class TreePainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height * 0.85);
     final glowPaint = Paint()
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 30)
-      ..shader = ui.Gradient.radial(
-        center,
-        size.width * 0.35,
-        [const Color(0x40FFD700), const Color(0x00FFD700)],
-      );
+      ..shader = ui.Gradient.radial(center, size.width * 0.35, [
+        const Color(0x40FFD700),
+        const Color(0x00FFD700),
+      ]);
     canvas.drawCircle(center, size.width * 0.35, glowPaint);
   }
 
   /// Trunk drawn as a chain of small tapered segments following a
   /// quadratic bezier — gives a natural curve.
-  void _drawCurvedTrunk(Canvas canvas, double x1, double y1, double x2,
-      double y2, double width, Random rng,
-      {double curveAmount = 1.0}) {
+  void _drawCurvedTrunk(
+    Canvas canvas,
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    double width,
+    Random rng, {
+    double curveAmount = 1.0,
+  }) {
     const segs = 10;
     final ctrlX =
         (x1 + x2) / 2 + (rng.nextDouble() - 0.5) * width * curveAmount * 2;
@@ -178,9 +201,18 @@ class TreePainter extends CustomPainter {
       final w1 = width * (1 - t1 * 0.4);
       final w2 = width * (1 - t2 * 0.4);
       _drawTaperedBranch(
-        canvas, px1, py1, px2, py2, w1, w2,
-        Color.lerp(ColorResolver.trunkColorDark, ColorResolver.trunkColorLight,
-            t1 * 0.4)!,
+        canvas,
+        px1,
+        py1,
+        px2,
+        py2,
+        w1,
+        w2,
+        Color.lerp(
+          ColorResolver.trunkColorDark,
+          ColorResolver.trunkColorLight,
+          t1 * 0.4,
+        )!,
       );
     }
   }
@@ -229,11 +261,23 @@ class TreePainter extends CustomPainter {
     final tips = <Offset>[];
     final numMajor = 4 + rng.nextInt(3);
     for (var i = 0; i < numMajor; i++) {
-      final a = -pi / 2 +
+      final a =
+          -pi / 2 +
           (i - (numMajor - 1) / 2) * 0.5 +
           (rng.nextDouble() - 0.5) * 0.18;
-      _oakBranch(canvas, topX, topY, a, trunkH * 0.6, trunkW * 0.50, 0,
-          4 + (l * 2).round(), rng, s, tips);
+      _oakBranch(
+        canvas,
+        topX,
+        topY,
+        a,
+        trunkH * 0.6,
+        trunkW * 0.50,
+        0,
+        4 + (l * 2).round(),
+        rng,
+        s,
+        tips,
+      );
     }
 
     // Draw dome canopy from collected leaf tips
@@ -266,7 +310,9 @@ class TreePainter extends CustomPainter {
             height: domeH * (0.80 + layer * 0.1),
           ),
           Paint()
-            ..color = colors[layer % colors.length].withValues(alpha: 0.18 + l * 0.08)
+            ..color = colors[layer % colors.length].withValues(
+              alpha: 0.18 + l * 0.08,
+            )
             ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
         );
       }
@@ -276,16 +322,35 @@ class TreePainter extends CustomPainter {
     for (final tip in tips) {
       final c = colors[rng.nextInt(colors.length)];
       _drawLeafCluster(
-          canvas, tip.dx, tip.dy, leafR, c, rng, (4 + l * 4).round());
+        canvas,
+        tip.dx,
+        tip.dy,
+        leafR,
+        c,
+        rng,
+        (4 + l * 4).round(),
+      );
     }
 
     // Extra mid-canopy fill clusters for density
     if (tips.length >= 2) {
       for (var i = 0; i < tips.length - 1; i++) {
-        final mx = (tips[i].dx + tips[i + 1].dx) / 2 + (rng.nextDouble() - 0.5) * leafR * 0.4;
-        final my = (tips[i].dy + tips[i + 1].dy) / 2 + (rng.nextDouble() - 0.5) * leafR * 0.3;
+        final mx =
+            (tips[i].dx + tips[i + 1].dx) / 2 +
+            (rng.nextDouble() - 0.5) * leafR * 0.4;
+        final my =
+            (tips[i].dy + tips[i + 1].dy) / 2 +
+            (rng.nextDouble() - 0.5) * leafR * 0.3;
         final c = colors[rng.nextInt(colors.length)];
-        _drawLeafCluster(canvas, mx, my, leafR * 0.8, c, rng, (3 + l * 2).round());
+        _drawLeafCluster(
+          canvas,
+          mx,
+          my,
+          leafR * 0.8,
+          c,
+          rng,
+          (3 + l * 2).round(),
+        );
       }
     }
 
@@ -304,9 +369,19 @@ class TreePainter extends CustomPainter {
     }
   }
 
-  void _oakBranch(Canvas canvas, double x, double y, double angle,
-      double length, double thick, int depth, int maxD, Random rng, double s,
-      List<Offset> tips) {
+  void _oakBranch(
+    Canvas canvas,
+    double x,
+    double y,
+    double angle,
+    double length,
+    double thick,
+    int depth,
+    int maxD,
+    Random rng,
+    double s,
+    List<Offset> tips,
+  ) {
     if (depth >= maxD || thick < 0.8) return;
 
     final a = angle + (rng.nextDouble() - 0.5) * 0.15;
@@ -314,8 +389,11 @@ class TreePainter extends CustomPainter {
     final ex = x + cos(a) * len;
     final ey = y + sin(a) * len;
 
-    final c = Color.lerp(ColorResolver.trunkColorDark,
-        ColorResolver.trunkColorLight, (depth / maxD).clamp(0.0, 0.8))!;
+    final c = Color.lerp(
+      ColorResolver.trunkColorDark,
+      ColorResolver.trunkColorLight,
+      (depth / maxD).clamp(0.0, 0.8),
+    )!;
     _drawTaperedBranch(canvas, x, y, ex, ey, thick, thick * 0.62, c);
 
     // Collect tips from deeper levels for denser canopy
@@ -335,13 +413,30 @@ class TreePainter extends CustomPainter {
     final nc = depth < 2 ? 2 + rng.nextInt(2) : 2 + rng.nextInt(2);
     for (var i = 0; i < nc; i++) {
       final ca = a + (i - (nc - 1) / 2) * (0.42 + rng.nextDouble() * 0.22);
-      _oakBranch(canvas, ex, ey, ca, length * (0.55 + rng.nextDouble() * 0.12),
-          thick * (0.52 + rng.nextDouble() * 0.1), depth + 1, maxD, rng, s, tips);
+      _oakBranch(
+        canvas,
+        ex,
+        ey,
+        ca,
+        length * (0.55 + rng.nextDouble() * 0.12),
+        thick * (0.52 + rng.nextDouble() * 0.1),
+        depth + 1,
+        maxD,
+        rng,
+        s,
+        tips,
+      );
     }
   }
 
-  void _drawRoots(Canvas canvas, double cx, double baseY, double trunkW,
-      Random rng, double scale) {
+  void _drawRoots(
+    Canvas canvas,
+    double cx,
+    double baseY,
+    double trunkW,
+    Random rng,
+    double scale,
+  ) {
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
@@ -390,11 +485,21 @@ class TreePainter extends CustomPainter {
     final nb = 5 + rng.nextInt(4); // 5-8 main branches (was 3-5)
     for (var i = 0; i < nb; i++) {
       // Wider angular spread so branches reach far left/right
-      final a = -pi / 2 +
-          (i - (nb - 1) / 2) * 0.55 +
-          (rng.nextDouble() - 0.5) * 0.2;
-      _sakuraBranch(canvas, topX, topY, a, trunkH * 0.65, trunkW * 0.38, 0,
-          4 + (l * 2).round(), rng, s, blossomPts);
+      final a =
+          -pi / 2 + (i - (nb - 1) / 2) * 0.55 + (rng.nextDouble() - 0.5) * 0.2;
+      _sakuraBranch(
+        canvas,
+        topX,
+        topY,
+        a,
+        trunkH * 0.65,
+        trunkW * 0.38,
+        0,
+        4 + (l * 2).round(),
+        rng,
+        s,
+        blossomPts,
+      );
     }
 
     // Draw big dense blossom clusters at all collected positions
@@ -405,9 +510,19 @@ class TreePainter extends CustomPainter {
     // NO falling petals — only attached blossoms on branches
   }
 
-  void _sakuraBranch(Canvas canvas, double x, double y, double angle,
-      double length, double thick, int depth, int maxD, Random rng, double s,
-      List<Offset> blossoms) {
+  void _sakuraBranch(
+    Canvas canvas,
+    double x,
+    double y,
+    double angle,
+    double length,
+    double thick,
+    int depth,
+    int maxD,
+    Random rng,
+    double s,
+    List<Offset> blossoms,
+  ) {
     if (depth >= maxD || thick < 0.6) return;
 
     // Curved segment via two halves with curve offset
@@ -419,11 +534,22 @@ class TreePainter extends CustomPainter {
     final ex = midX + cos(endA) * length * 0.5;
     final ey = midY + sin(endA) * length * 0.5;
 
-    final c = Color.lerp(ColorResolver.trunkColorDark,
-        const Color(0xFF8B7355), (depth / maxD).clamp(0.0, 1.0))!;
+    final c = Color.lerp(
+      ColorResolver.trunkColorDark,
+      const Color(0xFF8B7355),
+      (depth / maxD).clamp(0.0, 1.0),
+    )!;
     _drawTaperedBranch(canvas, x, y, midX, midY, thick, thick * 0.8, c);
     _drawTaperedBranch(
-        canvas, midX, midY, ex, ey, thick * 0.8, thick * 0.55, c);
+      canvas,
+      midX,
+      midY,
+      ex,
+      ey,
+      thick * 0.8,
+      thick * 0.55,
+      c,
+    );
 
     // Add blossoms along ALL branch segments — lots of flowers on each
     if (depth >= 1) {
@@ -445,14 +571,29 @@ class TreePainter extends CustomPainter {
     for (var i = 0; i < nc; i++) {
       final ca =
           endA + (i - (nc - 1) / 2) * 0.45 + (rng.nextDouble() - 0.5) * 0.2;
-      _sakuraBranch(canvas, ex, ey, ca,
-          length * (0.58 + rng.nextDouble() * 0.1), thick * 0.52,
-          depth + 1, maxD, rng, s, blossoms);
+      _sakuraBranch(
+        canvas,
+        ex,
+        ey,
+        ca,
+        length * (0.58 + rng.nextDouble() * 0.1),
+        thick * 0.52,
+        depth + 1,
+        maxD,
+        rng,
+        s,
+        blossoms,
+      );
     }
   }
 
   void _drawBlossomCluster(
-      Canvas canvas, double cx, double cy, double size, Random rng) {
+    Canvas canvas,
+    double cx,
+    double cy,
+    double size,
+    Random rng,
+  ) {
     final paint = Paint()..style = PaintingStyle.fill;
     final count = 4 + rng.nextInt(5);
 
@@ -472,8 +613,9 @@ class TreePainter extends CustomPainter {
       for (var p = 0; p < 5; p++) {
         final pa = p * (2 * pi / 5) + rng.nextDouble() * 0.3;
         final pr = r * 0.45;
-        paint.color =
-            petalColor.withValues(alpha: 0.40 + rng.nextDouble() * 0.45);
+        paint.color = petalColor.withValues(
+          alpha: 0.40 + rng.nextDouble() * 0.45,
+        );
         canvas.drawOval(
           Rect.fromCenter(
             center: Offset(fc.dx + cos(pa) * pr, fc.dy + sin(pa) * pr),
@@ -505,8 +647,16 @@ class TreePainter extends CustomPainter {
     final topY = baseY - treeH;
 
     // Long straight trunk — exposed for ~60% of height
-    _drawTaperedBranch(canvas, cx, baseY, cx, topY, trunkW, trunkW * 0.40,
-        ColorResolver.trunkColorDark);
+    _drawTaperedBranch(
+      canvas,
+      cx,
+      baseY,
+      cx,
+      topY,
+      trunkW,
+      trunkW * 0.40,
+      ColorResolver.trunkColorDark,
+    );
     _drawBarkLines(canvas, cx, baseY, cx, topY, trunkW, rng);
 
     // Crown starts at ~40% from top
@@ -531,16 +681,35 @@ class TreePainter extends CustomPainter {
       final lx = cx + cos(leftAngle) * lLen;
       final ly = tierY + sin(leftAngle) * lLen;
       final branchColor = Color.lerp(
-          ColorResolver.trunkColorDark, ColorResolver.trunkColorLight, 0.3 + t * 0.3)!;
-      _drawTaperedBranch(canvas, cx, tierY, lx, ly,
-          branchThick, branchThick * 0.3, branchColor);
+        ColorResolver.trunkColorDark,
+        ColorResolver.trunkColorLight,
+        0.3 + t * 0.3,
+      )!;
+      _drawTaperedBranch(
+        canvas,
+        cx,
+        tierY,
+        lx,
+        ly,
+        branchThick,
+        branchThick * 0.3,
+        branchColor,
+      );
 
       // Right branch
       final rLen = maxBranchLen * (0.75 + rng.nextDouble() * 0.25);
       final rx = cx + cos(rightAngle) * rLen;
       final ry = tierY + sin(rightAngle) * rLen;
-      _drawTaperedBranch(canvas, cx, tierY, rx, ry,
-          branchThick, branchThick * 0.3, branchColor);
+      _drawTaperedBranch(
+        canvas,
+        cx,
+        tierY,
+        rx,
+        ry,
+        branchThick,
+        branchThick * 0.3,
+        branchColor,
+      );
 
       // Needle pairs along left branch (feathery, like palm leaflets)
       _drawPineNeedles(canvas, cx, tierY, lx, ly, lLen, colors, rng, s, l);
@@ -554,9 +723,16 @@ class TreePainter extends CustomPainter {
       final a = -pi / 2 + (i - 1) * 0.4 + (rng.nextDouble() - 0.5) * 0.2;
       final tLen = treeH * 0.04 * s;
       _drawPineNeedles(
-        canvas, cx, crownTop,
-        cx + cos(a) * tLen, crownTop + sin(a) * tLen,
-        tLen, colors, rng, s, l,
+        canvas,
+        cx,
+        crownTop,
+        cx + cos(a) * tLen,
+        crownTop + sin(a) * tLen,
+        tLen,
+        colors,
+        rng,
+        s,
+        l,
       );
       canvas.drawLine(
         Offset(cx, crownTop),
@@ -570,8 +746,18 @@ class TreePainter extends CustomPainter {
   }
 
   /// Feathery needle pairs along a pine branch segment.
-  void _drawPineNeedles(Canvas canvas, double x1, double y1, double x2,
-      double y2, double branchLen, List<Color> colors, Random rng, double s, double l) {
+  void _drawPineNeedles(
+    Canvas canvas,
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    double branchLen,
+    List<Color> colors,
+    Random rng,
+    double s,
+    double l,
+  ) {
     final dx = x2 - x1;
     final dy = y2 - y1;
     final len = sqrt(dx * dx + dy * dy);
@@ -590,8 +776,9 @@ class TreePainter extends CustomPainter {
       final py = y1 + dy * t;
       final needleLen = branchLen * 0.18 * (1.0 - t * 0.45) * s;
 
-      needlePaint.color = colors[rng.nextInt(colors.length)]
-          .withValues(alpha: 0.35 + rng.nextDouble() * 0.45);
+      needlePaint.color = colors[rng.nextInt(colors.length)].withValues(
+        alpha: 0.35 + rng.nextDouble() * 0.45,
+      );
 
       // Left needle
       final la = spineAngle - pi / 2 + 0.2 + (rng.nextDouble() - 0.5) * 0.2;
@@ -658,7 +845,8 @@ class TreePainter extends CustomPainter {
     for (final tier in branchTiers) {
       for (var i = 0; i < tier.count; i++) {
         // Much wider angular spread for a broad silhouette
-        final angle = -pi / 2 +
+        final angle =
+            -pi / 2 +
             (i - (tier.count - 1) / 2) * 0.70 +
             (rng.nextDouble() - 0.5) * 0.20;
         final bLen = tier.len * (0.65 + rng.nextDouble() * 0.35);
@@ -666,8 +854,16 @@ class TreePainter extends CustomPainter {
         final by = tier.y + sin(angle) * bLen;
         final bThick = trunkW * (0.22 + rng.nextDouble() * 0.12);
 
-        _drawTaperedBranch(canvas, topX, tier.y, bx, by, bThick, bThick * 0.4,
-            ColorResolver.trunkColorLight);
+        _drawTaperedBranch(
+          canvas,
+          topX,
+          tier.y,
+          bx,
+          by,
+          bThick,
+          bThick * 0.4,
+          ColorResolver.trunkColorLight,
+        );
 
         // More strands per branch
         final ns = (4 + l * 6).round();
@@ -678,8 +874,14 @@ class TreePainter extends CustomPainter {
     }
   }
 
-  void _drawWillowStrand(Canvas canvas, double sx, double sy, Random rng,
-      double scale, double lushness) {
+  void _drawWillowStrand(
+    Canvas canvas,
+    double sx,
+    double sy,
+    Random rng,
+    double scale,
+    double lushness,
+  ) {
     final colors = _leafColors;
     final strandLen = (50 + rng.nextDouble() * 90) * scale; // much longer
     final swayX = (rng.nextDouble() - 0.5) * 80 * scale; // much wider sway
@@ -688,8 +890,9 @@ class TreePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = (0.8 + rng.nextDouble() * 0.8) * scale
       ..strokeCap = StrokeCap.round
-      ..color = colors[rng.nextInt(colors.length)]
-          .withValues(alpha: 0.22 + rng.nextDouble() * 0.35);
+      ..color = colors[rng.nextInt(colors.length)].withValues(
+        alpha: 0.22 + rng.nextDouble() * 0.35,
+      );
 
     canvas.drawPath(
       Path()
@@ -713,8 +916,9 @@ class TreePainter extends CustomPainter {
         final t = (k + 1) / (nl + 1);
         final lx = sx + swayX * t * 0.7 + (rng.nextDouble() - 0.5) * 3;
         final ly = sy + strandLen * t;
-        leafPaint.color = colors[rng.nextInt(colors.length)]
-            .withValues(alpha: 0.30 + rng.nextDouble() * 0.40);
+        leafPaint.color = colors[rng.nextInt(colors.length)].withValues(
+          alpha: 0.30 + rng.nextDouble() * 0.40,
+        );
         canvas.drawOval(
           Rect.fromCenter(
             center: Offset(lx, ly),
@@ -752,28 +956,40 @@ class TreePainter extends CustomPainter {
     // Left edge
     trunkPath.moveTo(cx - baseW / 2, baseY);
     trunkPath.cubicTo(
-      cx - baseW / 2 - 3 * s, baseY - treeH * 0.18,
-      cx - bulgeW / 2, bulgeY + treeH * 0.12,
-      cx - bulgeW / 2, bulgeY,
+      cx - baseW / 2 - 3 * s,
+      baseY - treeH * 0.18,
+      cx - bulgeW / 2,
+      bulgeY + treeH * 0.12,
+      cx - bulgeW / 2,
+      bulgeY,
     );
     trunkPath.cubicTo(
-      cx - bulgeW / 2, bulgeY - treeH * 0.14,
-      cx - topW / 2 - 2 * s, topY + treeH * 0.1,
-      cx - topW / 2, topY,
+      cx - bulgeW / 2,
+      bulgeY - treeH * 0.14,
+      cx - topW / 2 - 2 * s,
+      topY + treeH * 0.1,
+      cx - topW / 2,
+      topY,
     );
 
     trunkPath.lineTo(cx + topW / 2, topY);
 
     // Right edge (mirror)
     trunkPath.cubicTo(
-      cx + topW / 2 + 2 * s, topY + treeH * 0.1,
-      cx + bulgeW / 2, bulgeY - treeH * 0.14,
-      cx + bulgeW / 2, bulgeY,
+      cx + topW / 2 + 2 * s,
+      topY + treeH * 0.1,
+      cx + bulgeW / 2,
+      bulgeY - treeH * 0.14,
+      cx + bulgeW / 2,
+      bulgeY,
     );
     trunkPath.cubicTo(
-      cx + bulgeW / 2, bulgeY + treeH * 0.12,
-      cx + baseW / 2 + 3 * s, baseY - treeH * 0.18,
-      cx + baseW / 2, baseY,
+      cx + bulgeW / 2,
+      bulgeY + treeH * 0.12,
+      cx + baseW / 2 + 3 * s,
+      baseY - treeH * 0.18,
+      cx + baseW / 2,
+      baseY,
     );
     trunkPath.close();
 
@@ -827,17 +1043,24 @@ class TreePainter extends CustomPainter {
     final crownTips = <Offset>[];
 
     for (var i = 0; i < nb; i++) {
-      final angle = -pi / 2 +
-          (i - (nb - 1) / 2) * 0.45 +
-          (rng.nextDouble() - 0.5) * 0.3;
+      final angle =
+          -pi / 2 + (i - (nb - 1) / 2) * 0.45 + (rng.nextDouble() - 0.5) * 0.3;
       final bLen = treeH * (0.08 + rng.nextDouble() * 0.10);
       final bStartX = cx + (rng.nextDouble() - 0.5) * topW * 0.5;
       final bx = bStartX + cos(angle) * bLen;
       final by = topY + sin(angle) * bLen;
       final bThick = (3.5 + rng.nextDouble() * 3) * s;
 
-      _drawTaperedBranch(canvas, bStartX, topY, bx, by, bThick,
-          bThick * 0.35, ColorResolver.trunkColorLight);
+      _drawTaperedBranch(
+        canvas,
+        bStartX,
+        topY,
+        bx,
+        by,
+        bThick,
+        bThick * 0.35,
+        ColorResolver.trunkColorLight,
+      );
       crownTips.add(Offset(bx, by));
     }
 
@@ -867,7 +1090,9 @@ class TreePainter extends CustomPainter {
             height: domeH * (0.85 + layer * 0.1),
           ),
           Paint()
-            ..color = colors[layer % colors.length].withValues(alpha: 0.18 + l * 0.10)
+            ..color = colors[layer % colors.length].withValues(
+              alpha: 0.18 + l * 0.10,
+            )
             ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
         );
       }
@@ -876,8 +1101,15 @@ class TreePainter extends CustomPainter {
     // Detail leaf clusters at each branch tip
     for (final tip in crownTips) {
       final clR = (8 + l * 12) * s;
-      _drawLeafCluster(canvas, tip.dx, tip.dy, clR,
-          colors[rng.nextInt(colors.length)], rng, (3 + l * 3).round());
+      _drawLeafCluster(
+        canvas,
+        tip.dx,
+        tip.dy,
+        clR,
+        colors[rng.nextInt(colors.length)],
+        rng,
+        (3 + l * 3).round(),
+      );
     }
 
     // Fill clusters between tips for density
@@ -886,14 +1118,20 @@ class TreePainter extends CustomPainter {
         final mx = (crownTips[i].dx + crownTips[i + 1].dx) / 2;
         final my = (crownTips[i].dy + crownTips[i + 1].dy) / 2;
         final clR = (6 + l * 8) * s;
-        _drawLeafCluster(canvas, mx, my, clR,
-            colors[rng.nextInt(colors.length)], rng, (2 + l * 2).round());
+        _drawLeafCluster(
+          canvas,
+          mx,
+          my,
+          clR,
+          colors[rng.nextInt(colors.length)],
+          rng,
+          (2 + l * 2).round(),
+        );
       }
     }
   }
 
-  double _baobabHalfWidth(
-      double t, double baseW, double bulgeW, double topW) {
+  double _baobabHalfWidth(double t, double baseW, double bulgeW, double topW) {
     if (t < 0.42) {
       final lt = t / 0.42;
       return (baseW + (bulgeW - baseW) * sin(lt * pi / 2)) / 2;
@@ -925,10 +1163,14 @@ class TreePainter extends CustomPainter {
     const numSegs = 18;
     for (var i = 0; i <= numSegs; i++) {
       final t = i / numSegs;
-      final px =
-          _cBez(cx, cx + curve1, cx + curve2, cx + curve1 * 0.25, t);
-      final py =
-          _cBez(baseY, baseY - treeH * 0.28, baseY - treeH * 0.72, topY, t);
+      final px = _cBez(cx, cx + curve1, cx + curve2, cx + curve1 * 0.25, t);
+      final py = _cBez(
+        baseY,
+        baseY - treeH * 0.28,
+        baseY - treeH * 0.72,
+        topY,
+        t,
+      );
       trunkPts.add(Offset(px, py));
     }
 
@@ -939,10 +1181,14 @@ class TreePainter extends CustomPainter {
       final w1 = trunkW * (1 - t * 0.55);
       final w2 = trunkW * (1 - (t + 1 / trunkPts.length) * 0.55);
       _drawTaperedBranch(
-        canvas, trunkPts[i].dx, trunkPts[i].dy,
-        trunkPts[i + 1].dx, trunkPts[i + 1].dy, w1, w2,
-        Color.lerp(
-            ColorResolver.trunkColorDark, const Color(0xFFA8946D), t)!,
+        canvas,
+        trunkPts[i].dx,
+        trunkPts[i].dy,
+        trunkPts[i + 1].dx,
+        trunkPts[i + 1].dy,
+        w1,
+        w2,
+        Color.lerp(ColorResolver.trunkColorDark, const Color(0xFFA8946D), t)!,
       );
     }
 
@@ -956,7 +1202,10 @@ class TreePainter extends CustomPainter {
       final t = i / trunkPts.length;
       final w = trunkW * (1 - t * 0.55) * 0.45;
       canvas.drawLine(
-          Offset(p.dx - w, p.dy), Offset(p.dx + w, p.dy), ringPaint);
+        Offset(p.dx - w, p.dy),
+        Offset(p.dx + w, p.dy),
+        ringPaint,
+      );
     }
 
     // Crown center
@@ -973,8 +1222,10 @@ class TreePainter extends CustomPainter {
         final ca = (rng.nextDouble() - 0.5) * pi * 0.8;
         final cr = (2.5 + rng.nextDouble() * 2) * s;
         canvas.drawCircle(
-          Offset(crownX + cos(ca) * 6 * s,
-              crownY + 4 * s + rng.nextDouble() * 5 * s),
+          Offset(
+            crownX + cos(ca) * 6 * s,
+            crownY + 4 * s + rng.nextDouble() * 5 * s,
+          ),
           cr,
           coconutPaint,
         );
@@ -990,13 +1241,31 @@ class TreePainter extends CustomPainter {
       final angle = baseAngle + (rng.nextDouble() - 0.5) * 0.35;
       final fLen = frondLen * (0.65 + rng.nextDouble() * 0.35);
       final droop = 0.35 + rng.nextDouble() * 0.35;
-      _drawPalmFrond(canvas, crownX, crownY, angle, fLen, droop,
-          colors[rng.nextInt(colors.length)], rng, s);
+      _drawPalmFrond(
+        canvas,
+        crownX,
+        crownY,
+        angle,
+        fLen,
+        droop,
+        colors[rng.nextInt(colors.length)],
+        rng,
+        s,
+      );
     }
   }
 
-  void _drawPalmFrond(Canvas canvas, double sx, double sy, double angle,
-      double length, double droop, Color color, Random rng, double scale) {
+  void _drawPalmFrond(
+    Canvas canvas,
+    double sx,
+    double sy,
+    double angle,
+    double length,
+    double droop,
+    Color color,
+    Random rng,
+    double scale,
+  ) {
     // Spine: curve from crown outward then droop under gravity
     final endX = sx + cos(angle) * length;
     final endY = sy + sin(angle) * length + length * droop;
@@ -1025,12 +1294,13 @@ class TreePainter extends CustomPainter {
       final py = _qBez(sy, ctrlY, endY, t);
 
       final spineAngle = atan2(
-          _qBezDeriv(sy, ctrlY, endY, t), _qBezDeriv(sx, ctrlX, endX, t));
+        _qBezDeriv(sy, ctrlY, endY, t),
+        _qBezDeriv(sx, ctrlX, endX, t),
+      );
       final leafletLen = length * 0.28 * (1 - t * 0.35); // wider leaflets
       final leafletWidth = leafletLen * 0.42; // fatter leaflets
 
-      leafPaint.color =
-          color.withValues(alpha: 0.30 + rng.nextDouble() * 0.40);
+      leafPaint.color = color.withValues(alpha: 0.30 + rng.nextDouble() * 0.40);
 
       // Left leaflet — broad curved teardrop shape
       final la = spineAngle - pi / 2 + 0.2;
@@ -1043,12 +1313,14 @@ class TreePainter extends CustomPainter {
           ..quadraticBezierTo(
             px + cos(la) * leafletLen * 0.5 + cos(lPerp) * leafletWidth,
             py + sin(la) * leafletLen * 0.5 + sin(lPerp) * leafletWidth,
-            ltipX, ltipY,
+            ltipX,
+            ltipY,
           )
           ..quadraticBezierTo(
             px + cos(la) * leafletLen * 0.5 - cos(lPerp) * leafletWidth,
             py + sin(la) * leafletLen * 0.5 - sin(lPerp) * leafletWidth,
-            px, py,
+            px,
+            py,
           ),
         leafPaint,
       );
@@ -1064,12 +1336,14 @@ class TreePainter extends CustomPainter {
           ..quadraticBezierTo(
             px + cos(ra) * leafletLen * 0.5 + cos(rPerp) * leafletWidth,
             py + sin(ra) * leafletLen * 0.5 + sin(rPerp) * leafletWidth,
-            rtipX, rtipY,
+            rtipX,
+            rtipY,
           )
           ..quadraticBezierTo(
             px + cos(ra) * leafletLen * 0.5 - cos(rPerp) * leafletWidth,
             py + sin(ra) * leafletLen * 0.5 - sin(rPerp) * leafletWidth,
-            px, py,
+            px,
+            py,
           ),
         leafPaint,
       );

@@ -16,8 +16,9 @@ void main() {
       await db.close();
     });
 
-    testWidgets('shows empty Greenhouse with FAB on first launch',
-        (tester) async {
+    testWidgets('shows empty Greenhouse with FAB on first launch', (
+      tester,
+    ) async {
       db = await pumpApp(tester);
 
       // Empty-habits placeholder is visible.

@@ -63,22 +63,28 @@ void main() {
       expect(logs.first.status, 'done');
     });
 
-    test('getLogsForHabitInRange returns [start, end) ordered by date',
-        () async {
-      // Insert logs for Jan 1-4
-      for (final date in [jan1, jan2, jan3, jan4]) {
-        await db.habitLogsDao.upsertLog(
-          makeLogCompanion(habitId: 1, date: date, status: 'done'),
+    test(
+      'getLogsForHabitInRange returns [start, end) ordered by date',
+      () async {
+        // Insert logs for Jan 1-4
+        for (final date in [jan1, jan2, jan3, jan4]) {
+          await db.habitLogsDao.upsertLog(
+            makeLogCompanion(habitId: 1, date: date, status: 'done'),
+          );
+        }
+
+        // Query range [Jan 2, Jan 4) — should get Jan 2 and Jan 3
+        final logs = await db.habitLogsDao.getLogsForHabitInRange(
+          1,
+          jan2,
+          jan4,
         );
-      }
 
-      // Query range [Jan 2, Jan 4) — should get Jan 2 and Jan 3
-      final logs = await db.habitLogsDao.getLogsForHabitInRange(1, jan2, jan4);
-
-      expect(logs, hasLength(2));
-      expect(logs[0].date, jan2);
-      expect(logs[1].date, jan3);
-    });
+        expect(logs, hasLength(2));
+        expect(logs[0].date, jan2);
+        expect(logs[1].date, jan3);
+      },
+    );
 
     test('markDone sets status=done and loggedHour', () async {
       await db.habitLogsDao.markDone(1, jan1, 14);

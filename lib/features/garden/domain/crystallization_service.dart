@@ -128,24 +128,32 @@ class CrystallizationService {
       );
 
       // Render to PNG
-      final pngPath = await _renderToPng(params, habit.id, year, month, gardenDir);
+      final pngPath = await _renderToPng(
+        params,
+        habit.id,
+        year,
+        month,
+        gardenDir,
+      );
 
       // Save to database
-      await gardenObjectsDao.insertObject(GardenObjectsCompanion(
-        habitId: Value(habit.id),
-        year: Value(year),
-        month: Value(month),
-        completionPct: Value(metrics.completionPct),
-        absoluteCompletions: Value(metrics.absoluteCompletions),
-        maxStreak: Value(metrics.maxStreak),
-        morningRatio: Value(metrics.morningRatio),
-        afternoonRatio: Value(metrics.afternoonRatio),
-        eveningRatio: Value(metrics.eveningRatio),
-        objectType: Value(metrics.objectType.name),
-        generationSeed: Value(genSeed),
-        pngPath: Value(pngPath),
-        isShortPerfect: Value(metrics.isShortPerfect),
-      ));
+      await gardenObjectsDao.insertObject(
+        GardenObjectsCompanion(
+          habitId: Value(habit.id),
+          year: Value(year),
+          month: Value(month),
+          completionPct: Value(metrics.completionPct),
+          absoluteCompletions: Value(metrics.absoluteCompletions),
+          maxStreak: Value(metrics.maxStreak),
+          morningRatio: Value(metrics.morningRatio),
+          afternoonRatio: Value(metrics.afternoonRatio),
+          eveningRatio: Value(metrics.eveningRatio),
+          objectType: Value(metrics.objectType.name),
+          generationSeed: Value(genSeed),
+          pngPath: Value(pngPath),
+          isShortPerfect: Value(metrics.isShortPerfect),
+        ),
+      );
 
       count++;
     }
@@ -196,8 +204,8 @@ class CrystallizationService {
       GardenObjectType.tree => TreePainter(params: params),
       GardenObjectType.bush => BushPainter(params: params),
       GardenObjectType.grass => GrassPainter(params: params),
-      GardenObjectType.moss || GardenObjectType.sleepingBulb =>
-        MossPainter(params: params),
+      GardenObjectType.moss ||
+      GardenObjectType.sleepingBulb => MossPainter(params: params),
     };
   }
 

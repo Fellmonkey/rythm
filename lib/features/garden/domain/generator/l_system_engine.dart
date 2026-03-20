@@ -16,11 +16,7 @@ class LSystemEngine {
   const LSystemEngine._();
 
   /// Expand the axiom string using the production rules for [depth] iterations.
-  static String expand(
-    String axiom,
-    Map<String, String> rules,
-    int depth,
-  ) {
+  static String expand(String axiom, Map<String, String> rules, int depth) {
     var current = axiom;
     for (var i = 0; i < depth; i++) {
       final buf = StringBuffer();
@@ -68,19 +64,22 @@ class LSystemEngine {
           // Add slight random variation for organic feel
           final variation = rng != null ? (rng.nextDouble() - 0.5) * 0.15 : 0.0;
           final actualLength = length * (1.0 + variation);
-          final actualAngle = angle + (rng != null ? (rng.nextDouble() - 0.5) * 0.08 : 0.0);
+          final actualAngle =
+              angle + (rng != null ? (rng.nextDouble() - 0.5) * 0.08 : 0.0);
 
           final nx = x + cos(actualAngle) * actualLength;
           final ny = y + sin(actualAngle) * actualLength;
 
-          segments.add(LSegment(
-            x1: x,
-            y1: y,
-            x2: nx,
-            y2: ny,
-            thickness: thickness,
-            depth: depth,
-          ));
+          segments.add(
+            LSegment(
+              x1: x,
+              y1: y,
+              x2: nx,
+              y2: ny,
+              thickness: thickness,
+              depth: depth,
+            ),
+          );
 
           x = nx;
           y = ny;

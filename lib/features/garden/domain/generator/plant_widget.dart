@@ -10,11 +10,7 @@ import 'tree_painter.dart';
 /// Unified widget that renders the correct plant type based on [GenerationParams].
 /// Selects TreePainter, BushPainter, or MossPainter automatically.
 class PlantWidget extends StatelessWidget {
-  const PlantWidget({
-    required this.params,
-    this.size = 200,
-    super.key,
-  });
+  const PlantWidget({required this.params, this.size = 200, super.key});
 
   final GenerationParams params;
   final double size;
@@ -22,10 +18,7 @@ class PlantWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
-      child: CustomPaint(
-        size: Size(size, size),
-        painter: _painterFor(params),
-      ),
+      child: CustomPaint(size: Size(size, size), painter: _painterFor(params)),
     );
   }
 
@@ -34,8 +27,8 @@ class PlantWidget extends StatelessWidget {
       GardenObjectType.tree => TreePainter(params: params),
       GardenObjectType.bush => BushPainter(params: params),
       GardenObjectType.grass => GrassPainter(params: params),
-      GardenObjectType.moss || GardenObjectType.sleepingBulb =>
-        MossPainter(params: params),
+      GardenObjectType.moss ||
+      GardenObjectType.sleepingBulb => MossPainter(params: params),
     };
   }
 }

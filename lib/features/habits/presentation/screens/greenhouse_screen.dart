@@ -77,7 +77,9 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen> {
                       Text(
                         _formatToday(),
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.6,
+                          ),
                         ),
                       ),
                     ],
@@ -86,7 +88,8 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen> {
                 // Hide completed toggle
                 IconButton(
                   key: K.hideCompletedToggle,
-                  onPressed: () => setState(() => _hideCompleted = !_hideCompleted),
+                  onPressed: () =>
+                      setState(() => _hideCompleted = !_hideCompleted),
                   icon: Icon(
                     _hideCompleted
                         ? Icons.visibility_off_outlined
@@ -105,8 +108,10 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen> {
         if (habits.isEmpty)
           SliverFillRemaining(
             child: Center(
-              child: Text('Нажмите + чтобы создать первую привычку',
-                  key: K.emptyHabitsMessage),
+              child: Text(
+                'Нажмите + чтобы создать первую привычку',
+                key: K.emptyHabitsMessage,
+              ),
             ),
           )
         else
@@ -156,10 +161,16 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen> {
                 TextButton.icon(
                   key: K.markAllGroup(group.label),
                   onPressed: () => _markAllInGroup(items),
-                  icon: Icon(Icons.done_all_rounded, size: 16, color: group.color),
+                  icon: Icon(
+                    Icons.done_all_rounded,
+                    size: 16,
+                    color: group.color,
+                  ),
                   label: Text(
                     'Всё',
-                    style: theme.textTheme.labelSmall?.copyWith(color: group.color),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: group.color,
+                    ),
                   ),
                 ),
             ],
@@ -259,12 +270,29 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen> {
   String _formatToday() {
     final now = DateTime.now();
     const months = [
-      '', 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
-      'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
+      '',
+      'января',
+      'февраля',
+      'марта',
+      'апреля',
+      'мая',
+      'июня',
+      'июля',
+      'августа',
+      'сентября',
+      'октября',
+      'ноября',
+      'декабря',
     ];
     const weekdays = [
-      '', 'Понедельник', 'Вторник', 'Среда', 'Четверг',
-      'Пятница', 'Суббота', 'Воскресенье',
+      '',
+      'Понедельник',
+      'Вторник',
+      'Среда',
+      'Четверг',
+      'Пятница',
+      'Суббота',
+      'Воскресенье',
     ];
     return '${weekdays[now.weekday]}, ${now.day} ${months[now.month]}';
   }
@@ -300,8 +328,7 @@ class _ProgressRing extends StatelessWidget {
           CircularProgressIndicator(
             value: progress,
             strokeWidth: 5,
-            backgroundColor:
-                theme.colorScheme.onSurface.withValues(alpha: 0.1),
+            backgroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.1),
             valueColor: AlwaysStoppedAnimation(
               progress >= 1.0
                   ? AppColors.emeraldGlow

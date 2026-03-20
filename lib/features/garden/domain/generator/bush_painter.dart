@@ -62,14 +62,14 @@ class BushPainter extends CustomPainter {
     for (var i = 0; i < numBranches; i++) {
       // Branch origin: along the trunk, concentrated low (70% from bottom half)
       final tFrac = rng.nextDouble() < 0.7
-          ? rng.nextDouble() * 0.5 // lower half of trunk
+          ? rng.nextDouble() *
+                0.5 // lower half of trunk
           : 0.5 + rng.nextDouble() * 0.5; // upper half
       final originY = baseY - tFrac * trunkH;
       final originX = cx + lean * tFrac;
 
       // Fan out radially — spread branches in a wide arc
-      final spreadAngle =
-          (i / (numBranches - 1) - 0.5) * 2.0; // -1.0 to 1.0
+      final spreadAngle = (i / (numBranches - 1) - 0.5) * 2.0; // -1.0 to 1.0
       final baseAngle = -pi / 2 + spreadAngle * 0.85;
       final angle = baseAngle + (rng.nextDouble() - 0.5) * 0.30;
 
@@ -87,7 +87,8 @@ class BushPainter extends CustomPainter {
       // Sub-branches — each main branch forks into 2-3
       final numSub = 2 + rng.nextInt(2);
       for (var j = 0; j < numSub; j++) {
-        final subAngle = angle +
+        final subAngle =
+            angle +
             (j - (numSub - 1) / 2) * 0.38 +
             (rng.nextDouble() - 0.5) * 0.18;
         final subLen = branchLen * (0.35 + rng.nextDouble() * 0.30);
@@ -95,7 +96,14 @@ class BushPainter extends CustomPainter {
         final subTipY = tipY + sin(subAngle) * subLen;
 
         _drawThinBranch(
-            canvas, tipX, tipY, subTipX, subTipY, branchW * 0.55, rng);
+          canvas,
+          tipX,
+          tipY,
+          subTipX,
+          subTipY,
+          branchW * 0.55,
+          rng,
+        );
         branchTips.add(Offset(subTipX, subTipY));
       }
     }
@@ -112,8 +120,9 @@ class BushPainter extends CustomPainter {
           height: bushH * (0.95 + layer * 0.08),
         ),
         Paint()
-          ..color = colors[layer % colors.length]
-              .withValues(alpha: 0.12 + l * 0.06)
+          ..color = colors[layer % colors.length].withValues(
+            alpha: 0.12 + l * 0.06,
+          )
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
       );
     }
@@ -146,8 +155,9 @@ class BushPainter extends CustomPainter {
           height: r * 1.5,
         ),
         Paint()
-          ..color = colors[rng.nextInt(colors.length)]
-              .withValues(alpha: 0.15 + rng.nextDouble() * 0.15)
+          ..color = colors[rng.nextInt(colors.length)].withValues(
+            alpha: 0.15 + rng.nextDouble() * 0.15,
+          )
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3),
       );
     }
@@ -172,8 +182,9 @@ class BushPainter extends CustomPainter {
 
         for (var p = 0; p < 4; p++) {
           final pa = p * pi / 2 + rng.nextDouble() * 0.3;
-          berryPaint.color =
-              flowerColor.withValues(alpha: 0.4 + rng.nextDouble() * 0.4);
+          berryPaint.color = flowerColor.withValues(
+            alpha: 0.4 + rng.nextDouble() * 0.4,
+          );
           canvas.drawOval(
             Rect.fromCenter(
               center: Offset(bx + cos(pa) * br, by + sin(pa) * br),
@@ -203,8 +214,15 @@ class BushPainter extends CustomPainter {
   }
 
   /// Draws the short central trunk with a tapered bezier shape.
-  void _drawTrunk(Canvas canvas, double x1, double y1, double x2, double y2,
-      double width, Random rng) {
+  void _drawTrunk(
+    Canvas canvas,
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    double width,
+    Random rng,
+  ) {
     final ctrlX = (x1 + x2) / 2 + (rng.nextDouble() - 0.5) * 3;
     final ctrlY = (y1 + y2) / 2;
 
@@ -231,14 +249,25 @@ class BushPainter extends CustomPainter {
       Path()
         ..moveTo((x1 + x2) / 2, (y1 + y2) / 2)
         ..quadraticBezierTo(
-            ctrlX + (rng.nextDouble() - 0.5) * 2, ctrlY - 5, x2, y2),
+          ctrlX + (rng.nextDouble() - 0.5) * 2,
+          ctrlY - 5,
+          x2,
+          y2,
+        ),
       paint..strokeWidth = width * 0.6,
     );
   }
 
   /// Draws a thin curved branch via quadratic bezier.
-  void _drawThinBranch(Canvas canvas, double x1, double y1, double x2,
-      double y2, double width, Random rng) {
+  void _drawThinBranch(
+    Canvas canvas,
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    double width,
+    Random rng,
+  ) {
     final ctrlX = (x1 + x2) / 2 + (rng.nextDouble() - 0.5) * 12;
     final ctrlY = (y1 + y2) / 2;
 
@@ -261,8 +290,15 @@ class BushPainter extends CustomPainter {
   }
 
   /// Draws a soft fluffy cluster of overlapping circles/ovals — like a pom-pom.
-  void _drawFluffyCluster(Canvas canvas, double cx, double cy, double radius,
-      List<Color> colors, Random rng, double lushness) {
+  void _drawFluffyCluster(
+    Canvas canvas,
+    double cx,
+    double cy,
+    double radius,
+    List<Color> colors,
+    Random rng,
+    double lushness,
+  ) {
     final paint = Paint()..style = PaintingStyle.fill;
     final count = (5 + lushness * 5).round();
 
@@ -273,8 +309,9 @@ class BushPainter extends CustomPainter {
       final oy = sin(angle) * dist;
       final r = radius * (0.35 + rng.nextDouble() * 0.45);
 
-      paint.color = colors[rng.nextInt(colors.length)]
-          .withValues(alpha: 0.25 + rng.nextDouble() * 0.40);
+      paint.color = colors[rng.nextInt(colors.length)].withValues(
+        alpha: 0.25 + rng.nextDouble() * 0.40,
+      );
 
       canvas.drawOval(
         Rect.fromCenter(
@@ -291,8 +328,9 @@ class BushPainter extends CustomPainter {
       Offset(cx, cy),
       radius * 0.65,
       Paint()
-        ..color = colors[rng.nextInt(colors.length)]
-            .withValues(alpha: 0.10 + lushness * 0.08)
+        ..color = colors[rng.nextInt(colors.length)].withValues(
+          alpha: 0.10 + lushness * 0.08,
+        )
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
     );
   }

@@ -36,24 +36,31 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
   void initState() {
     super.initState();
     final h = widget.habit;
-    
+
     if (h != null) {
       _nameController = TextEditingController(text: h.name);
       _frequency = FrequencyType.fromString(h.frequencyType);
       _timeOfDay = TimeOfDay.fromString(h.timeOfDay);
       _archetype = SeedArchetype.fromString(h.seedArchetype);
-      
+
       _selectedWeekdays = parseWeekdays(h.frequencyValue).toSet();
       final parsedX = parseXValue(h.frequencyValue);
-      _xValue = _frequency == FrequencyType.xPerWeek && parsedX > 1 ? parsedX : 3;
-      _everyXDays = _frequency == FrequencyType.everyXDays && parsedX > 1 ? parsedX : 7;
+      _xValue = _frequency == FrequencyType.xPerWeek && parsedX > 1
+          ? parsedX
+          : 3;
+      _everyXDays = _frequency == FrequencyType.everyXDays && parsedX > 1
+          ? parsedX
+          : 7;
 
       final cycle = parseCycle(h.frequencyValue);
       _cycleLength = cycle.length;
       _cycleDays = cycle.days.toSet();
       _cycleLabels = Map.from(cycle.labels);
       if (cycle.startDate != null) {
-        _cycleStartDate = DateTime.fromMillisecondsSinceEpoch(cycle.startDate! * 1000, isUtc: true).toLocal();
+        _cycleStartDate = DateTime.fromMillisecondsSinceEpoch(
+          cycle.startDate! * 1000,
+          isUtc: true,
+        ).toLocal();
       }
     } else {
       _nameController = TextEditingController();
@@ -76,19 +83,26 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
   }
 
   String _buildFrequencyValue() => switch (_frequency) {
-        FrequencyType.weekdays =>
-          jsonEncode({'days': _selectedWeekdays.toList()..sort()}),
-        FrequencyType.xPerWeek => jsonEncode({'x': _xValue}),
-        FrequencyType.everyXDays => jsonEncode({'x': _everyXDays}),
-        FrequencyType.cycle => jsonEncode({
-            'length': _cycleLength,
-            'days': _cycleDays.toList()..sort(),
-            'labels': _cycleLabels.map((k, v) => MapEntry(k.toString(), v)),
-            if (_cycleStartDate != null)
-              'startDate': DateTime(_cycleStartDate!.year, _cycleStartDate!.month, _cycleStartDate!.day).millisecondsSinceEpoch ~/ 1000,
-          }),
-        _ => '{}',
-      };
+    FrequencyType.weekdays => jsonEncode({
+      'days': _selectedWeekdays.toList()..sort(),
+    }),
+    FrequencyType.xPerWeek => jsonEncode({'x': _xValue}),
+    FrequencyType.everyXDays => jsonEncode({'x': _everyXDays}),
+    FrequencyType.cycle => jsonEncode({
+      'length': _cycleLength,
+      'days': _cycleDays.toList()..sort(),
+      'labels': _cycleLabels.map((k, v) => MapEntry(k.toString(), v)),
+      if (_cycleStartDate != null)
+        'startDate':
+            DateTime(
+              _cycleStartDate!.year,
+              _cycleStartDate!.month,
+              _cycleStartDate!.day,
+            ).millisecondsSinceEpoch ~/
+            1000,
+    }),
+    _ => '{}',
+  };
 
   Future<void> _save() async {
     final name = _nameController.text.trim();
@@ -116,7 +130,7 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
         timeOfDay: _timeOfDay,
       );
     }
-    
+
     if (mounted) Navigator.pop(context);
   }
 
@@ -149,8 +163,10 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
                 ),
               ),
             ),
-            Text(_isEdit ? 'Редактировать' : 'Новая привычка', 
-                 style: theme.textTheme.headlineMedium),
+            Text(
+              _isEdit ? 'Редактировать' : 'Новая привычка',
+              style: theme.textTheme.headlineMedium,
+            ),
             const SizedBox(height: 20),
 
             // ── Name ──
@@ -190,24 +206,28 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
             ),
             const SizedBox(height: 8),
 
-            if (_frequency == FrequencyType.weekdays) ..._buildWeekdaySelector(theme),
-            if (_frequency == FrequencyType.xPerWeek) ..._buildXStepper(
-              theme,
-              label: '$_xValue раз в неделю',
-              value: _xValue,
-              min: 1,
-              max: 7,
-              onChanged: (v) => setState(() => _xValue = v),
-            ),
-            if (_frequency == FrequencyType.everyXDays) ..._buildXStepper(
-              theme,
-              label: 'Каждые $_everyXDays дней',
-              value: _everyXDays,
-              min: 2,
-              max: 30,
-              onChanged: (v) => setState(() => _everyXDays = v),
-            ),
-            if (_frequency == FrequencyType.cycle) ..._buildCycleSelector(theme),
+            if (_frequency == FrequencyType.weekdays)
+              ..._buildWeekdaySelector(theme),
+            if (_frequency == FrequencyType.xPerWeek)
+              ..._buildXStepper(
+                theme,
+                label: '$_xValue раз в неделю',
+                value: _xValue,
+                min: 1,
+                max: 7,
+                onChanged: (v) => setState(() => _xValue = v),
+              ),
+            if (_frequency == FrequencyType.everyXDays)
+              ..._buildXStepper(
+                theme,
+                label: 'Каждые $_everyXDays дней',
+                value: _everyXDays,
+                min: 2,
+                max: 30,
+                onChanged: (v) => setState(() => _everyXDays = v),
+              ),
+            if (_frequency == FrequencyType.cycle)
+              ..._buildCycleSelector(theme),
             const SizedBox(height: 8),
 
             // ── Seed Archetype ──
@@ -235,8 +255,9 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
                         border: Border.all(
                           color: selected
                               ? theme.colorScheme.primary
-                              : theme.colorScheme.onSurface
-                                  .withValues(alpha: 0.12),
+                              : theme.colorScheme.onSurface.withValues(
+                                  alpha: 0.12,
+                                ),
                           width: selected ? 2 : 1,
                         ),
                       ),
@@ -247,8 +268,9 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
                             arch.icon,
                             color: selected
                                 ? theme.colorScheme.primary
-                                : theme.colorScheme.onSurface
-                                    .withValues(alpha: 0.5),
+                                : theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.5,
+                                  ),
                           ),
                           const SizedBox(height: 4),
                           Text(
@@ -290,8 +312,13 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
 
   List<Widget> _buildWeekdaySelector(ThemeData theme) {
     const days = [
-      (1, 'Пн'), (2, 'Вт'), (3, 'Ср'), (4, 'Чт'),
-      (5, 'Пт'), (6, 'Сб'), (7, 'Вс'),
+      (1, 'Пн'),
+      (2, 'Вт'),
+      (3, 'Ср'),
+      (4, 'Чт'),
+      (5, 'Пт'),
+      (6, 'Сб'),
+      (7, 'Вс'),
     ];
     return [
       Wrap(
@@ -304,7 +331,8 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
             selected: selected,
             onSelected: (_) => setState(() {
               if (selected) {
-                if (_selectedWeekdays.length > 1) _selectedWeekdays.remove(r.$1);
+                if (_selectedWeekdays.length > 1)
+                  _selectedWeekdays.remove(r.$1);
               } else {
                 _selectedWeekdays.add(r.$1);
               }
@@ -357,7 +385,10 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
       ),
       if (_cycleDays.isNotEmpty) ...[
         const SizedBox(height: 16),
-        Text('Подписи к дням (опционально):', style: theme.textTheme.bodyMedium),
+        Text(
+          'Подписи к дням (опционально):',
+          style: theme.textTheme.bodyMedium,
+        ),
         const SizedBox(height: 8),
         ...(() {
           final sortedDays = _cycleDays.toList()..sort();
@@ -365,7 +396,9 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: TextField(
-                controller: TextEditingController(text: _cycleLabels[day] ?? ''),
+                controller: TextEditingController(
+                  text: _cycleLabels[day] ?? '',
+                ),
                 decoration: InputDecoration(
                   labelText: 'Подпись для дня $day',
                   border: OutlineInputBorder(borderRadius: AppRadius.borderS),
@@ -401,12 +434,17 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           decoration: BoxDecoration(
-            border: Border.all(color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
+            border: Border.all(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
+            ),
             borderRadius: AppRadius.borderS,
           ),
           child: Row(
             children: [
-              Icon(Icons.calendar_month_rounded, color: theme.colorScheme.primary),
+              Icon(
+                Icons.calendar_month_rounded,
+                color: theme.colorScheme.primary,
+              ),
               const SizedBox(width: 8),
               Text(
                 _cycleStartDate == null
@@ -438,9 +476,11 @@ class _HabitFormSheetState extends ConsumerState<HabitFormSheet> {
             onPressed: value > min ? () => onChanged(value - 1) : null,
           ),
           Expanded(
-            child: Text(label,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium,
+            ),
           ),
           IconButton(
             icon: const Icon(Icons.add_circle_outline),

@@ -47,13 +47,19 @@ void main() {
         ),
       );
 
-      final found =
-          await db.gardenObjectsDao.getObjectForHabitMonth(1, 2026, 1);
+      final found = await db.gardenObjectsDao.getObjectForHabitMonth(
+        1,
+        2026,
+        1,
+      );
       expect(found, isNotNull);
       expect(found!.completionPct, 75.0);
 
-      final notFound =
-          await db.gardenObjectsDao.getObjectForHabitMonth(1, 2026, 2);
+      final notFound = await db.gardenObjectsDao.getObjectForHabitMonth(
+        1,
+        2026,
+        2,
+      );
       expect(notFound, isNull);
     });
 
@@ -86,8 +92,7 @@ void main() {
 
       await db.gardenObjectsDao.updatePngPath(id, '/path/to/image.png');
 
-      final obj =
-          await db.gardenObjectsDao.getObjectForHabitMonth(1, 2026, 1);
+      final obj = await db.gardenObjectsDao.getObjectForHabitMonth(1, 2026, 1);
       expect(obj!.pngPath, '/path/to/image.png');
     });
 

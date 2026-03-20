@@ -20,21 +20,18 @@ final appRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/',
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: GreenhouseScreen(),
-          ),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: GreenhouseScreen()),
         ),
         GoRoute(
           path: '/garden',
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: TimePathScreen(),
-          ),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: TimePathScreen()),
         ),
         GoRoute(
           path: '/settings',
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: SettingsScreen(),
-          ),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: SettingsScreen()),
         ),
       ],
     ),

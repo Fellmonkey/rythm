@@ -42,8 +42,9 @@ void main() {
       await db.close();
     });
 
-    testWidgets('create → appears in list → mark done → check icon',
-        (tester) async {
+    testWidgets('create → appears in list → mark done → check icon', (
+      tester,
+    ) async {
       db = await pumpApp(tester);
 
       // Initially empty.

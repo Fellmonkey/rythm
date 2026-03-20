@@ -25,19 +25,20 @@ class HabitDetailScreen extends ConsumerWidget {
     final now = DateTime.now();
 
     return habitAsync.when(
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (e, _) => Scaffold(
         appBar: AppBar(),
         body: Center(child: Text('Ошибка: $e')),
       ),
       data: (habit) {
-        final metricsAsync = ref.watch(habitMetricsProvider((
-          habitId: habitId,
-          year: now.year,
-          month: now.month,
-        )));
+        final metricsAsync = ref.watch(
+          habitMetricsProvider((
+            habitId: habitId,
+            year: now.year,
+            month: now.month,
+          )),
+        );
 
         return Scaffold(
           body: CustomScrollView(
@@ -53,8 +54,11 @@ class HabitDetailScreen extends ConsumerWidget {
                       color: theme.colorScheme.onSurface,
                     ),
                   ),
-                  titlePadding:
-                      const EdgeInsets.only(left: 56, bottom: 16, right: 16),
+                  titlePadding: const EdgeInsets.only(
+                    left: 56,
+                    bottom: 16,
+                    right: 16,
+                  ),
                 ),
                 actions: [
                   IconButton(
@@ -71,14 +75,15 @@ class HabitDetailScreen extends ConsumerWidget {
                       ),
                     ),
                   PopupMenuButton<String>(
-                    onSelected: (val) =>
-                        _handleMenu(context, ref, val, habit),
+                    onSelected: (val) => _handleMenu(context, ref, val, habit),
                     itemBuilder: (_) => [
                       PopupMenuItem(
                         value: habit.isFocus ? 'unfocus' : 'focus',
-                        child: Text(habit.isFocus
-                            ? 'Убрать из фокуса'
-                            : 'Добавить в фокус'),
+                        child: Text(
+                          habit.isFocus
+                              ? 'Убрать из фокуса'
+                              : 'Добавить в фокус',
+                        ),
                       ),
                       const PopupMenuItem(
                         value: 'archive',
@@ -120,8 +125,10 @@ class HabitDetailScreen extends ConsumerWidget {
                     const SizedBox(height: 24),
 
                     // Heatmap calendar
-                    Text('Активность за месяц',
-                        style: theme.textTheme.titleMedium),
+                    Text(
+                      'Активность за месяц',
+                      style: theme.textTheme.titleMedium,
+                    ),
                     const SizedBox(height: 8),
                     _MonthHeatmap(
                       habitId: habitId,
@@ -279,8 +286,19 @@ class _MonthStatsSection extends StatelessWidget {
   final int year, month;
 
   static const _months = [
-    '', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+    '',
+    'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+    'Декабрь',
   ];
 
   @override
@@ -308,7 +326,10 @@ class _MonthStatsSection extends StatelessWidget {
         // Stats grid
         Row(
           children: [
-            _StatCard(label: 'Выполнений', value: '${metrics.absoluteCompletions}'),
+            _StatCard(
+              label: 'Выполнений',
+              value: '${metrics.absoluteCompletions}',
+            ),
             const SizedBox(width: 8),
             _StatCard(label: 'Макс. серия', value: '${metrics.maxStreak}'),
             const SizedBox(width: 8),
@@ -342,7 +363,11 @@ class _MonthStatsSection extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.auto_awesome, color: Color(0xFFFFD700), size: 18),
+                const Icon(
+                  Icons.auto_awesome,
+                  color: Color(0xFFFFD700),
+                  size: 18,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   'Аура идеального старта',
@@ -370,8 +395,8 @@ class _CompletionBar extends StatelessWidget {
     final color = pct >= 80
         ? AppColors.sageGreen
         : pct >= 40
-            ? AppColors.warmAmber
-            : AppColors.dustyRose;
+        ? AppColors.warmAmber
+        : AppColors.dustyRose;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,8 +405,10 @@ class _CompletionBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('Выполнение', style: theme.textTheme.bodyMedium),
-            Text('$pct%',
-                style: theme.textTheme.titleMedium?.copyWith(color: color)),
+            Text(
+              '$pct%',
+              style: theme.textTheme.titleMedium?.copyWith(color: color),
+            ),
           ],
         ),
         const SizedBox(height: 6),
@@ -390,8 +417,8 @@ class _CompletionBar extends StatelessWidget {
           child: LinearProgressIndicator(
             value: pct / 100.0,
             minHeight: 8,
-            backgroundColor:
-                theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+            backgroundColor: theme.colorScheme.surfaceContainerHighest
+                .withValues(alpha: 0.3),
             valueColor: AlwaysStoppedAnimation(color),
           ),
         ),
@@ -412,18 +439,24 @@ class _StatCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          color: theme.colorScheme.surfaceContainerHighest.withValues(
+            alpha: 0.3,
+          ),
           borderRadius: AppRadius.borderM,
         ),
         child: Column(
           children: [
-            Text(value,
-                style: theme.textTheme.titleMedium,
-                textAlign: TextAlign.center),
+            Text(
+              value,
+              style: theme.textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 2),
-            Text(label,
-                style: theme.textTheme.bodySmall,
-                textAlign: TextAlign.center),
+            Text(
+              label,
+              style: theme.textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
@@ -449,17 +482,19 @@ class _MonthHeatmap extends ConsumerWidget {
     final monthEnd = DateTime.utc(year, month + 1, 1);
 
     return FutureBuilder<List<HabitLog>>(
-      future:
-          dao.getLogsForHabitInRange(habitId, monthStart.unixSeconds, monthEnd.unixSeconds),
+      future: dao.getLogsForHabitInRange(
+        habitId,
+        monthStart.unixSeconds,
+        monthEnd.unixSeconds,
+      ),
       builder: (context, snap) {
         if (!snap.hasData) {
-          return const SizedBox(height: 120, child: Center(child: CircularProgressIndicator()));
+          return const SizedBox(
+            height: 120,
+            child: Center(child: CircularProgressIndicator()),
+          );
         }
-        return _HeatmapGrid(
-          logs: snap.data!,
-          year: year,
-          month: month,
-        );
+        return _HeatmapGrid(logs: snap.data!, year: year, month: month);
       },
     );
   }
@@ -522,7 +557,9 @@ class _HeatmapGrid extends StatelessWidget {
                   return const Expanded(child: SizedBox(height: 36));
                 }
                 final isToday =
-                    today.year == year && today.month == month && today.day == day;
+                    today.year == year &&
+                    today.month == month &&
+                    today.day == day;
                 final status = statusMap[day];
                 return Expanded(
                   child: _DayCell(
@@ -576,8 +613,9 @@ class _DayCell extends StatelessWidget {
         case LogStatus.fail:
           bgColor = AppColors.dustyRose.withValues(alpha: 0.30);
         case LogStatus.pending:
-          bgColor = theme.colorScheme.surfaceContainerHighest
-              .withValues(alpha: 0.15);
+          bgColor = theme.colorScheme.surfaceContainerHighest.withValues(
+            alpha: 0.15,
+          );
       }
     }
 
@@ -675,16 +713,14 @@ class _TimeBar extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            '${(ratio * 100).round()}%',
-            style: theme.textTheme.bodySmall,
-          ),
+          Text('${(ratio * 100).round()}%', style: theme.textTheme.bodySmall),
           Text(label, style: theme.textTheme.labelSmall),
         ],
       ),
     );
   }
 }
+
 // ── Edit Habit Sheet ────────────────────────────────────────
 class _AllLogsSection extends ConsumerWidget {
   const _AllLogsSection({required this.habitId});
@@ -710,11 +746,10 @@ class _AllLogsSection extends ConsumerWidget {
             child: Text(
               'Нет записей',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.4),
-                  ),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.4),
+              ),
             ),
           );
         }
@@ -734,11 +769,10 @@ class _AllLogsSection extends ConsumerWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: sortedKeys
-              .map((k) => _MonthLogGroup(
-                    year: k.$1,
-                    month: k.$2,
-                    logs: grouped[k]!,
-                  ))
+              .map(
+                (k) =>
+                    _MonthLogGroup(year: k.$1, month: k.$2, logs: grouped[k]!),
+              )
               .toList(),
         );
       },
@@ -757,8 +791,19 @@ class _MonthLogGroup extends StatelessWidget {
   final List<HabitLog> logs;
 
   static const _months = [
-    '', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+    '',
+    'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+    'Декабрь',
   ];
 
   @override
@@ -783,17 +828,26 @@ class _MonthLogGroup extends StatelessWidget {
               ),
               const Spacer(),
               if (done > 0)
-                _LogBadge(icon: Icons.check_circle_outline,
-                    color: AppColors.sageGreen, count: done),
+                _LogBadge(
+                  icon: Icons.check_circle_outline,
+                  color: AppColors.sageGreen,
+                  count: done,
+                ),
               if (skip > 0) ...[
                 const SizedBox(width: 6),
-                _LogBadge(icon: Icons.pause_circle_outline,
-                    color: AppColors.coolGreyBlue, count: skip),
+                _LogBadge(
+                  icon: Icons.pause_circle_outline,
+                  color: AppColors.coolGreyBlue,
+                  count: skip,
+                ),
               ],
               if (fail > 0) ...[
                 const SizedBox(width: 6),
-                _LogBadge(icon: Icons.cancel_outlined,
-                    color: AppColors.dustyRose, count: fail),
+                _LogBadge(
+                  icon: Icons.cancel_outlined,
+                  color: AppColors.dustyRose,
+                  count: fail,
+                ),
               ],
             ],
           ),
@@ -806,7 +860,11 @@ class _MonthLogGroup extends StatelessWidget {
 }
 
 class _LogBadge extends StatelessWidget {
-  const _LogBadge({required this.icon, required this.color, required this.count});
+  const _LogBadge({
+    required this.icon,
+    required this.color,
+    required this.count,
+  });
 
   final IconData icon;
   final Color color;
@@ -819,11 +877,10 @@ class _LogBadge extends StatelessWidget {
       children: [
         Icon(icon, size: 14, color: color),
         const SizedBox(width: 2),
-        Text('$count',
-            style: Theme.of(context)
-                .textTheme
-                .labelSmall
-                ?.copyWith(color: color)),
+        Text(
+          '$count',
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color),
+        ),
       ],
     );
   }
@@ -865,11 +922,12 @@ class _LogTile extends StatelessWidget {
             style: theme.textTheme.bodySmall?.copyWith(color: color),
           ),
           if (hourStr.isNotEmpty)
-            Text(hourStr,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color:
-                      theme.colorScheme.onSurface.withValues(alpha: 0.4),
-                )),
+            Text(
+              hourStr,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+              ),
+            ),
         ],
       ),
     );

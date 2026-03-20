@@ -18,24 +18,23 @@ class AppDatabase extends _$AppDatabase {
   final bool isTest;
 
   AppDatabase()
-      : isTest = false,
-        super(
-          driftDatabase(
-            name: 'rhythm',
-            native: const DriftNativeOptions(
-              databaseDirectory: getApplicationDocumentsDirectory,
-            ),
-            web: DriftWebOptions(
-              sqlite3Wasm: Uri.parse('sqlite3.wasm'),
-              driftWorker: Uri.parse('drift_worker.js'),
-            ),
+    : isTest = false,
+      super(
+        driftDatabase(
+          name: 'rhythm',
+          native: const DriftNativeOptions(
+            databaseDirectory: getApplicationDocumentsDirectory,
           ),
-        );
+          web: DriftWebOptions(
+            sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+            driftWorker: Uri.parse('drift_worker.js'),
+          ),
+        ),
+      );
 
   /// Test constructor that creates an in-memory database.
   AppDatabase.test(super.executor) : isTest = true;
 
   @override
   int get schemaVersion => 1;
-
 }

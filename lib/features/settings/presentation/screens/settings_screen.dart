@@ -173,7 +173,8 @@ class SettingsScreen extends ConsumerWidget {
 
       final bytes = result.files.first.bytes;
       if (bytes == null) {
-        if (context.mounted) _showSnackBar(context, 'Не удалось прочитать файл');
+        if (context.mounted)
+          _showSnackBar(context, 'Не удалось прочитать файл');
         return;
       }
 
@@ -295,9 +296,7 @@ class SettingsScreen extends ConsumerWidget {
       // Fetch habit names.
       final habitsAsync = ref.read(activeHabitsProvider);
       final habits = habitsAsync.value ?? [];
-      final habitNames = {
-        for (final h in habits) h.id: h.name,
-      };
+      final habitNames = {for (final h in habits) h.id: h.name};
 
       final pngBytes = await CardGeneratorService.generateMonthCard(
         year: latestYear,
@@ -325,9 +324,9 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }
 
@@ -588,8 +587,19 @@ class _GuestMonthSection extends StatelessWidget {
   final ThemeData theme;
 
   static const _months = [
-    '', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
-    'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек',
+    '',
+    'Янв',
+    'Фев',
+    'Мар',
+    'Апр',
+    'Май',
+    'Июн',
+    'Июл',
+    'Авг',
+    'Сен',
+    'Окт',
+    'Ноя',
+    'Дек',
   ];
 
   @override
@@ -597,10 +607,7 @@ class _GuestMonthSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '${_months[month]} $year',
-          style: theme.textTheme.titleSmall,
-        ),
+        Text('${_months[month]} $year', style: theme.textTheme.titleSmall),
         const SizedBox(height: 4),
         for (final entry in entries)
           Padding(

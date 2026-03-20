@@ -40,15 +40,25 @@ class MossPainter extends CustomPainter {
     _drawFractalStones(canvas, centerX, baseY, size, rng, scale);
 
     // ── 2. Fractal moss clusters ─────────────────────
-    final numClusters =
-        (2 + (params.absoluteCompletions * 0.15).round()).clamp(2, 5);
+    final numClusters = (2 + (params.absoluteCompletions * 0.15).round()).clamp(
+      2,
+      5,
+    );
     final centers = <Offset>[];
     for (var i = 0; i < numClusters; i++) {
       final cx = centerX + (rng.nextDouble() - 0.5) * size.width * 0.5;
       final cy = baseY + (rng.nextDouble() - 0.5) * size.height * 0.12;
       centers.add(Offset(cx, cy));
-      _drawFractalMoss(canvas, cx, cy, (16 + rng.nextDouble() * 14) * scale,
-          0, 3 + (params.absoluteCompletions * 0.1).round().clamp(0, 2), rng, scale);
+      _drawFractalMoss(
+        canvas,
+        cx,
+        cy,
+        (16 + rng.nextDouble() * 14) * scale,
+        0,
+        3 + (params.absoluteCompletions * 0.1).round().clamp(0, 2),
+        rng,
+        scale,
+      );
     }
 
     // ── 3. Connecting runners ────────────────────────
@@ -65,8 +75,16 @@ class MossPainter extends CustomPainter {
 
   // ── Fractal moss — recursive branching cluster ─────
 
-  void _drawFractalMoss(Canvas canvas, double cx, double cy, double radius,
-      int depth, int maxDepth, Random rng, double scale) {
+  void _drawFractalMoss(
+    Canvas canvas,
+    double cx,
+    double cy,
+    double radius,
+    int depth,
+    int maxDepth,
+    Random rng,
+    double scale,
+  ) {
     if (depth > maxDepth || radius < 2) return;
 
     // At each level: draw a soft blurred ellipse, then subdivide
@@ -84,7 +102,10 @@ class MossPainter extends CustomPainter {
       ),
       Paint()
         ..color = color.withValues(alpha: alpha)
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, max(1, 6.0 - depth * 1.5)),
+        ..maskFilter = MaskFilter.blur(
+          BlurStyle.normal,
+          max(1, 6.0 - depth * 1.5),
+        ),
     );
 
     // Detailed texture at deeper levels
@@ -112,8 +133,14 @@ class MossPainter extends CustomPainter {
   }
 
   /// Fine texture: tiny leaf/frond shapes for organic detail
-  void _drawMossTexture(Canvas canvas, double cx, double cy, double radius,
-      Random rng, double scale) {
+  void _drawMossTexture(
+    Canvas canvas,
+    double cx,
+    double cy,
+    double radius,
+    Random rng,
+    double scale,
+  ) {
     final paint = Paint()..style = PaintingStyle.fill;
     final count = (4 + params.absoluteCompletions * 0.3).round().clamp(3, 10);
 
@@ -158,8 +185,9 @@ class MossPainter extends CustomPainter {
     for (var i = 0; i < hlCount; i++) {
       final hx = cx + (rng.nextDouble() - 0.5) * radius;
       final hy = cy + (rng.nextDouble() - 0.5) * radius * 0.6;
-      hlPaint.color = const Color(0xFFDDFFDD)
-          .withValues(alpha: 0.12 + rng.nextDouble() * 0.12);
+      hlPaint.color = const Color(
+        0xFFDDFFDD,
+      ).withValues(alpha: 0.12 + rng.nextDouble() * 0.12);
       canvas.drawCircle(
         Offset(hx, hy),
         (1 + rng.nextDouble() * 1.5) * scale,
@@ -170,10 +198,15 @@ class MossPainter extends CustomPainter {
 
   // ── Fractal stones — subdivision polygon shapes ────
 
-  void _drawFractalStones(Canvas canvas, double centerX, double baseY,
-      Size size, Random rng, double scale) {
-    final count =
-        (3 + params.absoluteCompletions * 0.4).round().clamp(2, 8);
+  void _drawFractalStones(
+    Canvas canvas,
+    double centerX,
+    double baseY,
+    Size size,
+    Random rng,
+    double scale,
+  ) {
+    final count = (3 + params.absoluteCompletions * 0.4).round().clamp(2, 8);
 
     for (var i = 0; i < count; i++) {
       final px = centerX + (rng.nextDouble() - 0.5) * size.width * 0.5;
@@ -184,14 +217,21 @@ class MossPainter extends CustomPainter {
     }
   }
 
-  void _drawFractalStone(Canvas canvas, double cx, double cy, double radius,
-      Random rng, double scale) {
+  void _drawFractalStone(
+    Canvas canvas,
+    double cx,
+    double cy,
+    double radius,
+    Random rng,
+    double scale,
+  ) {
     // Generate irregular polygon using angular subdivision
     final numVerts = 6 + rng.nextInt(4);
     final vertices = <Offset>[];
     for (var i = 0; i < numVerts; i++) {
       final baseAngle = (i / numVerts) * 2 * pi;
-      final angle = baseAngle + (rng.nextDouble() - 0.5) * (2 * pi / numVerts) * 0.4;
+      final angle =
+          baseAngle + (rng.nextDouble() - 0.5) * (2 * pi / numVerts) * 0.4;
       final r = radius * (0.6 + rng.nextDouble() * 0.4);
       vertices.add(Offset(cx + cos(angle) * r, cy + sin(angle) * r * 0.6));
     }
@@ -201,9 +241,11 @@ class MossPainter extends CustomPainter {
     for (var i = 0; i < vertices.length; i++) {
       final next = vertices[(i + 1) % vertices.length];
       subdivided.add(vertices[i]);
-      final midX = (vertices[i].dx + next.dx) / 2 +
+      final midX =
+          (vertices[i].dx + next.dx) / 2 +
           (rng.nextDouble() - 0.5) * radius * 0.15;
-      final midY = (vertices[i].dy + next.dy) / 2 +
+      final midY =
+          (vertices[i].dy + next.dy) / 2 +
           (rng.nextDouble() - 0.5) * radius * 0.10;
       subdivided.add(Offset(midX, midY));
     }
@@ -227,7 +269,10 @@ class MossPainter extends CustomPainter {
 
     // Main body with gradient
     final rect = Rect.fromCenter(
-        center: Offset(cx, cy), width: radius * 2, height: radius * 1.4);
+      center: Offset(cx, cy),
+      width: radius * 2,
+      height: radius * 1.4,
+    );
     canvas.drawPath(
       stonePath,
       Paint()
@@ -277,8 +322,14 @@ class MossPainter extends CustomPainter {
 
   // ── Lichen rings — circular fractal-like growth ────
 
-  void _drawLichenPatches(Canvas canvas, double centerX, double baseY,
-      Size size, Random rng, double scale) {
+  void _drawLichenPatches(
+    Canvas canvas,
+    double centerX,
+    double baseY,
+    Size size,
+    Random rng,
+    double scale,
+  ) {
     final count = (1 + params.absoluteCompletions * 0.08).round().clamp(0, 3);
     for (var i = 0; i < count; i++) {
       final lx = centerX + (rng.nextDouble() - 0.5) * size.width * 0.45;
@@ -288,8 +339,14 @@ class MossPainter extends CustomPainter {
     }
   }
 
-  void _drawLichenRing(Canvas canvas, double cx, double cy, double radius,
-      Random rng, double scale) {
+  void _drawLichenRing(
+    Canvas canvas,
+    double cx,
+    double cy,
+    double radius,
+    Random rng,
+    double scale,
+  ) {
     // Soft ring made of overlapping small circles around a center
     final paint = Paint()..style = PaintingStyle.fill;
     final numDots = 8 + rng.nextInt(6);
@@ -320,7 +377,11 @@ class MossPainter extends CustomPainter {
   // ── Connecting runners — organic bezier vines ──────
 
   void _drawRunners(
-      Canvas canvas, List<Offset> centers, Random rng, double scale) {
+    Canvas canvas,
+    List<Offset> centers,
+    Random rng,
+    double scale,
+  ) {
     if (centers.length < 2) return;
 
     final paint = Paint()
@@ -351,8 +412,9 @@ class MossPainter extends CustomPainter {
         final leafAngle = rng.nextDouble() * 2 * pi;
         final leafLen = (2 + rng.nextDouble() * 3) * scale;
 
-        leafPaint.color = ColorResolver.mossGreenLight
-            .withValues(alpha: 0.25 + rng.nextDouble() * 0.20);
+        leafPaint.color = ColorResolver.mossGreenLight.withValues(
+          alpha: 0.25 + rng.nextDouble() * 0.20,
+        );
         canvas.drawPath(
           Path()
             ..moveTo(px, py)
@@ -377,7 +439,12 @@ class MossPainter extends CustomPainter {
   // ── Sleeping bulb ────────────────────────────────
 
   void _drawSleepingBulb(
-      Canvas canvas, Size size, double cx, double cy, double scale) {
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy,
+    double scale,
+  ) {
     // Bulb body
     canvas.drawOval(
       Rect.fromCenter(

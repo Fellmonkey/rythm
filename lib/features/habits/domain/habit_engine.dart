@@ -11,7 +11,7 @@ import 'scheduling.dart';
 class HabitEngine {
   const HabitEngine._();
 
-  // Dynamic base calculation 
+  // Dynamic base calculation
 
   /// Calculate the required base for a habit in a given month.
   /// The base accounts for creation date (mid-month start).
@@ -22,7 +22,9 @@ class HabitEngine {
     final monthEnd = DateTime.utc(year, month + 1, 0);
 
     // Effective start: max(month start, habit creation date)
-    final effectiveStart = createdAt.isAfter(monthStart) ? createdAt : monthStart;
+    final effectiveStart = createdAt.isAfter(monthStart)
+        ? createdAt
+        : monthStart;
 
     // If habit was created after this month, base is 0
     if (effectiveStart.isAfter(monthEnd)) return 0;
@@ -49,10 +51,12 @@ class HabitEngine {
       case FrequencyType.cycle:
         final cycle = parseCycle(habit.frequencyValue);
         var expected = 0;
-        final refDate = cycle.startDate != null 
-            ? dateFromUnix(cycle.startDate!) 
+        final refDate = cycle.startDate != null
+            ? dateFromUnix(cycle.startDate!)
             : createdAt;
-        final startDiff = effectiveStart.toMidnight.difference(refDate.toMidnight).inDays;
+        final startDiff = effectiveStart.toMidnight
+            .difference(refDate.toMidnight)
+            .inDays;
         for (var i = 0; i < activeDays; i++) {
           final diff = startDiff + i;
           if (diff < 0) continue;
@@ -112,7 +116,7 @@ class HabitEngine {
           }
         case LogStatus.skip:
           skipCount++;
-          // Skip doesn't break streak
+        // Skip doesn't break streak
         case LogStatus.fail:
           failCount++;
           currentStreak = 0;
@@ -138,8 +142,9 @@ class HabitEngine {
     final createdAt = dateFromUnix(habit.createdAt);
     final monthStart = DateTime.utc(year, month, 1);
     final monthEnd = DateTime.utc(year, month + 1, 0);
-    final effectiveStart =
-        createdAt.isAfter(monthStart) ? createdAt : monthStart;
+    final effectiveStart = createdAt.isAfter(monthStart)
+        ? createdAt
+        : monthStart;
     final activeDays = daysBetweenInclusive(effectiveStart, monthEnd);
     final isShortPerfect = activeDays < 7 && pct >= 100.0;
 

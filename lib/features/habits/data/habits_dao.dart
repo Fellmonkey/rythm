@@ -57,14 +57,16 @@ class HabitsDao extends DatabaseAccessor<AppDatabase> with _$HabitsDaoMixin {
 
   /// Archive a habit (soft delete).
   Future<int> archiveHabit(int id) {
-    return (update(habits)..where((h) => h.id.equals(id)))
-        .write(const HabitsCompanion(isArchived: Value(true)));
+    return (update(habits)..where((h) => h.id.equals(id))).write(
+      const HabitsCompanion(isArchived: Value(true)),
+    );
   }
 
   /// Restore an archived habit back to active.
   Future<int> unarchiveHabit(int id) {
-    return (update(habits)..where((h) => h.id.equals(id)))
-        .write(const HabitsCompanion(isArchived: Value(false)));
+    return (update(habits)..where((h) => h.id.equals(id))).write(
+      const HabitsCompanion(isArchived: Value(false)),
+    );
   }
 
   /// Watch all archived habits ordered by most-recently created first.
@@ -82,8 +84,9 @@ class HabitsDao extends DatabaseAccessor<AppDatabase> with _$HabitsDaoMixin {
 
   /// Toggle the focus flag on a habit.
   Future<void> toggleFocus(int id, {required bool isFocus}) {
-    return (update(habits)..where((h) => h.id.equals(id)))
-        .write(HabitsCompanion(isFocus: Value(isFocus)));
+    return (update(habits)..where((h) => h.id.equals(id))).write(
+      HabitsCompanion(isFocus: Value(isFocus)),
+    );
   }
 
   /// Count how many habits are currently marked as focus.

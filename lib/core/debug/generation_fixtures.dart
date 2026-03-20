@@ -5,7 +5,13 @@ import '../../features/garden/domain/generator/plant_params.dart';
 
 /// A named completion tier used to build the fixture matrix.
 class CompletionLevel {
-  const CompletionLevel(this.name, this.pct, this.abs, this.streak, this.objectType);
+  const CompletionLevel(
+    this.name,
+    this.pct,
+    this.abs,
+    this.streak,
+    this.objectType,
+  );
   final String name;
   final double pct;
   final int abs;
@@ -54,33 +60,37 @@ List<GenerationParams> _buildMatrix() {
   for (final archetype in SeedArchetype.values) {
     for (final level in completionLevels) {
       for (final dist in timeDistributions) {
-        result.add(GenerationParams(
-          archetype: archetype,
-          completionPct: level.pct,
-          absoluteCompletions: level.abs,
-          maxStreak: level.streak,
-          morningRatio: dist.morning,
-          afternoonRatio: dist.afternoon,
-          eveningRatio: dist.evening,
-          seed: seed++,
-          isShortPerfect: false,
-          objectType: level.objectType,
-        ));
+        result.add(
+          GenerationParams(
+            archetype: archetype,
+            completionPct: level.pct,
+            absoluteCompletions: level.abs,
+            maxStreak: level.streak,
+            morningRatio: dist.morning,
+            afternoonRatio: dist.afternoon,
+            eveningRatio: dist.evening,
+            seed: seed++,
+            isShortPerfect: false,
+            objectType: level.objectType,
+          ),
+        );
       }
     }
     // Short-perfect fixture for each archetype.
-    result.add(GenerationParams(
-      archetype: archetype,
-      completionPct: 100,
-      absoluteCompletions: 5,
-      maxStreak: 5,
-      morningRatio: 0.4,
-      afternoonRatio: 0.35,
-      eveningRatio: 0.25,
-      seed: seed++,
-      isShortPerfect: true,
-      objectType: GardenObjectType.tree,
-    ));
+    result.add(
+      GenerationParams(
+        archetype: archetype,
+        completionPct: 100,
+        absoluteCompletions: 5,
+        maxStreak: 5,
+        morningRatio: 0.4,
+        afternoonRatio: 0.35,
+        eveningRatio: 0.25,
+        seed: seed++,
+        isShortPerfect: true,
+        objectType: GardenObjectType.tree,
+      ),
+    );
   }
 
   return result;
