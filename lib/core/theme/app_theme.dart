@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hintful/hintful.dart';
 
 import 'app_colors.dart';
 
@@ -16,12 +17,25 @@ abstract final class AppRadius {
 }
 
 abstract final class AppTheme {
+  // ── Hint theme (Russian labels, app-styled tooltip) ────────
+  static const _hintLabels = HintTooltipLabels(
+    skip: 'Пропустить',
+    back: 'Назад',
+    next: 'Далее',
+    done: 'Готово',
+    preparing: 'Загрузка…',
+  );
+
+  static HintTheme _hintTheme(ColorScheme scheme) =>
+      HintTheme.minimal(scheme).copyWith(
+        tooltipRadius: BorderRadius.circular(16),
+        tooltipPadding: const EdgeInsets.all(20),
+        tooltipLabels: _hintLabels,
+      );
+
   // ── Light Theme ─────────────────────────────────────────────
-  static ThemeData get light => ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.light,
-    scaffoldBackgroundColor: AppColors.lightBackground,
-    colorScheme: const ColorScheme.light(
+  static ThemeData get light {
+    const scheme = ColorScheme.light(
       surface: AppColors.lightSurface,
       primary: AppColors.sageGreen,
       secondary: AppColors.warmAmber,
@@ -29,55 +43,59 @@ abstract final class AppTheme {
       error: AppColors.dustyRose,
       onSurface: AppColors.lightText,
       onPrimary: Colors.white,
-    ),
-    textTheme: _textTheme(AppColors.lightText),
-    cardTheme: CardThemeData(
-      color: AppColors.lightSurface,
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.borderM),
-      margin: EdgeInsets.zero,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      centerTitle: false,
-      titleTextStyle: TextStyle(
-        fontFamily: 'Nunito',
-        fontSize: 22,
-        fontWeight: FontWeight.w700,
-        color: AppColors.lightText,
+    );
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: AppColors.lightBackground,
+      colorScheme: scheme,
+      textTheme: _textTheme(AppColors.lightText),
+      extensions: [_hintTheme(scheme)],
+      cardTheme: CardThemeData(
+        color: AppColors.lightSurface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.borderM),
+        margin: EdgeInsets.zero,
       ),
-      iconTheme: IconThemeData(color: AppColors.lightText),
-    ),
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: AppColors.sageGreen,
-      foregroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.borderL),
-      elevation: 2,
-    ),
-    checkboxTheme: CheckboxThemeData(
-      fillColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return AppColors.emeraldGlow;
-        }
-        return Colors.transparent;
-      }),
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.borderS),
-      side: const BorderSide(color: AppColors.coolGreyBlue, width: 2),
-    ),
-    bottomSheetTheme: const BottomSheetThemeData(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-    ),
-  );
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
+        titleTextStyle: TextStyle(
+          fontFamily: 'Nunito',
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          color: AppColors.lightText,
+        ),
+        iconTheme: IconThemeData(color: AppColors.lightText),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: AppColors.sageGreen,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.borderL),
+        elevation: 2,
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.emeraldGlow;
+          }
+          return Colors.transparent;
+        }),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.borderS),
+        side: const BorderSide(color: AppColors.coolGreyBlue, width: 2),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+    );
+  }
 
   // ── Dark Theme (Bioluminescence) ────────────────────────────
-  static ThemeData get dark => ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.dark,
-    scaffoldBackgroundColor: AppColors.darkBackground,
-    colorScheme: const ColorScheme.dark(
+  static ThemeData get dark {
+    const scheme = ColorScheme.dark(
       surface: AppColors.darkSurface,
       primary: AppColors.glowCyan,
       secondary: AppColors.glowViolet,
@@ -85,48 +103,55 @@ abstract final class AppTheme {
       error: AppColors.dustyRose,
       onSurface: AppColors.darkText,
       onPrimary: AppColors.darkBackground,
-    ),
-    textTheme: _textTheme(AppColors.darkText),
-    cardTheme: CardThemeData(
-      color: AppColors.darkSurface,
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.borderM),
-      margin: EdgeInsets.zero,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      centerTitle: false,
-      titleTextStyle: TextStyle(
-        fontFamily: 'Nunito',
-        fontSize: 22,
-        fontWeight: FontWeight.w700,
-        color: AppColors.darkText,
+    );
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: AppColors.darkBackground,
+      colorScheme: scheme,
+      textTheme: _textTheme(AppColors.darkText),
+      extensions: [_hintTheme(scheme)],
+      cardTheme: CardThemeData(
+        color: AppColors.darkSurface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.borderM),
+        margin: EdgeInsets.zero,
       ),
-      iconTheme: IconThemeData(color: AppColors.darkText),
-    ),
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: AppColors.glowCyan,
-      foregroundColor: AppColors.darkBackground,
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.borderL),
-      elevation: 0,
-    ),
-    checkboxTheme: CheckboxThemeData(
-      fillColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return AppColors.glowEmerald;
-        }
-        return Colors.transparent;
-      }),
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.borderS),
-      side: const BorderSide(color: AppColors.coolGreyBlue, width: 2),
-    ),
-    bottomSheetTheme: const BottomSheetThemeData(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-    ),
-  );
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
+        titleTextStyle: TextStyle(
+          fontFamily: 'Nunito',
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          color: AppColors.darkText,
+        ),
+        iconTheme: IconThemeData(color: AppColors.darkText),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: AppColors.glowCyan,
+        foregroundColor: AppColors.darkBackground,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.borderL),
+        elevation: 0,
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.glowEmerald;
+          }
+          return Colors.transparent;
+        }),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.borderS),
+        side: const BorderSide(color: AppColors.coolGreyBlue, width: 2),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+    );
+  }
 
   // ── Shared text theme (Nunito headings + Inter body) ────────
   static TextTheme _textTheme(Color color) => TextTheme(

@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/settings/shared_prefs.dart';
 
-/// Names of the one-time onboarding tours. Each shows at most once per install.
+/// Names of the one-time onboarding tours.
 abstract final class OnboardingTours {
   static const greenhouse = 'greenhouse';
   static const spread = 'spread';
@@ -10,11 +10,10 @@ abstract final class OnboardingTours {
 }
 
 /// Tours already shown, persisted in SharedPreferences under `onboarding_seen`.
-final onboardingFlagsProvider = NotifierProvider<OnboardingFlags, Set<String>>(
-  OnboardingFlags.new,
-);
+final onboardingFlagsProvider =
+    AsyncNotifierProvider<OnboardingFlags, Set<String>>(OnboardingFlags.new);
 
-class OnboardingFlags extends Notifier<Set<String>> {
+class OnboardingFlags extends AsyncNotifier<Set<String>> {
   static const _key = 'onboarding_seen';
   static const _habitPendingKey = 'greenhouse_habit_pending';
 
@@ -24,49 +23,39 @@ class OnboardingFlags extends Notifier<Set<String>> {
   bool get habitTutorialPending => _habitTutorialPending;
 
   @override
-  Set<String> build() {
-    // One-shot read: a watch would re-run build() mid-`markSeen`.
-    final prefs = ref.read(sharedPrefsProvider).value;
-    _habitTutorialPending = prefs?.getBool(_habitPendingKey) ?? false;
-    return prefs?.getStringList(_key)?.toSet() ?? <String>{};
-  }
-
-  bool isSeen(String tour) => state.contains(tour);
-
-  /// Re-reads the persisted flags. Called right before a tour starts, when
-  /// SharedPreferences is guaranteed resolved.
-  Future<void> refresh() async {
-    final prefs = await ref.read(sharedPrefsProvider.future);
-    state = prefs.getStringList(_key)?.toSet() ?? <String>{};
+  Future<Set<String>> build() async {
+    final prefs = await ref.watch(sharedPrefsProvider.future);
     _habitTutorialPending = prefs.getBool(_habitPendingKey) ?? false;
+    return prefs.getStringList(_key)?.toSet() ?? <String>{};
   }
+
+  bool isSeen(String tour) => state.value?.contains(tour) ?? false;
 
   /// Marks [tour] as seen and persists the flag.
   Future<void> markSeen(String tour) async {
-    if (state.contains(tour)) return;
-    state = {...state, tour};
+    if (isSeen(tour)) return;
+    state = AsyncData({...?state.value, tour});
     final prefs = await ref.read(sharedPrefsProvider.future);
-    await prefs.setStringList(_key, state.toList());
+    await prefs.setStringList(_key, state.value?.toList() ?? const []);
   }
 
-  /// Remembers that the first habit was just created, so the greenhouse
-  /// shows a one-step mini-tour on the habit card.
+  /// Arms the first-habit mini-tour (greenhouse shows it on the next card).
   Future<void> setHabitTutorialPending() async {
     _habitTutorialPending = true;
     final prefs = await ref.read(sharedPrefsProvider.future);
     await prefs.setBool(_habitPendingKey, true);
   }
 
-  /// Consumes the pending first-habit tutorial (a dismissed one never re-shows).
+  /// Consumes the pending first-habit tutorial.
   Future<void> clearHabitTutorialPending() async {
     _habitTutorialPending = false;
     final prefs = await ref.read(sharedPrefsProvider.future);
     await prefs.remove(_habitPendingKey);
   }
 
-  /// Clears all tour flags — used by the debug menu and Settings.
+  /// Clears all tour flags — debug menu and Settings.
   Future<void> resetAll() async {
-    state = <String>{};
+    state = const AsyncData(<String>{});
     _habitTutorialPending = false;
     final prefs = await ref.read(sharedPrefsProvider.future);
     await prefs.remove(_key);

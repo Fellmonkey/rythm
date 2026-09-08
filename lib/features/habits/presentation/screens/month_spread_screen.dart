@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:hintful/hintful.dart';
+
 import '../../../../core/ads/ads_service.dart';
 import '../../../../core/database/enums.dart';
 import '../../../../core/keys.dart';
@@ -10,14 +12,14 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/date_helpers.dart';
 import '../../../../core/utils/localized_dates.dart';
+import '../../../../features/onboarding/app_tours.dart';
+import '../../../../features/onboarding/hint_tour.dart';
 import '../../../../features/onboarding/onboarding_flags.dart';
-import '../../../../features/onboarding/showcase_tour.dart';
-import '../../../../features/onboarding/tour_content.dart';
 import '../../../../shared/widgets/sheet_handle.dart';
 import '../../domain/completion.dart';
 import '../../providers/habit_providers.dart';
-import '../widgets/day_moment_sheet.dart';
 import '../month_spread_exporter.dart';
+import '../widgets/day_moment_sheet.dart';
 import '../widgets/month_goals_card.dart';
 
 /// Month spread — the history screen: a calendar week-grid with mood
@@ -40,15 +42,8 @@ class _MonthSpreadScreenState extends ConsumerState<MonthSpreadScreen>
   /// the incoming month from the matching side.
   int _slideDir = 1;
 
-  // ── Onboarding tour targets ──
-  final _tourGridKey = GlobalKey();
-  final _tourDayKey = GlobalKey();
-
   @override
   String get tourScope => OnboardingTours.spread;
-
-  @override
-  List<GlobalKey> get tourKeys => [_tourGridKey, _tourDayKey];
 
   @override
   void initState() {
@@ -207,16 +202,9 @@ class _MonthSpreadScreenState extends ConsumerState<MonthSpreadScreen>
 
         // ── Calendar week grid ──
         SliverToBoxAdapter(
-          child: tourStep(
-            context,
-            scope: tourScope,
-            key: _tourGridKey,
-            content: TourContent.spreadSwipe,
-            child: _CalendarGrid(
-              days: days,
-              onDayTap: _openDay,
-              tourDayKey: _tourDayKey,
-            ),
+          child: hintTarget(
+            AppHintIds.spreadGrid,
+            _CalendarGrid(days: days, onDayTap: _openDay),
           ),
         ),
 
@@ -514,16 +502,12 @@ class _CalendarGrid extends StatelessWidget {
   const _CalendarGrid({
     required this.days,
     required this.onDayTap,
-    this.tourDayKey,
     this.gridKey = K.monthSpreadGrid,
     this.debugDayKeys = true,
   });
 
   final List<MonthSpreadDay> days;
   final ValueChanged<DateTime> onDayTap;
-
-  /// When set, today's cell is wrapped in an onboarding spotlight.
-  final GlobalKey? tourDayKey;
 
   /// Grid container key; the PNG capture passes a distinct one to avoid
   /// two widgets sharing `K.monthSpreadGrid`.
@@ -608,15 +592,8 @@ class _CalendarGrid extends StatelessWidget {
       onTap: onDayTap,
       dayKey: debugDayKeys ? K.monthSpreadDay(cell.date.day) : null,
     );
-    final key = tourDayKey;
-    if (key == null || !isToday) return cellWidget;
-    return tourStep(
-      context,
-      scope: OnboardingTours.spread,
-      key: key,
-      content: TourContent.spreadDay,
-      child: cellWidget,
-    );
+    if (!isToday) return cellWidget;
+    return HintTarget(id: AppHintIds.spreadDay, child: cellWidget);
   }
 }
 

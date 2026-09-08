@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:go_router/go_router.dart';
+
 import '../../../../core/database/app_database.dart';
 import '../../../../core/database/enums.dart' as enums;
 import '../../../../core/keys.dart';
 import '../../../../core/settings/haptics.dart';
-import '../../../../core/utils/localized_dates.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/localized_dates.dart';
+import '../../../../features/onboarding/app_tours.dart';
+import '../../../../features/onboarding/hint_tour.dart';
 import '../../../../features/onboarding/onboarding_flags.dart';
-import '../../../../features/onboarding/showcase_tour.dart';
-import '../../../../features/onboarding/tour_content.dart';
-import '../../providers/habit_providers.dart';
 import '../../domain/scheduling.dart';
-import 'package:go_router/go_router.dart';
+import '../../providers/habit_providers.dart';
 
 import '../widgets/day_moment_card.dart';
 import '../widgets/habit_card.dart';
@@ -32,28 +33,11 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen>
     with OnboardingTourMixin<GreenhouseScreen> {
   bool _hideCompleted = false;
 
-  // ── Onboarding tour targets ──
-  final _tourMomentKey = GlobalKey();
-  final _tourSpreadKey = GlobalKey();
-  final _tourHabitKey = GlobalKey();
-
   /// Whether the first habit card is already wrapped for the tour.
   bool _habitCardWrapped = false;
 
   @override
   String get tourScope => OnboardingTours.greenhouse;
-
-  @override
-  List<GlobalKey> get tourKeys => [
-    _tourMomentKey,
-    _tourSpreadKey,
-    _tourHabitKey,
-  ];
-
-  /// One-step mini-tour on the first habit card: shown when the first habit
-  /// is created after the main tour ran (its habit step was skipped).
-  @override
-  List<GlobalKey> get pendingTourKeys => [_tourHabitKey];
 
   @override
   Widget build(BuildContext context) {
@@ -134,12 +118,9 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen>
                     ],
                   ),
                 ),
-                tourStep(
-                  context,
-                  scope: tourScope,
-                  key: _tourSpreadKey,
-                  content: TourContent.greenhouseSpread,
-                  child: OutlinedButton.icon(
+                hintTarget(
+                  AppHintIds.greenhouseSpread,
+                  OutlinedButton.icon(
                     key: K.openMonthSpread,
                     onPressed: () => context.push('/month'),
                     icon: const Icon(Icons.calendar_month_outlined, size: 18),
@@ -172,13 +153,7 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen>
 
         // ── Day moment ──
         SliverToBoxAdapter(
-          child: tourStep(
-            context,
-            scope: tourScope,
-            key: _tourMomentKey,
-            content: TourContent.greenhouseMoment,
-            child: const DayMomentCard(),
-          ),
+          child: hintTarget(AppHintIds.greenhouseMoment, const DayMomentCard()),
         ),
 
         // ── Month goals ──
@@ -274,13 +249,7 @@ class _GreenhouseScreenState extends ConsumerState<GreenhouseScreen>
             // Only the first card is wrapped; re-wrapping would clash keys.
             if (!_habitCardWrapped) {
               _habitCardWrapped = true;
-              return tourStep(
-                context,
-                scope: tourScope,
-                key: _tourHabitKey,
-                content: TourContent.greenhouseHabit,
-                child: card,
-              );
+              return hintTarget(AppHintIds.greenhouseHabit, card);
             }
             return card;
           },

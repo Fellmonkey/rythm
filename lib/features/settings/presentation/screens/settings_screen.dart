@@ -11,9 +11,9 @@ import '../../../../core/keys.dart';
 import '../../../../core/settings/haptics.dart';
 import '../../../../core/settings/theme_mode.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../features/onboarding/app_tours.dart';
+import '../../../../features/onboarding/hint_tour.dart';
 import '../../../../features/onboarding/onboarding_flags.dart';
-import '../../../../features/onboarding/showcase_tour.dart';
-import '../../../../features/onboarding/tour_content.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../providers/settings_providers.dart';
 
@@ -26,13 +26,8 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen>
     with OnboardingTourMixin<SettingsScreen> {
-  final _tourExportKey = GlobalKey();
-
   @override
   String get tourScope => OnboardingTours.settings;
-
-  @override
-  List<GlobalKey> get tourKeys => [_tourExportKey];
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +41,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           // ── Backup section ──────────────────────────────────────
           _SectionHeader(title: 'Резервное копирование', theme: theme),
           const SizedBox(height: 8),
-          tourStep(
-            context,
-            scope: tourScope,
-            key: _tourExportKey,
-            content: TourContent.settingsHere,
-            child: _SettingsTile(
+          hintTarget(
+            AppHintIds.settingsExport,
+            _SettingsTile(
               key: K.settingsExport,
               icon: Icons.upload_file,
               title: 'Экспорт данных',
