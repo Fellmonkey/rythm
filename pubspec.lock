@@ -326,10 +326,10 @@ packages:
     dependency: "direct main"
     description:
       name: hintful
-      sha256: c9ff8c3a7e242b3fa3b96dda998cda593e7fbdd598914dfa5633b99074a86200
+      sha256: e53d66c8b1430900b6575f9873bac3bdc4c592d0b5d047f8b2ed34e7e45cab30
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.0"
+    version: "0.6.1"
   hooks:
     dependency: transitive
     description:
